@@ -5,11 +5,24 @@
     font-family: Arial, sans-serif;
 }
 
+body {
+    background-color: #f0f0f0;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+}
+
 #auth-section{
     display: none;
 }
 
 #app-section{
+    display: none;
+}
+
+#forget-password-section{
     display: none;
 }  
 
@@ -73,4 +86,19 @@
 
 #auth-section{
     text-align: center;
+}
+
+.container #app-section{
+    text-align: center;
+    padding: 50px;
+}
+
+#app-section .logout-btn {
+    padding: 10px 20px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }

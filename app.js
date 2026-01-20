@@ -1,35 +1,56 @@
-// DOM Elements //use for authentication and app sections 
+// DOM Elements 
+//use for authentication and app sections 
 const authSection = document.getElementById('auth-section');
 const appSection = document.getElementById('app-section');
+
+// forms 
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const forgotPasswordForm = document.getElementById('forgot-password-form');
 
 // authentication function 
 function showRegister(){
+    authSection.style.display = 'block'; // show auth section
+    forgotPasswordForm.style.display = 'none'; // hide forgot password section
     loginForm.style.display = 'none'; // hide login form 
     registerForm.style.display = 'block'; // show register form
-    forgotPasswordForm.style.display = 'none'; // hide forgot password form
     clearErrors();
 }
 
 function showLogin(){
+    authSection.style.display = 'block'; // show auth section
+    forgotPasswordForm.style.display = 'none'; // hide forgot password section
     loginForm.style.display = 'block'; // show login form
     registerForm.style.display = 'none'; // hide register form
-    forgotPasswordForm.style.display = 'none'; // hide forgot password form
     clearErrors();
 }
 
 function showForgotPassword(){
+    forgotPasswordForm.style.display = 'block'; // show forgot password form
     loginForm.style.display = 'none'; // hide login form
     registerForm.style.display = 'none'; // hide register form
-    forgotPasswordForm.style.display = 'block'; // show forgot password form
+    authSection.style.display = 'block'; // show auth section
     clearErrors();
 }
 
 function clearErrors(){
     document.getElementById('login-error').innerText = '';
     document.getElementById('register-error').innerText = '';
+    document.getElementById('forgot-password-error').innerText = '';
+}
+
+//toggle password able to see or hide 
+function togglePasswordVisibility(inputId ){
+    const input = document.getElementById(inputId);
+    const icon = input.parentElement.querySelector('img');
+    
+    if(input.type === "password"){
+        input.type = "text";
+        icon.src = "image/hidden.png";
+    } else{
+        input.type = "password";
+        icon.src = "image/eye.png";
+    }
 }
 
 //login functions
@@ -38,12 +59,32 @@ async function login(){
     const password = document.getElementById('login-password').value;
     const error = document.getElementById('login-error');
 
+    // Validation - Check empty fields
+    if(!email){
+        error.innerText = "Email cannot be empty.";
+        return;
+    }
+    if(!password){
+        error.innerText = "Password cannot be empty.";
+        return;
+    }
+
     try{
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         console.log('User logged in:', userCredential.user);
+        error.innerText = ""; // Clear error on success
         loadUserData();
     } catch (error){
-        error.innerText = error.message;
+        // Handle Firebase errors
+        if(error.code === 'auth/user-not-found'){
+            error.innerText = "Email not found. Please register first.";
+        } else if(error.code === 'auth/wrong-password'){
+            error.innerText = "Password is incorrect.";
+        } else if(error.code === 'auth/invalid-email'){
+            error.innerText = "Invalid email format.";
+        } else {
+            error.innerText = error.message;
+        }
     }
 }
 
@@ -54,6 +95,24 @@ async function register(){
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
     const error = document.getElementById('register-error');
+
+    // Validation - Check empty fields
+    if(!name){
+        error.innerText = "Full Name cannot be empty.";
+        return;
+    }
+    if(!email){
+        error.innerText = "Email cannot be empty.";
+        return;
+    }
+    if(!password){
+        error.innerText = "Password cannot be empty.";
+        return;
+    }
+    if(password.length < 6){
+        error.innerText = "Password must be at least 6 characters.";
+        return;
+    }
 
     try{
         // create user with email and password
@@ -70,11 +129,21 @@ async function register(){
 
         // log user info by tracking 
         console.log('User registered:', user);
+        error.innerText = "Registration successful! Logging you in...";
         // load user data
         loadUserData();
 
     } catch(error){
-        error.innerText = error.message;
+        // Handle Firebase errors
+        if(error.code === 'auth/email-already-in-use'){
+            error.innerText = "Email already registered. Try logging in.";
+        } else if(error.code === 'auth/invalid-email'){
+            error.innerText = "Invalid email format.";
+        } else if(error.code === 'auth/weak-password'){
+            error.innerText = "Password is too weak. Use at least 6 characters.";
+        } else {
+            error.innerText = error.message;
+        }
     }
 }
 
@@ -109,38 +178,49 @@ async function loadUserData(){
 
 }
 
-// forgot password function
+// reset password function
 async function resetPassword(){
     const email = document.getElementById('forgot-password-email').value;
-    const newPassword = document.getElementById('forgot-password-new').value;
-    const confirmPassword = document.getElementById('confirm-forgot-password-new').value;
     const error = document.getElementById('forgot-password-error');
 
-    if(newPassword !== confirmPassword){
-        error.innerText = "Passwords do not match.";
+    if(!email){
+        error.innerText = "Email cannot be empty.";
         return;
-    } 
+    }
 
     try{
-        // send password reset email
         await auth.sendPasswordResetEmail(email);
-        console.log('Password reset email sent to:', email);
-        alert('Password reset email sent. Please check your inbox.');
-    } catch(error){
-        error.innerText = error.message;
+        error.innerText = "Reset email sent! Check your inbox.";
+        setTimeout(() => showLogin(), 2000); // Go back to login after 2 seconds
+    } catch(err){
+        // Handle Firebase errors
+        if(err.code === 'auth/user-not-found'){
+            error.innerText = "Email not found. Please register first.";
+        } else if(err.code === 'auth/invalid-email'){
+            error.innerText = "Invalid email format.";
+        } else {
+            error.innerText = err.message;
+        }
     }
 }
 
 
-// show forgot password form
-function showForgotPassword(){
-    loginForm.style.display = 'none'; // hide login form
-    registerForm.style.display = 'none'; // hide register form
-    document.getElementById('forgot-password-form').style.display = 'block'; // show forgot password form
-    clearErrors();
-}
+// Firebase auth state observer
+console.log('App.js loaded successfully!');
+console.log('Auth section:', authSection);
 
-// add event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    loadUserData();
+auth.onAuthStateChanged((user) => {
+    console.log('Auth state changed. User:', user);
+    if(user){
+        // User is logged in - show app section
+        loadUserData();
+    } else {
+        // User is not logged in - show auth section
+        authSection.style.display = 'block';
+        appSection.style.display = 'none';
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        forgotPasswordForm.style.display = 'none';
+        console.log('Showing login form');
+    }
 });
