@@ -1,0 +1,76 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+#auth-section{
+    display: none;
+}
+
+#app-section{
+    display: none;
+}  
+
+.form-container{
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.form-container:hover{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#login-form .login-button, #register-form .register-button{
+    text-decoration: none;
+    width: 100%;
+    padding: 10px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#register-form .register-button:hover, #login-form .login-button:hover{
+    background-color: #d45d79;
+}
+
+#login-form .button-secondary{
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.form-container #login-email, .form-container #login-password, .form-container #register-name, .form-container #register-email, .form-container #register-password, .form-container #forgot-password-email, .form-container #forgot-password-new, .form-container #confirm-forgot-password-new{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#forgot-password-form .reset-button{
+    text-decoration: none;
+    width: 100%;
+    padding: 10px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px ;
+}
+
+#auth-section{
+    text-align: center;
+}

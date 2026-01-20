@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Website</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Auth Section -->
+        <div id="auth-section">
+            <h1>Welcome to MyPage</h1>
+            
+            <div id="login-form" class="form-container">
+                <h2>Login</h2>
+                <input type="email" id="login-email" placeholder="Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button class="login-button" onclick="login()">Login</button>   
+                <p style = "padding-left: 10px;">Don't have an account? <br> <a href="#" onclick="showRegister()">Register</a> <br> <a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
+                <p id="login-error" class="error"></p>
+            </div>
+            
+            <div id="register-form" class="form-container" style="display: none;">
+                <h2>Register</h2>
+                <input type="text" id="register-name" placeholder="Full Name">
+                <input type="email" id="register-email" placeholder="Email">
+                <input type="password" id="register-password" placeholder="Password">
+                <button class="register-button" onclick="register()">Register</button>
+                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                <p id="register-error" class="error"></p>
+            </div>
+
+            <!--forgot password section -->
+            <!-- Forget Password -->
+            <div id="forgot-password-form" class = "form-container" style="display: none;">
+                <h2>Reset Password</h2>
+                <input type="email" id="forgot-password-email" placeholder="Enter your email">
+                <input type="password" id="forgot-password-new" placeholder="Enter new password">
+                <input type="confirm password" id="confirm-forgot-password-new" placeholder="Confirm new password">
+                <button class="reset-button" onclick="resetPassword()">Reset Password</button>
+                <p>Remember your password? <a href="#" onclick="showLogin()">Back to Login</a></p>
+                <p id="forgot-password-error" class="error"></p>
+
+            </div>
+        </div>
+
+        <!-- App Section (Shown after login) -->
+        <div id="app-section" style="display: none;">
+            <div class="header">
+                <h2>Welcome, <span id="user-name"></span></h2>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+            
+            <div class="dashboard">
+                <!-- Add Note Section -->
+                <div class="add-note">
+                    <h3>Add a Note</h3>
+                    <textarea id="note-content" placeholder="Write your note here..."></textarea>
+                    <button onclick="addNote()">Save Note</button>
+                </div>
+                
+                <!-- Notes List -->
+                <div class="notes-list">
+                    <h3>Your Notes</h3>
+                    <div id="notes-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
