@@ -18,34 +18,48 @@
             
             <div id="login-form" class="form-container">
                 <h2>Login</h2>
-                <input type="email" id="login-email" placeholder="Email">
-                <div style="position: relative;">
-                    <input type="password" id="login-password" placeholder="Password">
+                <div class="floating-input">
+                    <input type="email" id="login-email" placeholder=" " required>
+                    <label for="login-email">Email</label>
+                </div>
+                <div class="floating-input" style="position: relative;">
+                    <input type="password" id="login-password" placeholder=" " required>
+                    <label for="login-password">Password</label>
                     <button type="button" onclick="togglePasswordVisibility('login-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img id="login-password-icon" src="images/eye-open.png" style="width: 20px; height: 20px;"></button>
                 </div>  
                 <button class="login-button" onclick="login()">Login</button>   
-                <p style = "padding-left: 10px;">Don't have an account? <br> <a href="#" onclick="showRegister()">Register</a> <br> <a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
+                <p class="secondary">Don't have an account? <br> <a href="#" onclick="showRegister()" class="button-secondary">Register</a>        <a href="#" onclick="showForgotPassword()" class="button-secondary">Forgot Password?</a></p>
                 <p id="login-error" class="error"></p>
             </div>
             
             <div id="register-form" class="form-container" style="display: none;">
                 <h2>Register</h2>
-                <input type="text" id="register-name" placeholder="Full Name">
-                <input type="email" id="register-email" placeholder="Email">
-                <div style="position: relative;">
-                    <input type="password" id="register-password" placeholder="Password">
+                <div class="floating-input">
+                    <input type="text" id="register-name" placeholder=" " required>
+                    <label for="register-name">Full Name</label>
+                </div>
+                <div class="floating-input">
+                    <input type="email" id="register-email" placeholder=" " required>
+                    <label for="register-email">Email</label>
+                </div>
+                <div class="floating-input" style="position: relative;">
+                    <input type="password" id="register-password" placeholder=" " required>
+                    <label for="register-password">Password</label>
                     <button type="button" onclick="togglePasswordVisibility('register-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 18px;"><img id = "register-password" src = "image/eye.png" style="width: 20px; height: 20px;"></button>
                 </div>
                 <button class="register-button" onclick="register()">Register</button>
-                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                <p>Already have an account? <a href="#" onclick="showLogin()" class="button-secondary">Login</a></p>
                 <p id="register-error" class="error"></p>
             </div>
          
             <div id="forgot-password-form" class = "form-container">
                 <h2>Reset Password</h2>
-                <input type="email" id="forgot-password-email" placeholder="Enter your email">
+                <div class="floating-input">
+                    <input type="email" id="forgot-password-email" placeholder=" " required>
+                    <label for="forgot-password-email">Email Address</label>
+                </div>
                 <button class="reset-button" onclick="resetPassword()">Send Reset Link</button>
-                <p>Remember your password? <a href="#" onclick="showLogin()">Back to Login</a></p>
+                <p>Remember your password? <a href="#" onclick="showLogin()" class="button-secondary">Back to Login</a></p>
                 <p id="forgot-password-error" class="error"></p>
             </div>
         </div>

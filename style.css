@@ -55,21 +55,69 @@ body {
     background-color: #d45d79;
 }
 
-#login-form .button-secondary{
-    background: none;
-    border: none;
-    color: blue;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 14px;
-}
-
 .form-container #login-email, .form-container #login-password, .form-container #register-name, .form-container #register-email, .form-container #register-password, .form-container #forgot-password-email, .form-container #forgot-password-new, .form-container #confirm-forgot-password-new{
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+/* Floating label styles */
+.floating-input {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.floating-input input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: white;
+}
+
+.floating-input input:focus {
+    border-color: palevioletred;
+}
+
+.floating-input input.error {
+    border-color: red !important;
+    animation: shake 0.3s;
+}
+
+.floating-input label {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #999;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    background-color: white;
+    padding: 0 5px;
+}
+
+/* Float label when input is focused or has value */
+.floating-input input:focus ~ label,
+.floating-input input:not(:placeholder-shown) ~ label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: palevioletred;
+    font-weight: 600;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
 }
 
 #forgot-password-form .reset-button{
@@ -102,3 +150,39 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
+
+#app-section .logout-btn:hover {
+    background-color: #d45d79;
+}
+
+.secondary{
+    margin-top: 20px;
+    font-size: 15px;
+    color: black;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.button-secondary{
+    color: palevioletred;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.button-secondary:hover{
+    color: #fff;
+    background-color: palevioletred;
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+.button-secondary:active{
+    transform: scale(0.95);
+}
+
+
+

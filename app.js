@@ -55,62 +55,88 @@ function togglePasswordVisibility(inputId ){
 
 //login functions
 async function login(){
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const error = document.getElementById('login-error');
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const errorMsg = document.getElementById('login-error');
+
+    // Clear previous errors
+    emailInput.style.border = '';
+    passwordInput.style.border = '';
+    errorMsg.innerText = '';
 
     // Validation - Check empty fields
     if(!email){
-        error.innerText = "Email cannot be empty.";
+        emailInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your email.";
         return;
     }
     if(!password){
-        error.innerText = "Password cannot be empty.";
+        passwordInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your password.";
         return;
     }
 
     try{
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         console.log('User logged in:', userCredential.user);
-        error.innerText = ""; // Clear error on success
+        errorMsg.innerText = ""; // Clear error on success
         loadUserData();
-    } catch (error){
+    } catch (firebaseError){
         // Handle Firebase errors
-        if(error.code === 'auth/user-not-found'){
-            error.innerText = "Email not found. Please register first.";
-        } else if(error.code === 'auth/wrong-password'){
-            error.innerText = "Password is incorrect.";
-        } else if(error.code === 'auth/invalid-email'){
-            error.innerText = "Invalid email format.";
+        if(firebaseError.code === 'auth/user-not-found'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Email not found. Please register first.";
+        } else if(firebaseError.code === 'auth/wrong-password'){
+            passwordInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Password is incorrect.";
+        } else if(firebaseError.code === 'auth/invalid-email'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Invalid email format.";
         } else {
-            error.innerText = error.message;
+            errorMsg.innerText = "❌ " + firebaseError.message;
         }
+        console.error('Login error:', firebaseError);
     }
 }
 
 
 //register function
 async function register(){
-    const name = document.getElementById('register-name').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const error = document.getElementById('register-error');
+    const nameInput = document.getElementById('register-name');
+    const emailInput = document.getElementById('register-email');
+    const passwordInput = document.getElementById('register-password');
+    const name = nameInput.value;
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const errorMsg = document.getElementById('register-error');
+
+    // Clear previous errors
+    nameInput.style.border = '';
+    emailInput.style.border = '';
+    passwordInput.style.border = '';
+    errorMsg.innerText = '';
 
     // Validation - Check empty fields
     if(!name){
-        error.innerText = "Full Name cannot be empty.";
+        nameInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your full name.";
         return;
     }
     if(!email){
-        error.innerText = "Email cannot be empty.";
+        emailInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your email.";
         return;
     }
     if(!password){
-        error.innerText = "Password cannot be empty.";
+        passwordInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your password.";
         return;
     }
     if(password.length < 6){
-        error.innerText = "Password must be at least 6 characters.";
+        passwordInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Password must be at least 6 characters.";
         return;
     }
 
@@ -129,21 +155,25 @@ async function register(){
 
         // log user info by tracking 
         console.log('User registered:', user);
-        error.innerText = "Registration successful! Logging you in...";
+        errorMsg.innerText = "✅ Registration successful! Logging you in...";
         // load user data
         loadUserData();
 
-    } catch(error){
+    } catch(firebaseError){
         // Handle Firebase errors
-        if(error.code === 'auth/email-already-in-use'){
-            error.innerText = "Email already registered. Try logging in.";
-        } else if(error.code === 'auth/invalid-email'){
-            error.innerText = "Invalid email format.";
-        } else if(error.code === 'auth/weak-password'){
-            error.innerText = "Password is too weak. Use at least 6 characters.";
+        if(firebaseError.code === 'auth/email-already-in-use'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Email already registered. Try logging in.";
+        } else if(firebaseError.code === 'auth/invalid-email'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Invalid email format.";
+        } else if(firebaseError.code === 'auth/weak-password'){
+            passwordInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Password is too weak. Use at least 6 characters.";
         } else {
-            error.innerText = error.message;
+            errorMsg.innerText = "❌ " + firebaseError.message;
         }
+        console.error('Register error:', firebaseError);
     }
 }
 
@@ -180,27 +210,38 @@ async function loadUserData(){
 
 // reset password function
 async function resetPassword(){
-    const email = document.getElementById('forgot-password-email').value;
-    const error = document.getElementById('forgot-password-error');
+    const emailInput = document.getElementById('forgot-password-email');
+    const email = emailInput.value;
+    const errorMsg = document.getElementById('forgot-password-error');
+
+    // Clear previous errors
+    emailInput.style.border = '';
+    errorMsg.innerText = '';
 
     if(!email){
-        error.innerText = "Email cannot be empty.";
+        emailInput.style.border = '2px solid red';
+        errorMsg.innerText = "❌ Please fill in your email.";
         return;
     }
 
     try{
         await auth.sendPasswordResetEmail(email);
-        error.innerText = "Reset email sent! Check your inbox.";
+        errorMsg.innerText = "✅ Reset email sent! Check your inbox.";
+        errorMsg.style.color = 'green';
         setTimeout(() => showLogin(), 2000); // Go back to login after 2 seconds
-    } catch(err){
+    } catch(firebaseError){
+        errorMsg.style.color = '';
         // Handle Firebase errors
-        if(err.code === 'auth/user-not-found'){
-            error.innerText = "Email not found. Please register first.";
-        } else if(err.code === 'auth/invalid-email'){
-            error.innerText = "Invalid email format.";
+        if(firebaseError.code === 'auth/user-not-found'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Email not found. Please register first.";
+        } else if(firebaseError.code === 'auth/invalid-email'){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = "❌ Invalid email format.";
         } else {
-            error.innerText = err.message;
+            errorMsg.innerText = "❌ " + firebaseError.message;
         }
+        console.error('Reset password error:', firebaseError);
     }
 }
 
