@@ -22,6 +22,7 @@ function showLogin(){
     forgotPasswordForm.style.display = 'none'; // hide forgot password section
     loginForm.style.display = 'block'; // show login form
     registerForm.style.display = 'none'; // hide register form
+    appSection.style.display = 'none'; // hide app section
     clearErrors();
 }
 
@@ -46,10 +47,10 @@ function togglePasswordVisibility(inputId ){
     
     if(input.type === "password"){
         input.type = "text";
-        icon.src = "image/hidden.png";
+        icon.src = "../image/hidden.png";
     } else{
         input.type = "password";
-        icon.src = "image/eye.png";
+        icon.src = "../image/eye.png";
     }
 }
 
@@ -66,18 +67,6 @@ async function login(){
     passwordInput.style.border = '';
     errorMsg.innerText = '';
 
-    // Validation - Check empty fields
-    if(!email){
-        emailInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your email.";
-        return;
-    }
-    if(!password){
-        passwordInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your password.";
-        return;
-    }
-
     try{
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         console.log('User logged in:', userCredential.user);
@@ -87,15 +76,15 @@ async function login(){
         // Handle Firebase errors
         if(firebaseError.code === 'auth/user-not-found'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Email not found. Please register first.";
+            errorMsg.innerText = "Email not found. Please register first.";
         } else if(firebaseError.code === 'auth/wrong-password'){
             passwordInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Password is incorrect.";
+            errorMsg.innerText = "Password is incorrect.";
         } else if(firebaseError.code === 'auth/invalid-email'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Invalid email format.";
+            errorMsg.innerText = "Invalid email format.";
         } else {
-            errorMsg.innerText = "❌ " + firebaseError.message;
+            errorMsg.innerText = firebaseError.message;
         }
         console.error('Login error:', firebaseError);
     }
@@ -118,28 +107,6 @@ async function register(){
     passwordInput.style.border = '';
     errorMsg.innerText = '';
 
-    // Validation - Check empty fields
-    if(!name){
-        nameInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your full name.";
-        return;
-    }
-    if(!email){
-        emailInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your email.";
-        return;
-    }
-    if(!password){
-        passwordInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your password.";
-        return;
-    }
-    if(password.length < 6){
-        passwordInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Password must be at least 6 characters.";
-        return;
-    }
-
     try{
         // create user with email and password
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -155,23 +122,22 @@ async function register(){
 
         // log user info by tracking 
         console.log('User registered:', user);
-        errorMsg.innerText = "✅ Registration successful! Logging you in...";
-        // load user data
-        loadUserData();
+        errorMsg.innerText = "Registration successful! Logging you in...";
+        showLogin();
 
     } catch(firebaseError){
         // Handle Firebase errors
         if(firebaseError.code === 'auth/email-already-in-use'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Email already registered. Try logging in.";
+            errorMsg.innerText = "Email already registered. Try logging in.";
         } else if(firebaseError.code === 'auth/invalid-email'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Invalid email format.";
+            errorMsg.innerText = "Invalid email format.";
         } else if(firebaseError.code === 'auth/weak-password'){
             passwordInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Password is too weak. Use at least 6 characters.";
+            errorMsg.innerText = "Password is too weak. Use at least 6 characters.";
         } else {
-            errorMsg.innerText = "❌ " + firebaseError.message;
+            errorMsg.innerText = firebaseError.message;
         }
         console.error('Register error:', firebaseError);
     }
@@ -198,8 +164,11 @@ async function loadUserData(){
         // display user data in app section
         document.getElementById('user-name').textContent = userData?.name || user.email;
         authSection.style.display = 'none';
-        appSection.style.display = 'block';
-        console.log('User data loaded:', userData); 
+        appSection.style.display = 'block'; // show app section 
+        console.log('User data loaded:', userData);
+        
+        // Load user's notes
+        fetchNotes(); 
 
     } else{
         authSection.style.display = 'block';
@@ -218,15 +187,9 @@ async function resetPassword(){
     emailInput.style.border = '';
     errorMsg.innerText = '';
 
-    if(!email){
-        emailInput.style.border = '2px solid red';
-        errorMsg.innerText = "❌ Please fill in your email.";
-        return;
-    }
-
     try{
         await auth.sendPasswordResetEmail(email);
-        errorMsg.innerText = "✅ Reset email sent! Check your inbox.";
+        errorMsg.innerText = "Reset email sent! Check your inbox.";
         errorMsg.style.color = 'green';
         setTimeout(() => showLogin(), 2000); // Go back to login after 2 seconds
     } catch(firebaseError){
@@ -234,15 +197,59 @@ async function resetPassword(){
         // Handle Firebase errors
         if(firebaseError.code === 'auth/user-not-found'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Email not found. Please register first.";
+            errorMsg.innerText = "Email not found. Please register first.";
         } else if(firebaseError.code === 'auth/invalid-email'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "❌ Invalid email format.";
+            errorMsg.innerText = "Invalid email format.";
         } else {
-            errorMsg.innerText = "❌ " + firebaseError.message;
+            errorMsg.innerText = firebaseError.message;
         }
         console.error('Reset password error:', firebaseError);
     }
+}
+
+// add note function 
+async function addNote(){
+    const noteInput = document.getElementById('note-content');
+    const content = noteInput.value;
+    const user = auth.currentUser;
+
+    if(user){
+        try{
+            await db.collection("note").doc(noteInput.uid).set({
+                userId: user.uid,
+                content: content,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            noteInput.value = ''; // Clear input field
+        } catch(error){
+            console.error('Error adding note:', error);
+        }
+    }
+}
+
+//fetch all notes and show as list of the notes 
+async function fetchNotes(){
+    const notesContainer = document.getElementById('notes-container');
+    notesContainer.innerHTML = ''; // Clear existing notes
+    const user = auth.currentUser;
+
+    if(user){
+        try{
+            const notesSnapshot = await db.collection("note").where("userId", "==", user.uid).get();
+            notesSnapshot.forEach((doc) => {
+                // create note element
+                const noteData = doc.data();
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-list';
+                noteElement.innerText = noteData.content;
+                notesContainer.appendChild(noteElement);
+            });
+        } catch(error){
+            console.error('Error fetching notes:', error);
+        }
+    } 
 }
 
 

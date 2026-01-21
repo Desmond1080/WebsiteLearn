@@ -1,0 +1,57 @@
+
+#display {
+    grid-column: span 4;
+    height: 80px;
+    font-size: 32px;
+    text-align: right;
+    padding: 5px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.buttons-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}
+
+button{
+    border-radius: 50px;
+    border: none;
+    background-color: hsl(0, 0%, 20%);
+    font-weight: bold;
+    color: white;
+    display: grid;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+}
+
+.backHomeButton {
+    display: inline-block;
+    background-color: palevioletred;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    text-decoration: none;
+    border: none;
+    font-weight: 600;
+}
+
+.backHomeButton:hover {
+    background-color: #d05686;
+}
+
+button:hover{
+    background-color: lightgray;
+}
+
+button:active{
+    background-color: gray;
+}
