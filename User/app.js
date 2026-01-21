@@ -145,12 +145,19 @@ async function register(){
 
 // logout function
 async function logout(){
-    // sign out user
-    await auth.signOut();
-    // show auth section and hide app section
-    authSection.style.display = 'block';
-    appSection.style.display = 'none';
-    console.log('User logged out');
+    if(confirm('Are you sure you want to log out?')){
+        // proceed with logout
+        // sign out user
+        await auth.signOut();
+        // show auth section and hide app section
+        authSection.style.display = 'block';
+        appSection.style.display = 'none';
+        console.log('User logged out');
+    } else {
+        // cancel logout
+        console.log('Logout cancelled');
+        return;
+    }
 }
 
 // load user data function
@@ -175,6 +182,214 @@ async function loadUserData(){
         appSection.style.display = 'none';
     }
 
+}
+
+//load user profile data on page load
+async function loadProfileData(){
+    const user = auth.currentUser;
+    if(user){
+        try{
+            const userDocument = await db.collection("Users").doc(user.uid).get();
+            const userData = userDocument.data();
+
+            document.getElementById('change-password-section').style.display = 'none';
+            document.getElementById('notes-section').style.display = 'none';
+            
+            // Display user data
+            if(document.getElementById('display-name')){
+                document.getElementById('display-name').textContent = userData?.name || 'Not set';
+            }
+            if(document.getElementById('display-email')){
+                document.getElementById('display-email').textContent = user.email;
+            }
+            
+            // Populate edit form inputs
+            if(document.getElementById('profile-name')){
+                document.getElementById('profile-name').value = userData?.name || '';
+            }
+            if(document.getElementById('profile-email')){
+                document.getElementById('profile-email').value = user.email;
+            }
+        } catch(error){
+            console.error('Error loading profile data:', error);
+        }
+    } else {
+        console.log('No user logged in, waiting for auth...');
+    }
+}
+
+// Show edit profile form
+function showEditProfile(){
+    document.getElementById('profile-section').style.display = 'none';
+    document.getElementById('edit-profile-section').style.display = 'block';
+    document.getElementById('change-password-section').style.display = 'none';
+    document.getElementById('notes-section').style.display = 'none';
+}
+
+//show change password form
+function changePassword(){
+    document.getElementById('profile-section').style.display = 'none';
+    document.getElementById('change-password-section').style.display = 'block';
+    document.getElementById('edit-profile-section').style.display = 'none';
+    document.getElementById('notes-section').style.display = 'none';
+}
+
+//show notes form 
+function viewNotes(){
+    document.getElementById('notes-section').style.display = 'block';
+    document.getElementById('profile-section').style.display = 'none';
+    document.getElementById('edit-profile-section').style.display = 'none';
+    document.getElementById('change-password-section').style.display = 'none';
+    fetchNotes();   
+}
+
+//hide notes form
+function cancelViewNotes(){
+    document.getElementById('notes-section').style.display = 'none';
+    document.getElementById('profile-section').style.display = 'block';
+}
+
+//hide change password form
+function cancelChangePassword(){
+    document.getElementById('profile-section').style.display = 'block';
+    document.getElementById('change-password-section').style.display = 'none';
+}
+
+// Hide edit profile form
+function cancelEdit(){
+    document.getElementById('profile-section').style.display = 'block';
+    document.getElementById('edit-profile-section').style.display = 'none';
+}
+
+//view Notes function
+async function viewAllNotes(){
+
+}
+
+//update user password 
+async function changeNewPassword(){
+    const user = auth.currentUser;
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password'); 
+    const currentPassword = currentPasswordInput.value.trim();
+    const newPassword = newPasswordInput.value.trim();
+    const errorMsg = document.getElementById('change-password-error');
+
+    // Clear previous errors
+    currentPasswordInput.style.border = '';
+    newPasswordInput.style.border = '';
+    errorMsg.innerText = '';
+
+    // Validate inputs
+    if(!currentPassword || !newPassword){
+        errorMsg.innerText = 'Please fill in all fields';
+        return;
+    }  
+
+    if(newPassword.length < 6){
+        newPasswordInput.style.border = '2px solid red';
+        errorMsg.innerText = 'New password must be at least 6 characters long';
+        return;
+    }
+
+    if(currentPassword === newPassword){
+        errorMsg.innerText = 'New password must be different from current password';
+        return;
+    }
+
+    if(user){
+        try{
+            // Reauthenticate user with current password
+            const credential = firebase.auth.EmailAuthProvider.credential(
+                user.email,
+                currentPassword
+            );
+            
+            // Reauthenticate user
+            await user.reauthenticateWithCredential(credential);
+
+            // Update password in Firebase Auth
+            await user.updatePassword(newPassword);
+
+            // Show success message
+            errorMsg.innerText = 'Password updated successfully!';
+            errorMsg.style.color = 'green';
+
+            // Clear inputs and close form after success
+            setTimeout(() => {
+                currentPasswordInput.value = '';
+                newPasswordInput.value = '';
+                cancelChangePassword();
+                errorMsg.innerText = '';
+                errorMsg.style.color = '';
+            }, 2000);
+
+        } catch(error){
+            console.error('Password update error:', error);
+            errorMsg.style.color = 'red';
+            
+            // Handle specific errors
+            if(error.code === 'auth/wrong-password'){
+                currentPasswordInput.style.border = '2px solid red';
+                errorMsg.innerText = 'Current password is incorrect';
+            } else if(error.code === 'auth/weak-password'){
+                newPasswordInput.style.border = '2px solid red';
+                errorMsg.innerText = 'New password is too weak';
+            } else if(error.code === 'auth/requires-recent-login'){
+                errorMsg.innerText = 'Please log out and log in again to change password';
+            } else {
+                errorMsg.innerText = error.message;
+            }
+        }
+    }
+}
+
+// Update user profile
+async function updateProfile(){
+    const user = auth.currentUser;
+    const nameInput = document.getElementById('profile-name');
+    const emailInput = document.getElementById('profile-email');
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const errorMsg = document.getElementById('profile-error');
+
+    // Clear previous errors
+    nameInput.style.border = '';
+    emailInput.style.border = '';  
+    errorMsg.innerText = '';
+
+    if(!name || !email){
+        errorMsg.innerText = 'Please fill in all fields';
+        return;
+    }
+
+    if(user){
+        try{
+            // Update email in Firebase Auth
+            if(email !== user.email){
+                await user.updateEmail(email);
+            }
+
+            // Update name and email in Firestore
+            await db.collection("Users").doc(user.uid).update({
+                name: name,
+                email: email,
+            });
+            
+            errorMsg.innerText = 'Profile updated successfully!';
+            errorMsg.style.color = 'green';
+            
+            // Refresh profile display
+            setTimeout(() => {
+                loadProfileData();
+                cancelEdit();
+            }, 1500);
+        } catch(error){
+            console.error('Profile update error:', error);
+            errorMsg.innerText = error.message;
+            errorMsg.style.color = 'red';
+        }
+    }
 }
 
 // reset password function
@@ -215,9 +430,18 @@ async function addNote(){
     const user = auth.currentUser;
 
     if(user){
+        const userDocument = await db.collection("Users").doc(user.uid).get();
+        const userData = userDocument.data();
+
+        if(content.trim() === ''){
+            alert('Note content cannot be empty.');
+            return;
+        }
+
         try{
             await db.collection("note").doc(noteInput.uid).set({
                 userId: user.uid,
+                userName: userData?.name,
                 content: content,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -240,6 +464,7 @@ async function fetchNotes(){
             const notesSnapshot = await db.collection("note").where("userId", "==", user.uid).get();
             notesSnapshot.forEach((doc) => {
                 // create note element
+                // create list item for notes
                 const noteData = doc.data();
                 const noteElement = document.createElement('div');
                 noteElement.className = 'note-list';
@@ -252,6 +477,18 @@ async function fetchNotes(){
     } 
 }
 
+// delete note function
+async function deleteNote(noteId){
+    try{
+        await db.collection("note").doc(noteId).delete();
+        console.log('Note deleted:', noteId);
+        fetchNotes(); // Refresh notes list
+    } catch(error){
+        console.error('Error deleting note:', error);
+    }
+}
+
+
 
 // Firebase auth state observer
 console.log('App.js loaded successfully!');
@@ -260,15 +497,27 @@ console.log('Auth section:', authSection);
 auth.onAuthStateChanged((user) => {
     console.log('Auth state changed. User:', user);
     if(user){
-        // User is logged in - show app section
-        loadUserData();
+        // User is logged in
+        // Check if we're on the profile page or main app page
+        if(document.getElementById('display-name')){
+            // We're on the profile page
+            loadProfileData();
+        } else if(authSection && appSection){
+            // We're on the main app page
+            loadUserData();
+        }
     } else {
         // User is not logged in - show auth section
-        authSection.style.display = 'block';
-        appSection.style.display = 'none';
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-        forgotPasswordForm.style.display = 'none';
-        console.log('Showing login form');
+        if(authSection && appSection){
+            authSection.style.display = 'block';
+            appSection.style.display = 'none';
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            forgotPasswordForm.style.display = 'none';
+            console.log('Showing login form');
+        } else {
+            // On profile page without login, redirect to main page
+            window.location.href = 'UserLoginAndRegister.html';
+        }
     }
 });

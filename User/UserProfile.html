@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body onload="loadProfileData()">
+    <div class = "container">
+        <!-- User Profile Display Section -->
+        <div class = "profile-section" id = "profile-section">
+            <h1>User Profile</h1>
+            <div class="profile-info">
+                <p><strong>Name:</strong> <span id="display-name"></span></p>
+                <p><strong>Email:</strong> <span id="display-email"></span></p>
+            </div>
+        </div>  
+
+        <!-- Edit Profile Section (Hidden by default) -->
+        <div class="edit-profile-section" id="edit-profile-section" style="display: none;">
+            <h2>Edit Profile</h2>
+            <form>
+                <div class="floating-input">
+                    <input type="text" id="profile-name" placeholder=" " required>
+                    <label for="profile-name">Full Name</label>
+                </div>
+                <div class="floating-input">
+                    <input type="email" id="profile-email" placeholder=" " required>
+                    <label for="profile-email">Email</label>
+                </div>
+                <button type="button" onclick="updateProfile()">Save Changes</button>
+                <button type="button" onclick="cancelEdit()" class="cancel-btn">Cancel</button>
+                <p id="profile-error" class="error"></p>
+            </form>
+        </div>
+
+        <!-- change password section (hidden by default)-->
+        <div class="change-password-section" id = "change-password-section" style="display: none;">
+            <h2>Change Password</h2>
+            <form>
+                <div class="floating-input">
+                    <input type="password" id="current-password" placeholder=" " required>
+                    <label for="current-password">Current Password</label>
+                </div>
+                <div class="floating-input">
+                    <input type="password" id="new-password" placeholder=" " required>
+                    <label for="new-password">New Password</label>
+                </div>
+                <button type="button" onclick="changeNewPassword()">Change Password</button>
+                <button type="button" onclick="cancelChangePassword()" class="cancel-btn">Cancel</button>
+                <p id="change-password-error" class="error"></p>
+            </form>
+        </div>
+
+        <div class="notes-section" id="notes-section">
+            <!-- notes header-->
+            <h2>Your Notes</h2>
+            <div class="notes-list" id="notes-container">
+                <!-- Notes will appear here -->
+            </div>
+        </div>
+            
+        <!-- Profile Options -->
+        <div class = "profile-options">
+            <button onclick="showEditProfile()">Edit Profile</button>
+            <button onclick="changePassword()">Change Password</button>
+            <button onclick="viewActivity()">View Activity</button>
+            <button onclick="viewNotes()">View Notes</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="../firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
