@@ -47,6 +47,7 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    border-style: solid;
     background-color: #f9f9f9;
 }
 
@@ -200,7 +201,7 @@ body {
 }
 
 .header{
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     display: flex;
     margin-bottom: 30px;
@@ -208,9 +209,10 @@ body {
     font-size: 20px;
 }
 
-.header-buttons{
-    margin-left: auto;
+.headerW-buttons{
+    margin-left: 5px;
     display: flex;
+    gap: 5px;
     align-items: center;
 }
 
@@ -243,7 +245,7 @@ body {
     font-size: 18px;
 }
 
-.calculator-button, .user-profile-button{
+.calculator-button, .user-profile-button, .doctor-list-button{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -253,14 +255,14 @@ body {
     border-radius: 4px;
 }
 
-.user-profile-button img, .calculator-button img{
+.user-profile-button img, .calculator-button img, .doctor-list-button img{
     width: 40px;
     height: 40px;
     object-fit: contain;
     background-color: #d45d79;
 }
 
-.user-profile-button:hover, .todo-button:hover, .calculator-button:hover{
+.user-profile-button:hover, .todo-button:hover, .calculator-button:hover, .doctor-list-button:hover{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
