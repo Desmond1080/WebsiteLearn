@@ -243,7 +243,7 @@ body {
     font-size: 18px;
 }
 
-.user-profile-button{
+.calculator-button, .user-profile-button{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -253,13 +253,14 @@ body {
     border-radius: 4px;
 }
 
-.user-profile-button img{
-    width: 30px;
-    height: 30px;
+.user-profile-button img, .calculator-button img{
+    width: 40px;
+    height: 40px;
     object-fit: contain;
+    background-color: #d45d79;
 }
 
-.user-profile-button:hover{
+.user-profile-button:hover, .todo-button:hover, .calculator-button:hover{
     background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -274,8 +275,8 @@ body {
 }
 
 .todo-button img{
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
 }
 
@@ -414,4 +415,30 @@ body {
 .profile-options button:hover{
     background-color: #45a049;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-google-button button{
+    margin-top: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.login-google-button img{
+    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+}
+
+.login-google-button button:hover img{
+    transform: scale(1.1);
+}
+
+.login-google-button button:active img{
+    transform: scale(0.9);
+}
+
+.add-note{
+    font-size: 20px;
 }

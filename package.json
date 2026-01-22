@@ -1,0 +1,23 @@
+{
+  "name": "html-learn2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "firebase-config.js",
+  "scripts": {
+    "dev": "npx serve .",
+    "dev:net": "npx serve -l 0.0.0.0:3000 .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Desmond1080/WebsiteLearn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Desmond1080/WebsiteLearn/issues"
+  },
+  "homepage": "https://github.com/Desmond1080/WebsiteLearn#readme"
+}

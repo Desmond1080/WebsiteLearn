@@ -48,10 +48,12 @@
                 <div class="floating-input">
                     <input type="password" id="current-password" placeholder=" " required>
                     <label for="current-password">Current Password</label>
+                    <button type="button" onclick="togglePasswordVisibility('current-password')" style="position: absolute; right: 15px; top: 20%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img id="current-password-icon" src="../image/eye.png" style="width: 20px; height: 20px;"></button>
                 </div>
                 <div class="floating-input">
                     <input type="password" id="new-password" placeholder=" " required>
                     <label for="new-password">New Password</label>
+                    <button type="button" onclick="togglePasswordVisibility('new-password')" style="position: absolute; right: 15px; top: 20%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img id="new-password-icon" src="../image/eye.png" style="width: 20px; height: 20px;"></button>
                 </div>
                 <button type="button" onclick="changeNewPassword()">Change Password</button>
                 <button type="button" onclick="cancelChangePassword()" class="cancel-btn">Cancel</button>

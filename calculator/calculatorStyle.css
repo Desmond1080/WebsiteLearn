@@ -1,19 +1,53 @@
+.calculator-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#calculator{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    size: fit-content;
+    background-color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 #display {
     grid-column: span 4;
     height: 80px;
     font-size: 32px;
     text-align: right;
-    padding: 5px;
+    padding: 10px;
     border: 2px solid #ccc;
     border-radius: 10px;
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    color: white;
 }
 
 .buttons-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;
+    gap: 5px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.265);
+    border: none;
+    padding: 10px;
+    justify-items: center;
+}
+
+.button-divider {
+    grid-column: 1 / -1;
+    width: 100%;
+    border: none;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    margin: 10px 0;
 }
 
 button{
@@ -27,9 +61,26 @@ button{
     justify-content: center;
     align-items: center;
     font-size: 24px;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
+    padding: 0;
+    width: 80px;
+    height: 80px;
+}
+/* Icon sizing inside buttons */
+button #clear-icon{
+    align-items: center;
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    display: block;
+}
+
+button img{
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    filter: invert(1) brightness(2) contrast(1.2);
 }
 
 .backHomeButton {
@@ -42,6 +93,7 @@ button{
     text-decoration: none;
     border: none;
     font-weight: 600;
+    float: right;   
 }
 
 .backHomeButton:hover {

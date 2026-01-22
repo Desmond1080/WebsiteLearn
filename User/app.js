@@ -90,6 +90,32 @@ async function login(){
     }
 }
 
+// login with Google function
+async function loginWithGoogle(){
+    try{
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        // sign in with popup
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+
+        // check if user exists in firestore
+        const userDoc = await db.collection("Users").doc(user.uid).get();
+        if(!userDoc.exists){
+            // if not, create new user document
+            await db.collection("Users").doc(user.uid).set({
+                name: user.displayName,
+                email: user.email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        loadUserData();
+    } catch(error){
+        console.error('Google login error:', error);
+        alert('Error during Google login: ' + error.message);
+    }
+}
+
 
 //register function
 async function register(){
@@ -261,10 +287,6 @@ function cancelEdit(){
     document.getElementById('edit-profile-section').style.display = 'none';
 }
 
-//view Notes function
-async function viewAllNotes(){
-
-}
 
 //update user password 
 async function changeNewPassword(){
@@ -468,7 +490,7 @@ async function fetchNotes(){
                 const noteData = doc.data();
                 const noteElement = document.createElement('div');
                 noteElement.className = 'note-list';
-                noteElement.innerText = noteData.content;
+                noteElement.innerHTML = `<ul><li>${noteData.content}</li></ul>`;
                 notesContainer.appendChild(noteElement);
             });
         } catch(error){
