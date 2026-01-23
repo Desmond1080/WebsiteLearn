@@ -14,4 +14,20 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 const analytics = firebase.analytics();
+const messaging = firebase.messaging();
+
+//request permission and get token
+function requestPermissionAndGetToken() {
+  Notification.requestPermission().then((permission) => {
+    if(permission === 'granted') {
+      getToken(messaging, {vapidKey: 'BJ3U4UwVjO2xNajVuWQ4xByc67YuJH0qmPi9-CFODOlb6xnr-3NKMYUkmA5jvXNH63nSbHfBedFVsgq9eJanPA8'}).then((currentToken) => {
+        if(currentToken) {
+          console.log('Token received: ', currentToken);
+        } else {
+          console.log('No registration token available. Request permission to generate one.');
+        }
+      });
+    }
+  });
+}
 

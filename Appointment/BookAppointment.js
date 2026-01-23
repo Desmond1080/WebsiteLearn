@@ -105,7 +105,18 @@ appointmentForm.addEventListener('submit', async (e) => {
     }
 
     try{
+        // Save appointment to database
         await db.collection("Appointments").add(appointmentData);
+        
+        // Create notification for the user
+        await db.collection("Notifications").add({
+            userId: userId,
+            title: "Appointment Booked Successfully!",
+            message: `Your appointment with Dr. ${doctorName} on ${appointmentDate} at ${appointmentTime} has been confirmed. You will receive a confirmation shortly.`,
+            isRead: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
         alert("Appointment booked successfully!");
         window.location.href = '../Doctor/DoctorList.html'; // Redirect back to doctor list
         return; // Stop further execution after redirect

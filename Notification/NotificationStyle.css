@@ -1,0 +1,22 @@
+.notification-container{
+    width: 100%;
+    min-height: 100vh;
+    background: aliceblue;
+    transition: all 1s ease;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.notification-container h1{
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.notification-list{
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
