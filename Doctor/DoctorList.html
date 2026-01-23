@@ -3,13 +3,34 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
     <link rel="stylesheet" href="DoctorListStyle.css">
     <title>Doctor List</title> 
+    <style>
+        body {
+            background-color: #f4f4f4;
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     </head>
     <body>
+        <!-- back to home icon button-->
+        <a href="../User/UserLoginAndRegister.html" class = "home-button" style="margin-bottom: 10px; margin-left: 10px; padding: 10px 16px; color: white; text-decoration: none; border-radius: 10px;"><img id = "home-icon" src="../image/favicon (1).ico"></a>
+        <a href="#" class = "notification-button" style="margin-bottom: 10px; margin-left: 10px; padding: 10px 16px; color: white; text-decoration: none; border-radius: 10px;"><img id = "notification-icon" src="../Doctor/doctorimage/bell.png" style="width: 30px; height: 30px;"></a>
+        <br><br><br>
         <h1>Doctor List</h1>
-        
-        
+        <hr>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search doctor..." onkeyup="searchDoctors()">
+        </div>
+        <div class = "doctor-list-container" id = "doctor-list-container">
+        <!-- Doctor cards will be dynamically inserted here -->
+        <div class="doctor-card" id="doctor-card">
+        </div>        
         <script src="../firebase-config.js"></script>
         <script src="DoctorList.js"></script>
     </body>

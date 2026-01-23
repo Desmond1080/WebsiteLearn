@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
+    <link rel="stylesheet" href="AppointmentStyle.css">
+    <title>Book Appointment</title>
+    </head>
+    <body>
+        <div class="appointment-container">
+        <h1>Book Appointment</h1>
+        <div>
+            <!--selected doctor details will be displayed here-->
+            <div id="doctor-details" class="doctor-details">
+                <!-- Doctor details will be dynamically inserted here -->
+                 
+
+            </div>
+
+            <hr>
+
+            <div id="appointment-form-container" style="display:none;">
+                <div id="appointment-form" class="appointment-form">
+                    <h2>Appointment Details</h2>
+                    <form>
+                        <label for="patient-name">Patient Name:</label>
+                        <input type="text" id="patient-name">
+                        <br>  
+                        <label for="patient-email">Patient Email:</label>
+                        <input type="email" id="patient-email">
+                        <br>
+                        <label for="appointment-date">Appointment Date:</label>
+                        <input type="date" id="appointment-date">
+                        <br>
+                        <label for="appointment-time">Appointment Time:</label>
+                        <input type="time" id="appointment-time">
+                        <br>
+                        <label for="appointment-reason">Reason for Appointment:</label>
+                        <input type="text" id="appointment-reason"></input>
+                        <br>
+                        <button type="submit">Book Appointment</button>
+                        <button type="cancel" onclick="window.location.href='../Doctor/DoctorList.html'; return false;">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+        <!-- Firebase SDKs -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+        
+        <!-- Firebase Config -->
+        <script src="../firebase-config.js"></script>
+        
+        <!-- Booking Script -->
+        <script src="BookAppointment.js"></script>
+    </body>
+</html>

@@ -1,0 +1,113 @@
+table th td{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.home-button img{
+    margin-top: 2px;
+    width: 30px;
+    height: 30px;
+}
+
+.home-button{
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+}
+
+.home-button:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.notification-button img{
+    float: right;
+    margin-right: 20px;
+    margin-top: 2px;
+    width: 40px;
+    height: 40px;
+}
+
+.notification-button{
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+}
+
+.notification-button:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-container{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-container input{
+    width: 50%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#doctor-list-container{
+    display: grid;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+#doctor-list-container .doctor-card{
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#doctor-list-container .doctor-card .doctor-image{
+    width: 300px;
+    justify-content: left;
+    align-items: left;
+}
+
+.doctor-card .doctor-name{
+    font-size: 20px;
+    margin: 10px 0 5px 0;
+    margin-bottom: 10px;
+}
+
+.doctor-card .doctor-specialty, .doctor-room{
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.doctor-card .doctor-name, .doctor-specialty, .doctor-room{
+    text-align: left;
+    justify-content: right;
+    align-items: right;
+}
+
+.book-appointment-button{
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4DC9E5;
+    color: rgb(241, 240, 240);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+}
+
+.book-appointment-button:hover{
+    background-color: #45b8d2;
+}
