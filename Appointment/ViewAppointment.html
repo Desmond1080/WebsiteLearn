@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
+    <link rel="stylesheet" href="ViewAppointmentStyle.css">
+   <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <title>View Appointments</title>
+    </head>
+    <body>
+        <div class="view-appointment-container" id="view-appointment-container">
+            <a href="../Doctor/DoctorList.html" class = "doctor-list-button" style="margin-bottom: 10px; margin-left: 10px; padding: 10px 16px; color: white; text-decoration: none; border-radius: 10px;"><img id = "doctor-list-icon" src="../Appointment/appointmentImage/doctor.png" style="width: 30px; height: 30px;"></a>
+            <br><br>
+            <h1>Your Appointments</h1>
+            <div id="appointment-list">
+                <!-- Appointments will be dynamically inserted here -->
+
+            </div>
+        </div>
+
+    
+        <!--javascript -->
+        <script src="../firebase-config.js"></script>
+        <script src="ViewAppointment.js"></script>
+    </body>
+</html>

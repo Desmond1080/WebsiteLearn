@@ -1,5 +1,7 @@
 // Get doctor ID from URL
 const doctorId = getQueryParam('doctorId');
+let doctorName = ''; // Store doctor name globally
+
 
 // Function to get query parameters
 function getQueryParam(param) {
@@ -46,6 +48,9 @@ async function loadDoctorDetails(docId) {
 
 // Function to display doctor details
 function displayDoctorDetails(doctor) {
+    // Store doctor name globally so we can use it in the form
+    doctorName = doctor.name;
+    
     const doctorDetailsDiv = document.getElementById('doctor-details');
     doctorDetailsDiv.innerHTML = `
         <div class="doctor-info">
@@ -82,6 +87,7 @@ appointmentForm.addEventListener('submit', async (e) => {
 
     const appointmentData = {
         doctorId: doctorId,
+        doctorName: doctorName,
         patientName: patientName,
         patientEmail: patientEmail,
         appointmentDate: appointmentDateValue,
@@ -92,12 +98,17 @@ appointmentForm.addEventListener('submit', async (e) => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }
 
+    // Validate that all required fields are filled
+    if(patientName === "" || patientEmail === "" || appointmentDateValue === "" || appointmentTime === ""){
+        alert("Please fill in all required fields.");
+        return;
+    }
+
     try{
         await db.collection("Appointments").add(appointmentData);
         alert("Appointment booked successfully!");
-        document.getElementById('appointment-form-container').style.display = 'none';
-        document.getElementById('appointment-form').reset();
-        document.getElementById('success-message').style.display = 'block';
+        window.location.href = '../Doctor/DoctorList.html'; // Redirect back to doctor list
+        return; // Stop further execution after redirect
     }catch(error){
         console.error("Error booking appointment: ", error);
         alert("Error booking appointment. Please try again.");
