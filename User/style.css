@@ -671,3 +671,32 @@ body {
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
+/* Responsive design for smaller screens */
+/*for screens smaller than 768px */
+@media screen and (max-width: 768px) {
+  .column {
+    width: 100%; /* Columns stack vertically on small screens */
+    float: none;
+  }
+}
+
+/* iPhone 14/15/12/13 Pro (390x844px) */
+@media only screen and (width: 390px) and (height: 844px) and (-webkit-device-pixel-ratio: 3) {
+  /* CSS rules here */
+  .column{
+    width: 100%; /* Columns stack vertically on small screens */
+    float: none;
+  }
+
+}
+
+/* iPhone 14/15/12/13 Pro Max (428x926px) */
+@media only screen and (width: 428px) and (height: 926px) and (-webkit-device-pixel-ratio: 3) {
+  /* CSS rules here */
+  .column{
+    width: 100%; /* Columns stack vertically on small screens */
+    float: none;
+  }
+
+}

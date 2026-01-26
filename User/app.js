@@ -258,6 +258,15 @@ async function loadProfileData(){
             if(document.getElementById('profile-name')){
                 document.getElementById('profile-name').value = userData?.name || '';
             }
+            if(document.getElementById('profile-username')){
+                document.getElementById('profile-username').value = userData?.username || '';
+            }
+            if(document.getElementById('profile-phone')){
+                document.getElementById('profile-phone').value = userData?.phoneNumber || '';
+            }
+            if(document.getElementById('register-gender')){
+                document.getElementById('register-gender').value = userData?.gender || '';
+            }
             if(document.getElementById('profile-email')){
                 document.getElementById('profile-email').value = user.email;
             }

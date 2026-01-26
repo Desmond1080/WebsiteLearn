@@ -34,7 +34,19 @@
                     <label for="profile-name">Full Name</label>
                 </div>
                 <div class="floating-input">
-                    <input type="email" id="profile-email" placeholder=" " required>
+                    <input type="text" id="profile-username" placeholder =" " required>
+                    <label for="profile-username">Username</label>
+                </div>
+                <div class="floating-input">
+                    <input type="tel" id="profile-phone" placeholder=" " required>
+                    <label for="profile-phone">Phone Number</label>
+                </div>
+                <div class="floating-input">
+                    <select name="Gender" id="register-gender" disabled>
+                    </select>
+                </div>
+                <div class="floating-input">
+                    <input type="email" id="profile-email" placeholder=" " disabled>
                     <label for="profile-email">Email</label>
                 </div>
                 <button type="button" onclick="updateProfile()">Save Changes</button>
