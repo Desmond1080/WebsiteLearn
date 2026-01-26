@@ -15,7 +15,7 @@
     <div class="container">
         <!-- Auth Section -->
         <div id="auth-section">
-            <h1 class = "Word">Desterriman's Website</h1>
+            <h1 class = "Word"><img src="../image/favicon (1).ico" alt="Logo" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">Desterriman's Website</h1>
             
             <div id="login-form" class="form-container">
                 <h2>Login</h2>
@@ -27,10 +27,10 @@
                     <div class="floating-input" style="position: relative;">
                         <input type="password" id="login-password" placeholder=" " required minlength="6">
                         <label for="login-password">Password</label>
-                        <button type="button" onclick="togglePasswordVisibility('login-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img id="login-password-icon" src="../image/eye.png" style="width: 20px; height: 20px;"></button>
+                        <button type="button" onclick="togglePasswordVisibility('login-password')" style="position: absolute; right: 15px; top: 41%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img id="login-password-icon" src="../image/eye.png" style="width: 20px; height: 20px;"></button>
                     </div>  
                     <button type="button" class="login-button" onclick="login()">Login</button>   
-                    <p class="secondary">Don't have an account? <br> <a href="#" onclick="showRegister()" class="button-secondary">Register</a> <a href="#" onclick="showForgotPassword()" class="button-secondary">Forgot Password?</a></p>
+                    <p class="secondary">Don't have an account? <br> <a href="#" onclick="showRegister()" class="button-secondary">Sign Up</a> <a href="#" onclick="showForgotPassword()" class="button-secondary">Forgot Password?</a></p>
                     <p class="login-google-button"> Login through? <button onclick="loginWithGoogle()"><img id ="google-login-icon" src="../image/google.png" style="width: 30px; height: 20px;"></button></p>
                     <p id="login-error" class="error"></p>
                 </form>
@@ -44,15 +44,32 @@
                         <label for="register-name">Full Name</label>
                     </div>
                     <div class="floating-input">
+                        <input type="text" id="register-username" placeholder=" " required>
+                        <label for="register-username">Username</label>
+                    </div>
+                    <div class="floating-input">
+                        <input type="tel" id="register-phone" placeholder=" " required>
+                        <label for="register-phone">Phone Number</label>
+                    </div>
+                    <div class="floating-input">
+                        <select name="Gender" id="register-gender">
+                            <option value="none">Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Not To Say">Prefer Not to Say</option>
+                        </select>
+                    </div>
+                    <div class="floating-input">
                         <input type="email" id="register-email" placeholder=" " required>
                         <label for="register-email">Email</label>
                     </div>
                     <div class="floating-input" style="position: relative;">
                         <input type="password" id="register-password" placeholder=" " required>
                         <label for="register-password">Password</label>
-                        <button type="button" onclick="togglePasswordVisibility('register-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 18px;"><img id = "register-password" src = "../image/eye.png" style="width: 20px; height: 20px;"></button>
+                        <button type="button" onclick="togglePasswordVisibility('register-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; font-size: 18px;"><img id = "register-password-icon" src = "../image/eye.png" style="width: 20px; height: 20px;"></button>
                     </div>
                     <button type="button" class="register-button" onclick="register()">Register</button>
+                    <p class="secondary">By clicking this button, you agree with our<a href="#" onclick="showTermsAndConditions()" class="button-secondary">Terms and Conditions</a></p>
                     <p class="secondary">Already have an account? <a href="#" onclick="showLogin()" class="button-secondary">Login</a></p>
                     <p id="register-error" class="error"></p>
                 </form>
@@ -70,19 +87,35 @@
                     <p id="forgot-password-error" class="error"></p>
                 </form>
             </div>
+
+
+            <div id="terms-and-conditions-form" class="terms-and-conditions-container">
+                <h2>Terms and Conditions</h2>
+                <p><strong>Acceptance of Terms: </strong>A statement that by browsing or using the website, the user agrees to comply with the terms.</p>
+                <br>
+                <p><strong>Intellectual Property Rights: </strong>A clause asserting that all content (text, graphics, logos) is owned by or licensed to the website owner, and unauthorized reproduction is prohibited.</p>
+                <button type="button" class="back-button" onclick="showRegister()">Back to Register</button>
+            </div>
         </div>
 
         <!-- App Section (Shown after login) -->
         <div id="app-section" style="display: none;">
+            <!-- side menu bar-->
+            <div class="side-menu-bar" id="side-menu-bar">
+                <div class = "headerW-buttons">
+                    <a href="../Doctor/DoctorList.html" class = "doctor-list-button" aria-label="Doctor List"><img id = "doctor-icon" src="../image/doctorlist.png"></a>
+                    <a href="../calculator/calculatorIndex.html" class = "calculator-button" aria-label="Calculator"><img id = "calculator-icon" src="../image/calculator.png"></a>
+                    <!--<button onclick="logout()" class="logout-btn">Logout</button>-->
+                    <a href="../ToDoList/ToDo.html" class = "todo-button" aria-label="To-do List"><img id = "todo-icon" src="../image/to-do-list.png"></a>
+                    <a href="../User/UserProfile.html" class = "user-profile-button" aria-label="Profile"><img id = "profile-icon" src="../image/user.png"></a>
+                </div>
+            </div>
+
+            <!-- open menu bar button-->
+            <button class="open-menu-bar-button" aria-label="Toggle menu" onclick="toggleMenuBar()">&#9776;</button>
+
             <div class="header">
                 <h2>Welcome, <span id="user-name"></span></h2>
-                <div class = "headerW-buttons">
-                    <a href="../Doctor/DoctorList.html" class = "doctor-list-button" style="margin-left: 10px; padding: 8px 16px; color: white; text-decoration: none; border-radius: 5px;"><img id = "doctor-icon" src="../image/doctorlist.png"></a>
-                    <a href="../calculator/calculatorIndex.html" class = "calculator-button" style="margin-left: 10px; padding: 8px 16px; color: white; text-decoration: none; border-radius: 5px;"><img id = "calculator-icon" src="../image/calculator.png"></a>
-                    <!--<button onclick="logout()" class="logout-btn">Logout</button>-->
-                    <a href="../ToDoList/ToDo.html" class = "todo-button" style="margin-left: 10px; padding: 8px 16px; color: white; text-decoration: none; border-radius: 5px;"><img id = "todo-icon" src="../image/to-do-list.png"></a>
-                    <a href="../User/UserProfile.html" class = "user-profile-button" style="margin-left: 10px; padding: 8px 16px; color: white; text-decoration: none; border-radius: 4px;"><img id = "profile-icon" src="../image/user.png"></a>
-                </div>
             </div>
             
             <div class="dashboard">

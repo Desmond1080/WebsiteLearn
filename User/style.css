@@ -35,6 +35,11 @@ body {
 
 #app-section{
     display: none;
+    transition: margin-left 0.5s ease;
+}
+
+#app-section.menu-open{
+    margin-left: 220px;
 }
 
 #forget-password-section{
@@ -51,6 +56,40 @@ body {
     background-color: #f9f9f9;
 }
 
+.terms-and-conditions-container{
+    display: none;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: left;
+    line-height: 1.6;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.terms-and-conditions-container h2{
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.terms-and-conditions-container .back-button{
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.terms-and-conditions-container .back-button:hover{
+    background-color: #d45d79;
+}
+
 .form-container:hover{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -62,23 +101,36 @@ body {
     background-color: palevioletred;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
+}
+
+#register-form h2 , #login-form h2{
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 #register-form .register-button:hover, #login-form .login-button:hover{
     background-color: #d45d79;
 }
 
-.form-container #login-email, .form-container #login-password, .form-container #register-name, .form-container #register-email, .form-container #register-password, .form-container #forgot-password-email, .form-container #forgot-password-new, .form-container #confirm-forgot-password-new{
+.form-container #login-email, .form-container #login-password, .form-container #register-username, .form-container #register-phone, .form-container #register-gender,  .form-container #register-name, .form-container #register-email, .form-container #register-password, .form-container #forgot-password-email, .form-container #forgot-password-new, .form-container #confirm-forgot-password-new{
     width: 100%;
     padding: 15px;
-    margin: 20px 0;
     border: 2px solid #ccc;
     border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+    font-size: 16px;    
+    margin-bottom: 15px;
+}
+
+.floating-input #register-gender{
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;    
+    color: #999;
 }
 
 /* Floating label styles */
@@ -136,14 +188,20 @@ body {
     text-align: center;
 }
 
+#forgot-password-form h2{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 #forgot-password-form .reset-button{
     text-decoration: none;
     width: 100%;
     padding: 10px;
+    margin-bottom: 10px;
     background-color: palevioletred;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px ;
 }
@@ -176,17 +234,18 @@ body {
     font-size: 15px;
     color: black;
     text-align: center;
-    line-height: 1.8;
+    line-height: 1.0;
 }
 
-.button-secondary{
+.secondary .button-secondary{
     color: palevioletred;
     text-decoration: none;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 3px 5px;
+    padding: 3px;
     border-radius: 3px;
+    margin-top: 10px;
 }
 
 .button-secondary:hover{
@@ -201,7 +260,7 @@ body {
 }
 
 .header{
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     display: flex;
     margin-bottom: 30px;
@@ -210,25 +269,121 @@ body {
 }
 
 .headerW-buttons{
-    margin-left: 5px;
+    margin: 20px 0 40px 0;
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    gap: 16px;
     align-items: center;
 }
 
+
+.side-menu-bar{
+    height: 100vh;
+    width: 0;
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    background: linear-gradient(160deg, #7fc6e8 0%, #4da3d1 100%);
+    overflow-x: hidden;
+    padding: 80px 20px 30px 20px;
+    transition: 0.4s ease;
+    box-shadow: 6px 0 18px rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(255,255,255,0.35);
+}
+
+.side-menu-bar.is-open{
+    width: 220px;
+}
+
+/* Sidenav links */
+.side-menu-bar a {
+    width: 56px;
+    height: 56px;
+    text-decoration: none;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.side-menu-bar a:hover {
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.side-menu-bar a img{
+    width: 32px;
+    height: 32px;
+}
+
+.side-menu-bar .close-button{
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    font-size: 30px;
+    margin: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.18);
+    color: #0f2f44;
+    border: none;
+    cursor: pointer;
+}
+
+.open-menu-bar-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 4;
+    background: #4da3d1;
+    color: #0f2f44;
+    border: none;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 22px;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.open-menu-bar-button.menu-open{
+    margin-left: 220px;
+}
+
+.open-menu-bar-button:hover{
+    background: #6bb6dd;
+    box-shadow: 0 10px 18px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
 #note-content{
-    width: 100%;
+    width: 70%;
     height: 300px;
-    padding: 15px;
+    padding: 10px;
     border: 2px solid #ccc;
     border-radius: 8px;
     font-size: 16px;
     resize: none;
     outline: none;
+    display: block;
+    margin: 0 auto;
 }
 
 .save-note-button{
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 10px 20px;
     background-color: palevioletred;
     color: white;
@@ -238,14 +393,55 @@ body {
     font-size: 16px;
 }
 
+.notes-section{
+    margin: 30px auto;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+}
+
+.notes-section h3{
+    font-size: 22px;
+    margin-bottom: 12px;
+    color: #333;
+    text-align: left;
+}
+
 .notes-list{
-    margin-top: 30px;
-    text-align: center;
-    padding: 5px;
+    margin-top: 16px;
+    text-align: left;
+    padding: 0;
     font-size: 18px;
 }
 
-.calculator-button, .user-profile-button, .doctor-list-button{
+#notes-container{
+    display: grid;
+    gap: 12px;
+}
+
+.note-list{
+    padding: 14px 16px;
+    border: 1px solid #e0e6ed;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f7fbff 0%, #f2f6fb 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    position: relative;
+}
+
+.note-list ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.note-list li{
+    line-height: 1.6;
+    color: #2d3a4a;
+}
+
+.calculator-button, .user-profile-button, .doctor-list-button, .todo-button{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -253,9 +449,11 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 4px;
+    padding: 5px;
+    margin-bottom: auto;
 }
 
-.user-profile-button img, .calculator-button img, .doctor-list-button img{
+.user-profile-button img, .calculator-button img, .doctor-list-button img, .todo-button img{
     width: 40px;
     height: 40px;
     object-fit: contain;
@@ -263,22 +461,6 @@ body {
 
 .user-profile-button:hover, .todo-button:hover, .calculator-button:hover, .doctor-list-button:hover{
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-.todo-button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-}
-
-.todo-button img{
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
 }
 
 /* Profile page styles */
@@ -291,14 +473,31 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.profile-section h1{
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profile-section .profile-icon{
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+}
+
 .profile-info{
     margin-top: 20px;
     text-align: left;
 }
 
 .profile-info p{
+    text-align: center;
     margin: 15px 0;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .profile-info strong{
@@ -397,39 +596,48 @@ body {
     flex-direction: column;
     gap: 15px;
     max-width: 500px;
-    margin: 30px auto;
+    margin: 20px auto;
     padding: 20px;
+    justify-content: center;
+    align-items: center;
 }
 
 .profile-options button{
     width: 100%;
-    padding: 15px 30px;
+    max-width: 400px;
+    padding: 15px 20px;
     font-size: 18px;
     font-weight: bold;
-    background-color: #4CAF50;
-    color: white;
+    background-color: lightblue;
+    color: black;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
 }
 
 .profile-options button:hover{
-    background-color: #45a049;
+    background-color: deepskyblue;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.login-google-button button{
+.login-google-button button{ 
     margin-top: 20px;
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
+    width: 10px;
+    height: 10px;
 }
 
 .login-google-button img{
     vertical-align: middle;
-    width: 40px;
-    height: 40px;
+    width: 10px;
+    height: 10px;
 }
 
 .login-google-button button:hover img{
@@ -442,4 +650,24 @@ body {
 
 .add-note{
     font-size: 20px;
+}
+
+.profile-options .edit-profile-icon{
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-options .edit-profile-icon img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.back-button:hover{
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }

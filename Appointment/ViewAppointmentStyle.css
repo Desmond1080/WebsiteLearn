@@ -1,3 +1,7 @@
+body{
+    background: aliceblue;
+}
+
 .view-appointment-container{
     background: aliceblue;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -38,4 +42,25 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #f9f9f9;
+}
+
+#appointment-list-booking-status{
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+}
+
+#appointment-list-booking-status .status-button{
+    padding: 10px 20px;
+}
+
+#appointment-list-booking-status .status-button:hover{
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#appointment-list-booking-status .status-button:focus:active{
+    background-color: lightgray;
 }

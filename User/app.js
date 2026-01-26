@@ -7,6 +7,7 @@ const appSection = document.getElementById('app-section');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 const forgotPasswordForm = document.getElementById('forgot-password-form');
+const termsAndConditionsForm = document.getElementById('terms-and-conditions-form');
 
 // authentication function 
 function showRegister(){
@@ -14,6 +15,7 @@ function showRegister(){
     forgotPasswordForm.style.display = 'none'; // hide forgot password section
     loginForm.style.display = 'none'; // hide login form 
     registerForm.style.display = 'block'; // show register form
+    termsAndConditionsForm.style.display = 'none'; // hide terms and conditions form
     clearErrors();
 }
 
@@ -23,6 +25,7 @@ function showLogin(){
     loginForm.style.display = 'block'; // show login form
     registerForm.style.display = 'none'; // hide register form
     appSection.style.display = 'none'; // hide app section
+    termsAndConditionsForm.style.display = 'none'; // hide terms and conditions form
     clearErrors();
 }
 
@@ -31,6 +34,7 @@ function showForgotPassword(){
     loginForm.style.display = 'none'; // hide login form
     registerForm.style.display = 'none'; // hide register form
     authSection.style.display = 'block'; // show auth section
+    termsAndConditionsForm.style.display = 'none'; // hide terms and conditions form
     clearErrors();
 }
 
@@ -38,6 +42,15 @@ function clearErrors(){
     document.getElementById('login-error').innerText = '';
     document.getElementById('register-error').innerText = '';
     document.getElementById('forgot-password-error').innerText = '';
+}
+
+//show terms and conditions form 
+function showTermsAndConditions(){
+    termsAndConditionsForm.style.display = 'block'; // show terms and conditions form
+    forgotPasswordForm.style.display = 'none'; // hide forgot password section
+    loginForm.style.display = 'none'; // hide login form
+    registerForm.style.display = 'none'; // hide register form
+    authSection.style.display = 'block'; // hide auth section
 }
 
 //toggle password able to see or hide 
@@ -120,18 +133,27 @@ async function loginWithGoogle(){
 //register function
 async function register(){
     const nameInput = document.getElementById('register-name');
+    const usernameInput = document.getElementById('register-username');
     const emailInput = document.getElementById('register-email');
     const passwordInput = document.getElementById('register-password');
+    const phoneInput = document.getElementById('register-phone');
+    const genderInput = document.getElementById('register-gender');
     const name = nameInput.value;
+    const username = usernameInput.value;
     const email = emailInput.value;
     const password = passwordInput.value;
+    const phoneNumber = phoneInput.value;
+    const gender = genderInput.value;
     const errorMsg = document.getElementById('register-error');
 
     // Clear previous errors
     nameInput.style.border = '';
+    usernameInput.style.border = '';
     emailInput.style.border = '';
     passwordInput.style.border = '';
     errorMsg.innerText = '';
+    phoneInput.style.border = '';
+    genderInput.style.border = '';
 
     try{
         // create user with email and password
@@ -142,7 +164,10 @@ async function register(){
         // save user data to firestore 
         await db.collection("Users").doc(user.uid).set({
             name: name,
+            username: username,
             email: email,
+            phoneNumber: phoneNumber,
+            gender: gender,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -536,6 +561,7 @@ auth.onAuthStateChanged((user) => {
             loginForm.style.display = 'block';
             registerForm.style.display = 'none';
             forgotPasswordForm.style.display = 'none';
+            termsAndConditionsForm.style.display = 'none';
             console.log('Showing login form');
         } else {
             // On profile page without login, redirect to main page
@@ -543,3 +569,31 @@ auth.onAuthStateChanged((user) => {
         }
     }
 });
+
+
+const MENU_WIDTH = "220px";
+
+function setMenuState(isOpen){
+    const side = document.getElementById("side-menu-bar");
+    const app = document.getElementById("app-section");
+    const toggleBtn = document.querySelector(".open-menu-bar-button");
+    if(!side || !app || !toggleBtn) return;
+
+    side.classList.toggle("is-open", isOpen);
+    app.classList.toggle("menu-open", isOpen);
+    toggleBtn.classList.toggle("menu-open", isOpen);
+}
+
+function openMenuBar(){
+    setMenuState(true);
+}
+
+function closeMenuBar(){
+    setMenuState(false);
+}
+
+function toggleMenuBar(){
+    const side = document.getElementById("side-menu-bar");
+    const isOpen = side?.classList.contains("is-open");
+    setMenuState(!isOpen);
+}
