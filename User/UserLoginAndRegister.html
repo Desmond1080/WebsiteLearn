@@ -6,13 +6,17 @@
     <title>User Website</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK -->   
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle" aria-label="Theme toggle">
+            <button id="themeToggle" class="theme-toggle-button" title="Toggle dark mode" onclick="toggleDarkMode()">🌙</button>
+        </div>
         <!-- Auth Section -->
         <div id="auth-section">
             <h1 class = "Word"><img src="../image/favicon (1).ico" alt="Logo" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">Desterriman's Website</h1>
@@ -39,6 +43,7 @@
             <div id="register-form" class="form-container" style="display: none;">
                 <h2>Register</h2>
                 <form>
+                    <!--upload profile pictures-->
                     <div class="floating-input">
                         <input type="text" id="register-name" placeholder=" " required>
                         <label for="register-name">Full Name</label>
@@ -58,6 +63,10 @@
                             <option value="Female">Female</option>
                             <option value="Not To Say">Prefer Not to Say</option>
                         </select>
+                    </div>
+                    <div class="floating-input">
+                        <input type="text" id="register-description" placeholder = " " >
+                        <label for="register-description">Description (Optional)</label>
                     </div>
                     <div class="floating-input">
                         <input type="email" id="register-email" placeholder=" " required>
@@ -103,7 +112,7 @@
             <!-- side menu bar-->
             <div class="side-menu-bar" id="side-menu-bar">
                 <div class = "headerW-buttons">
-                    <a href="../Doctor/DoctorList.html" class = "doctor-list-button" aria-label="Doctor List"><img id = "doctor-icon" src="../image/doctorlist.png"></a>
+                    <p><a href="../Doctor/DoctorList.html" class = "doctor-list-button" aria-label="Doctor List"><img id = "doctor-icon" src="../image/doctorlist.png"></a>Doctor list</p>
                     <a href="../calculator/calculatorIndex.html" class = "calculator-button" aria-label="Calculator"><img id = "calculator-icon" src="../image/calculator.png"></a>
                     <!--<button onclick="logout()" class="logout-btn">Logout</button>-->
                     <a href="../ToDoList/ToDo.html" class = "todo-button" aria-label="To-do List"><img id = "todo-icon" src="../image/to-do-list.png"></a>

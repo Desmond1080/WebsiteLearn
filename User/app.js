@@ -138,12 +138,14 @@ async function register(){
     const passwordInput = document.getElementById('register-password');
     const phoneInput = document.getElementById('register-phone');
     const genderInput = document.getElementById('register-gender');
+    const descriptionInput = document.getElementById('register-description');
     const name = nameInput.value;
     const username = usernameInput.value;
     const email = emailInput.value;
     const password = passwordInput.value;
     const phoneNumber = phoneInput.value;
     const gender = genderInput.value;
+    const description = descriptionInput.value;
     const errorMsg = document.getElementById('register-error');
 
     // Clear previous errors
@@ -154,6 +156,7 @@ async function register(){
     errorMsg.innerText = '';
     phoneInput.style.border = '';
     genderInput.style.border = '';
+    descriptionInput.style.border = '';
 
     try{
         // create user with email and password
@@ -167,7 +170,9 @@ async function register(){
             username: username,
             email: email,
             phoneNumber: phoneNumber,
+            imageUrl: '',
             gender: gender,
+            description: description,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -247,6 +252,7 @@ async function loadProfileData(){
             document.getElementById('notes-section').style.display = 'none';
             
             // Display user data
+            loadProfilePicture();
             if(document.getElementById('display-name')){
                 document.getElementById('display-name').textContent = userData?.name || 'Not set';
             }
@@ -264,8 +270,8 @@ async function loadProfileData(){
             if(document.getElementById('profile-phone')){
                 document.getElementById('profile-phone').value = userData?.phoneNumber || '';
             }
-            if(document.getElementById('register-gender')){
-                document.getElementById('register-gender').value = userData?.gender || '';
+            if(document.getElementById('profile-description')){
+                document.getElementById('profile-description').value = userData?.description || '';
             }
             if(document.getElementById('profile-email')){
                 document.getElementById('profile-email').value = user.email;
@@ -284,6 +290,7 @@ function showEditProfile(){
     document.getElementById('edit-profile-section').style.display = 'block';
     document.getElementById('change-password-section').style.display = 'none';
     document.getElementById('notes-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'none';
 }
 
 //show change password form
@@ -292,6 +299,7 @@ function changePassword(){
     document.getElementById('change-password-section').style.display = 'block';
     document.getElementById('edit-profile-section').style.display = 'none';
     document.getElementById('notes-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'none';
 }
 
 //show notes form 
@@ -300,6 +308,7 @@ function viewNotes(){
     document.getElementById('profile-section').style.display = 'none';
     document.getElementById('edit-profile-section').style.display = 'none';
     document.getElementById('change-password-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'none';
     fetchNotes();   
 }
 
@@ -307,18 +316,27 @@ function viewNotes(){
 function cancelViewNotes(){
     document.getElementById('notes-section').style.display = 'none';
     document.getElementById('profile-section').style.display = 'block';
+    document.getElementById('edit-profile-section').style.display = 'none';
+    document.getElementById('change-password-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'flex';
 }
 
 //hide change password form
 function cancelChangePassword(){
     document.getElementById('profile-section').style.display = 'block';
     document.getElementById('change-password-section').style.display = 'none';
+    document.getElementById('edit-profile-section').style.display = 'none';
+    document.getElementById('notes-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'flex';
 }
 
 // Hide edit profile form
 function cancelEdit(){
     document.getElementById('profile-section').style.display = 'block';
     document.getElementById('edit-profile-section').style.display = 'none';
+    document.getElementById('change-password-section').style.display = 'none';
+    document.getElementById('notes-section').style.display = 'none';
+    document.getElementById('profile-options').style.display = 'flex';
 }
 
 
@@ -405,13 +423,22 @@ async function updateProfile(){
     const user = auth.currentUser;
     const nameInput = document.getElementById('profile-name');
     const emailInput = document.getElementById('profile-email');
+    const usernameInput = document.getElementById('profile-username');
+    const phoneInput = document.getElementById('profile-phone');
+    const descriptionInput = document.getElementById('profile-description');
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
+    const username = usernameInput.value.trim();
+    const phoneNumber = phoneInput.value.trim();
+    const description = descriptionInput.value.trim();
     const errorMsg = document.getElementById('profile-error');
 
     // Clear previous errors
     nameInput.style.border = '';
     emailInput.style.border = '';  
+    usernameInput.style.border = '';
+    phoneInput.style.border = '';
+    descriptionInput.style.border = '';
     errorMsg.innerText = '';
 
     if(!name || !email){
@@ -429,6 +456,9 @@ async function updateProfile(){
             // Update name and email in Firestore
             await db.collection("Users").doc(user.uid).update({
                 name: name,
+                username: username,
+                phoneNumber: phoneNumber,
+                description: description,
                 email: email,
             });
             
@@ -524,13 +554,27 @@ async function fetchNotes(){
                 const noteData = doc.data();
                 const noteElement = document.createElement('div');
                 noteElement.className = 'note-list';
-                noteElement.innerHTML = `<ul><li>${noteData.content}</li></ul>`;
+                noteElement.innerHTML = `<ul><li>${noteData.content}<button type="button" class="edit-note-button"onclick="editNotes('${doc.id}', prompt('Edit your notes:', '${noteData.content}'))">Edit</button></li></ul>`;
                 notesContainer.appendChild(noteElement);
             });
         } catch(error){
             console.error('Error fetching notes:', error);
         }
     } 
+}
+
+//edit note function
+async function editNotes(noteId, newNote){
+    try{
+        await db.collection("note").doc(noteId).update({
+            content: newNote
+        });
+
+        console.log('Note updated:', noteId);
+        fetchNotes(); // Refresh notes list
+    }catch(error){
+        console.error('Error updating note:', error);
+    }
 }
 
 // delete note function
@@ -605,4 +649,116 @@ function toggleMenuBar(){
     const side = document.getElementById("side-menu-bar");
     const isOpen = side?.classList.contains("is-open");
     setMenuState(!isOpen);
+}
+
+
+async function uploadFile(file, userId) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('userId', userId);
+
+  try {
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      console.log('File uploaded:', data.mediaId);
+      return data.mediaId;
+    }
+  } catch (error) {
+    console.error('Upload failed:', error);
+  }
+}
+
+// Display uploaded media
+async function displayMedia(mediaId) {
+  const response = await fetch(`/api/media/${mediaId}`);
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  
+  // For images
+  document.getElementById('mediaContainer').innerHTML = 
+    `<img src="${url}" alt="uploaded media">`;
+}
+
+// switch between light and dark mode
+function toggleDarkMode(){
+    var body = document.body;
+    body.classList.toggle("dark-mode");
+}
+
+async function uploadProfilePicture(event) {
+    const file = event.target.files[0];
+    const user = auth.currentUser;
+
+    if(!file){
+        return;
+    }
+
+    if(!user){
+        alert('No user logged in');
+        return;
+    }
+
+    //validate file type 
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+    if(!validImageTypes.includes(file.type)){
+        alert('Invalid file type. Please select an image (JPEG, PNG, GIF).');
+        return;
+    }
+
+    //validate file size (max 5MB)
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+    if(file.size > maxSizeInBytes){
+        alert('File size exceeds 5MB. Please select a smaller image.');
+        return;
+    }
+
+    try{
+        // Upload file to Firebase Storage
+        const storageRef = firebase.storage().ref();
+        const profiePictureRef = storageRef.child(`profile_pictures/${user.uid}/${file.name}`);
+
+        //upload file
+        await profiePictureRef.put(file);
+
+        // Get download URL
+        const downloadURL = await profiePictureRef.getDownloadURL();
+
+        // save URL to Firestore user document
+        await db.collection("Users").doc(user.uid).update({
+            imageUrl: downloadURL
+        })
+
+        document.getElementById('profile-picture').src = downloadURL;
+        alert('Profile picture updated successfully!');
+    } catch(error){
+        console.error('Error uploading profile picture:', error);
+        alert('Failed to upload profile picture: ' + error.message);
+    }
+
+}
+
+async function loadProfilePicture(){
+    const user = auth.currentUser;
+
+    if(!user){
+        return;
+    }
+
+    try{
+        const userDocument = await db.collection("Users").doc(user.uid).get();
+        const userData = userDocument.data();
+
+        if(userData?.imageUrl){
+            document.getElementById('profile-picture').src = userData.imageUrl;
+        }
+    } catch(error){
+        console.error('Error loading profile picture:', error);
+        alert('Failed to load profile picture: ' + error.message);
+    }
 }

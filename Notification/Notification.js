@@ -48,7 +48,7 @@ async function loadNotifications() {
                                 <span class="notification-time">${timestamp}</span>
                             </div>
                             ${!notification.isRead ? `
-                                <button class="mark-read-btn" onclick="markAsRead('${notificationId}')">
+                                <button class="mark-read-button" onclick="markAsRead('${notificationId}')">
                                     Mark as Read
                                 </button>
                             ` : ''}

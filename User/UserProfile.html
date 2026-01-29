@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 <body onload="loadProfileData()">
     <div class = "container">
@@ -18,9 +19,13 @@
         <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserLoginAndRegister.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
         <!-- User Profile Display Section -->
         <div class = "profile-section" id = "profile-section">
-            <h1><img class="profile-icon"src="../image/user.png" alt="Profile Icon" style="width: 40px; height: 40px;">Profile</h1>
+            <h1>Profile</h1>
+            <div class="profile-picture">
+                <button type="button" onclick="document.getElementById('profile-picture-input').click()" class="upload-button"><img id="profile-picture" src="../image/user.png" alt="Profile Picture"></button>
+                <input type="file" id="profile-picture-input" accept="image/*" style="display: none;" onchange="uploadProfilePicture(event)">       
+            </div>
             <div class="profile-info">
-                <p><strong>Name:</strong> <span id="display-name"></span></p>
+                <p><span id="display-name"></span></p>
                 <p><strong>Email:</strong> <span id="display-email"></span></p>
             </div>
         </div>  
@@ -42,8 +47,8 @@
                     <label for="profile-phone">Phone Number</label>
                 </div>
                 <div class="floating-input">
-                    <select name="Gender" id="register-gender" disabled>
-                    </select>
+                    <input type="text" id="profile-description" placeholder=" ">
+                    <label for="profile-description">Description</label>
                 </div>
                 <div class="floating-input">
                     <input type="email" id="profile-email" placeholder=" " disabled>
@@ -84,10 +89,10 @@
         </div>
             
         <!-- Profile Options -->
-        <div class = "profile-options">
+        <div class = "profile-options" id="profile-options">
             <button onclick="showEditProfile()"><img class="edit-profile-icon" src="../User/UserProfileImage/edit.png" alt="Edit Icon">Edit Profile</button>
             <button onclick="changePassword()"><img class="edit-profile-icon" src="../User/UserProfileImage/padlock.png">Change Password</button>
-            <button onclick="loadAppointments()"><img class="edit-profile-icon" src="../User/UserProfileImage/appointment.png">View Appointment</button>
+            <button onclick="window.location.href='../Appointment/ViewAppointment.html'"><img class="edit-profile-icon" src="../User/UserProfileImage/appointment.png">View Appointment</button>
             <button onclick="viewNotes()"><img class="edit-profile-icon" src="../User/UserProfileImage/notes.png">View Notes</button>
             <button onclick="logout()"><img class="edit-profile-icon" src="../User/UserProfileImage/logout.png">Logout</button>
         </div>

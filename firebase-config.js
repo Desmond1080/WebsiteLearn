@@ -15,6 +15,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const analytics = firebase.analytics();
 const messaging = firebase.messaging();
+const storage = firebase.storage();
 
 //request permission and get token
 function requestPermissionAndGetToken() {

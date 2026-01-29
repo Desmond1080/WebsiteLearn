@@ -24,10 +24,15 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    transform: translateY(0);
+    transition: background-color 0.3s ease, box-shadow 0.3s
 }
 
 #appointment-form button:hover {
     background-color: #45b8d1;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .appointment-container{

@@ -65,14 +65,16 @@ function displayDoctorDetails(doctor) {
     `;
 }
 
+
+
 // set minimum date for appointment date input to today
 const appointmentDate = document.getElementById('appointment-date');
 const today = new Date().toISOString().split('T')[0];
 appointmentDate.min = today;
 
-
 // Handle appointment form submission
 const appointmentForm = document.getElementById('appointment-form');
+const trydisbaledDate = ["2026-01-28"];
 appointmentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -101,6 +103,11 @@ appointmentForm.addEventListener('submit', async (e) => {
     // Validate that all required fields are filled
     if(patientName === "" || patientEmail === "" || appointmentDateValue === "" || appointmentTime === ""){
         alert("Please fill in all required fields.");
+        return;
+    }
+
+    if(appointmentDateValue.includes(trydisbaledDate)){
+        alert("The selected date is not available. Please choose another date.");
         return;
     }
 
