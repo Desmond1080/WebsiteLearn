@@ -9,6 +9,60 @@ const registerForm = document.getElementById('register-form');
 const forgotPasswordForm = document.getElementById('forgot-password-form');
 const termsAndConditionsForm = document.getElementById('terms-and-conditions-form');
 
+let selectedRole = 'user'; // default role
+
+// role selection function 
+function selectRole(role){
+    selectedRole = role;
+    //update button
+    document.getElementById('user-role-button').classList.remove('active');
+    document.getElementById('doctor-role-button').classList.remove('active');
+    document.getElementById('admin-role-button').classList.remove('active');
+    if(role === 'user'){
+        document.getElementById('user-role-button').classList.add('active');
+    } else if(role === 'doctor'){
+        document.getElementById('doctor-role-button').classList.add('active');
+    } else if (role === 'admin'){
+        document.getElementById('admin-role-button').classList.add('active');
+    }
+}
+
+// Role helper functions
+function getUserRole() {
+    return localStorage.getItem('userRole') || 'user';
+}
+
+function isAdmin() {
+    return getUserRole() === 'admin';
+}
+
+function isDoctor() {
+    return getUserRole() === 'doctor';
+}
+
+function isUser() {
+    return getUserRole() === 'user';
+}
+
+// Check access for protected pages
+function checkAdminAccess(){
+    if(!isAdmin()){
+        alert('Unauthorized access. Admin role required.');
+        window.location.href = '../User/UserLoginAndRegister.html';
+        return false;
+    }
+    return true;
+}
+
+function checkDoctorAccess(){
+    if(!isDoctor()){
+        alert('Unauthorized access. Doctor role required.');
+        window.location.href = '../User/UserLoginAndRegister.html';
+        return false;
+    }
+    return true;
+}
+
 // authentication function 
 function showRegister(){
     authSection.style.display = 'block'; // show auth section
@@ -82,8 +136,18 @@ async function login(){
 
     try{
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const userDoc = await db.collection("Users").doc(userCredential.user.uid).get();
+        const userRole = userDoc.data().role; 
+
+        if(userRole != selectedRole){
+            errorMsg.innerText = `Please log in with the correct ${userRole} account.`;
+            return;
+        }
+
         console.log('User logged in:', userCredential.user);
         errorMsg.innerText = ""; // Clear error on success
+
+        localStorage.setItem('userRole', userRole); // store role in local storage
         loadUserData();
     } catch (firebaseError){
         // Handle Firebase errors
@@ -173,6 +237,7 @@ async function register(){
             imageUrl: '',
             gender: gender,
             description: description,
+            role: selectedRole,  // Use selected role from dropdown
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -223,16 +288,26 @@ async function loadUserData(){
     if(user){
         const userDocument = await db.collection("Users").doc(user.uid).get();
         const userData = userDocument.data();
+        const userRole = userData?.role || 'user';
 
-        // display user data in app section
-        document.getElementById('user-name').textContent = userData?.name || user.email;
-        authSection.style.display = 'none';
-        appSection.style.display = 'block'; // show app section 
-        console.log('User data loaded:', userData);
-        
-        // Load user's notes
-        fetchNotes(); 
+        // Store role in localStorage
+        localStorage.setItem('userRole', userRole);
 
+        // Route based on role
+        if(userRole === 'admin'){
+            window.location.href = '../Admin/AdminDashboard.html';
+        } else if(userRole === 'doctor'){
+            window.location.href = '../Doctor/DoctorDashboard.html';
+        } else {
+            // user role - show normal app
+            document.getElementById('user-name').textContent = userData?.name || user.email;
+            authSection.style.display = 'none';
+            appSection.style.display = 'block'; // show app section 
+            console.log('User data loaded:', userData);
+            
+            // Load user's notes
+            fetchNotes();
+        }
     } else{
         authSection.style.display = 'block';
         appSection.style.display = 'none';
@@ -337,6 +412,21 @@ function cancelEdit(){
     document.getElementById('change-password-section').style.display = 'none';
     document.getElementById('notes-section').style.display = 'none';
     document.getElementById('profile-options').style.display = 'flex';
+}
+
+// show edit note section
+let currentEditNoteId = null;
+
+function showEditNote(noteId, noteContent = ''){
+    if(noteId){
+        currentEditNoteId = noteId;
+    }
+    const editNoteContent = document.getElementById('edit-note-content');
+    if(editNoteContent){
+        editNoteContent.value = noteContent;
+    }
+    document.getElementById('edit-note-section').style.display = 'block'; // show edit note section
+    document.getElementById('app-section').style.display = 'none'; // hide app section
 }
 
 
@@ -520,12 +610,15 @@ async function addNote(){
         const userData = userDocument.data();
 
         if(content.trim() === ''){
-            alert('Note content cannot be empty.');
+            // call pop up card 
+            document.getElementById('save-note-popout').style.display = 'block';
+            document.getElementById('app-section').style.filter = 'blur(5px)';
             return;
         }
 
         try{
-            await db.collection("note").doc(noteInput.uid).set({
+            const noteRef = db.collection("note").doc();
+            await noteRef.set({
                 userId: user.uid,
                 userName: userData?.name,
                 content: content,
@@ -537,6 +630,11 @@ async function addNote(){
             console.error('Error adding note:', error);
         }
     }
+}
+
+function closeSaveNotePopout(){
+    document.getElementById('save-note-popout').style.display = 'none';
+    document.getElementById('app-section').style.filter = 'none';
 }
 
 //fetch all notes and show as list of the notes 
@@ -554,7 +652,20 @@ async function fetchNotes(){
                 const noteData = doc.data();
                 const noteElement = document.createElement('div');
                 noteElement.className = 'note-list';
-                noteElement.innerHTML = `<ul><li>${noteData.content}<button type="button" class="edit-note-button"onclick="editNotes('${doc.id}', prompt('Edit your notes:', '${noteData.content}'))">Edit</button></li></ul>`;
+
+                const list = document.createElement('ul');
+                const listItem = document.createElement('li');
+                listItem.textContent = noteData.content;
+
+                const editButton = document.createElement('button');
+                editButton.type = 'button';
+                editButton.className = 'edit-note-button';
+                editButton.textContent = 'Edit';
+                editButton.addEventListener('click', () => showEditNote(doc.id, noteData.content));
+
+                listItem.appendChild(editButton);
+                list.appendChild(listItem);
+                noteElement.appendChild(list);
                 notesContainer.appendChild(noteElement);
             });
         } catch(error){
@@ -760,5 +871,47 @@ async function loadProfilePicture(){
     } catch(error){
         console.error('Error loading profile picture:', error);
         alert('Failed to load profile picture: ' + error.message);
+    }
+}
+
+async function updateNote(noteId){
+    const user = auth.currentUser;
+
+    if(!user){
+        alert('No user logged in');
+        return;
+    }
+
+    try{
+        const targetNoteId = noteId || currentEditNoteId;
+        if(!targetNoteId){
+            alert('No note selected for update.');
+            return;
+        }
+
+        const updatedNote = document.getElementById('edit-note-content').value;
+
+        if(updatedNote.trim() === ''){
+            alert('Note content cannot be empty.');
+            return;
+        }
+
+        const noteRef = db.collection("note").doc(targetNoteId);
+        const noteSnap = await noteRef.get();
+        if(!noteSnap.exists){
+            alert('Note not found or already deleted.');
+            return;
+        }
+
+        await noteRef.update({
+            content: updatedNote
+        });
+
+        fetchNotes();
+        document.getElementById('edit-note-section').style.display = 'none'; // hide edit note section
+        document.getElementById('app-section').style.display = 'block';
+    } catch(error){
+        console.error('Error updating note:', error);
+        alert('Failed to update note: ' + error.message);
     }
 }

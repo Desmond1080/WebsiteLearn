@@ -21,6 +21,16 @@
         <div id="auth-section">
             <h1 class = "Word"><img src="../image/favicon (1).ico" alt="Logo" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">Desterriman's Website</h1>
             
+            <!-- role selection-->
+            <div class="role-selection">
+                <h2>Select Your Role:</h2>
+                <div class="role-buttons">
+                    <button id="user-role-button" class="role-button active" onclick="selectRole('user')"><img src="../User/UserProfileImage/user (2).png" alt="user icon image"></button>
+                    <button id="doctor-role-button" class="role-button-doctor" onclick="selectRole('doctor')"><img src="../User/UserProfileImage/doctor (1).png" alt="doctor icon image"></button>
+                    <button id="admin-role-button" class="role-button-admin" onclick="selectRole('admin')"><img src="../User/UserProfileImage/administrator.png" alt="admin icon image"></button>
+                </div>
+            </div>
+
             <div id="login-form" class="form-container">
                 <h2>Login</h2>
                 <form>
@@ -142,6 +152,28 @@
                         <!-- Notes will be dynamically added here, show list of notes -->
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- edit note list section  -->
+        <div class = "edit-note-container" id="edit-note-section" style="display: none;">
+            <button class="edit-note-back-button" onclick="window.location.href='UserLoginAndRegister.html'">&#8592</button>
+            <h3>Edit note</h3>
+            <div class="edit-note-session">
+                <form>
+                    <textarea id="edit-note-content" placeholder="Edit your note here"></textarea>
+                </form>
+                <button class="update-note-button" onclick="updateNote()">Update Note</button>
+            </div>
+        </div>
+
+        <!--save note pop-out menu show when the add note is empty -->
+        <div class="save-note-popout" id="save-note-popout" style="display: none;">
+            <div class="save-note-popout-content">
+                <h2>Empty Note</h2>
+                <p><img class="empty-image" src="../User/UserProfileImage/box.png" alt="Empty Note Image"></p>
+                <p>Please enter some content before saving the note.</p>
+                <button onclick="closeSaveNotePopout()">Close</button>
             </div>
         </div>
     </div>

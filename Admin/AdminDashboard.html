@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="x-icon" href="../image/favicon (1).ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../Admin/Dashboard.css">
+    <title>Admin Dashboard</title> 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="admin-header">
+        <nav class="admin-navbar">
+            <div class="navbar-container">
+                <!-- Logo/Brand -->
+                <div class="navbar-brand">
+                    <span class="brand-text">Admin Dashboard</span>
+                </div>
+
+                <!-- Hamburger Menu for Mobile -->
+                <button class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <!-- Navigation Links -->
+                <ul class="navbar-menu" id="navbar-menu">
+                    <li class="nav-item">
+                        <a href="../Admin/AdminDashboard.html" class="nav-link">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../Admin/ManageUsers.html" class="nav-link">
+                            <i class="fas fa-users"></i> Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../Admin/ManageDoctors.html" class="nav-link">
+                            <i class="fas fa-user-md"></i> Manage Doctors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../Admin/Reports.html" class="nav-link">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                    </li>
+
+                    <!-- User Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="user-dropdown">
+                            <i class="fas fa-user-circle"></i> 
+                            <span id="admin-name">Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu" id="dropdown-menu">
+                            <li><a href="../Admin/AdminProfile.html" class="dropdown-link">
+                                <i class="fas fa-user"></i> My Profile
+                            </a></li>
+                            <li><a href="../Admin/AdminSettings.html" class="dropdown-link">
+                                <i class="fas fa-cog"></i> Settings
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a href="#" class="dropdown-link" id="admin-logout-button">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="dashboard-container">
+            <!-- Dashboard content goes here -->
+            <h1>Welcome to the Admin Dashboard</h1>
+            <p>Use the navigation bar to manage users, doctors, and view reports.</p>
+            
+            <br>
+
+            <h2>Total Users</h2>
+            <div class="total-user-section" id="total-user-section">
+                
+            </div>
+
+        </div>
+    </main>
+
+    <!-- script-->
+    <script src="../firebase-config.js"></script>
+    <script src="../Admin/AdminDashboard.js"></script>
+</body>
+</html>

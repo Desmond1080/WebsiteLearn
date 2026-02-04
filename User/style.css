@@ -91,7 +91,7 @@ body.dark-mode .header {
 
 .form-container{
     max-width: 400px;
-    margin: 50px auto;
+    margin: auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -423,16 +423,22 @@ body.dark-mode .header {
 }
 
 #note-content{
-    width: 70%;
+    width: 60%;
     height: 300px;
     padding: 10px;
     border: 2px solid #ccc;
-    border-radius: 8px;
+    border-radius: 20px;
     font-size: 16px;
     resize: none;
     outline: none;
     display: block;
     margin: 0 auto;
+}
+
+#note-content:focus{
+    border-color: palevioletred;
+    transform: translateY(-2px);
+    transform-origin: center;
 }
 
 .save-note-button{
@@ -441,9 +447,15 @@ body.dark-mode .header {
     background-color: palevioletred;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
+    transform: translateY(-2px);
+}
+
+.save-note-button:hover{
+    background-color: #d45d79;
+    transform: translateY(-4px);
 }
 
 .notes-section{
@@ -481,6 +493,13 @@ body.dark-mode .header {
     background: linear-gradient(135deg, #f7fbff 0%, #f2f6fb 100%);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     position: relative;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.note-list:hover{
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 .note-list ul{
@@ -786,4 +805,180 @@ body.dark-mode .header {
     border-radius: 10px;
     margin-left: 15px;
     padding: 5px 10px;
+    transform: translateY(0);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
+
+.edit-note-button:hover{
+    background-color: lightgray;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+
+.save-note-popout{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 50; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4);
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.save-note-popout-content {
+    border-radius: 10px;
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    text-align: center;
+    transition: transform 0.5s ease-in-out;
+    transform: scale(0.8);
+}
+
+.save-note-popout.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.save-note-popout.visible .save-note-popout-content{
+    transform: scale(1);
+}
+
+.save-note-popout-content h2{
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.save-note-popout-content p{
+    margin-bottom: 50px;
+    padding: 0 20px;
+    font-size: 20px;    
+}
+
+.save-note-popout-content button{
+    padding: 10px 20px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    transform: translateY(0);
+}
+
+.save-note-popout-content button:hover{
+    background-color: #d45d79;
+    transform: translateY(-2px);
+}
+
+.save-note-popout-content .empty-image{
+    margin-top: 10px;
+    width: 100px;
+    height: 100px;
+}
+
+.edit-note-container{
+    display: block;
+    position: relative;
+    padding: 20px;
+    max-width: 800px;
+    margin: 15% auto;
+    z-index: 10;
+    text-align: center;
+}
+
+.edit-note-container .edit-note-session #edit-note-content{
+    width: 50%;
+    height: 300px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+}
+
+.edit-note-container .edit-note-session button{
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: palevioletred;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transform: translateY(-2px);
+}
+
+.edit-note-container .edit-note-session button:hover{
+    background-color: #d45d79;
+    transform: translateY(-4px);
+}
+
+.edit-note-container .edit-note-back-button{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    background-color: lightgray;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.role-selection{
+    max-width: 400px;
+    margin: 40px auto;
+    text-align: center;
+    margin-bottom: 5px;
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.role-selection h2{
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.role-selection .role-buttons{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.role-selection .role-buttons img{
+    width: 35px;
+    height: 35px;
+}
+
+.role-selection .role-button, .role-selection .role-button-doctor, .role-selection .role-button-admin{
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.role-selection .role-button:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.role-selection .role-button.active{
+    border-color: palevioletred;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+
+
+
