@@ -82,7 +82,7 @@ body.dark-mode .header {
 }
 
 #app-section.menu-open{
-    margin-left: 220px;
+    margin-left: 240px;
 }
 
 #forget-password-section{
@@ -320,65 +320,115 @@ body.dark-mode .header {
 }
 
 
+/* Sidebar layout */
 .side-menu-bar{
-    height: 100vh;
-    width: 0;
     position: fixed;
-    z-index: 3;
     top: 0;
     left: 0;
-    background: linear-gradient(160deg, #7fc6e8 0%, #4da3d1 100%);
-    overflow-x: hidden;
-    padding: 50px 20px 30px 20px;
-    transition: 0.3s ease;
-    box-shadow: 6px 0 18px rgba(0, 0, 0, 0.12);
-    border-right: 1px solid rgba(255,255,255,0.35);
+    height: 100vh;
+    width: 240px;
+    padding: 24px 18px 20px;
+    background: linear-gradient(180deg, #4da3d1 0%, #2f7fa8 100%);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
 }
 
 .side-menu-bar.is-open{
-    width: 200px;
+    transform: translateX(0);
 }
 
-/* Sidenav links */
-.side-menu-bar a {
-    width: 60px;
-    height: 60px;
-    margin: 16px 0;
-    text-decoration: none;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.14);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+/* Header */
+.side-header{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
 }
 
-.side-menu-bar a:hover {
-    background: rgba(255, 255, 255, 0.28);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-    transform: translateY(-2px);
+.side-avatar{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.6);
+    object-fit: cover;
 }
 
-.side-menu-bar a img{
-    width: 32px;
-    height: 32px;
+.side-user{
+    color: #fff;
 }
 
-.side-menu-bar .close-button{
-    position: absolute;
-    top: 20px;
-    right: 16px;
-    font-size: 30px;
-    margin: 0;
-    width: 40px;
-    height: 40px;
+.side-name{
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.side-role{
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Nav links */
+.side-nav{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-link{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
     border-radius: 10px;
-    display: grid;
-    place-items: center;
-    background: rgba(255,255,255,0.18);
-    color: #0f2f44;
+    color: #fff;
+    text-decoration: none;
+    background: rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+}
+
+.side-link i{
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+}
+
+.side-link:hover{
+    background: rgba(255,255,255,0.22);
+    transform: translateX(3px);
+}
+
+.side-link.active{
+    background: rgba(255,255,255,0.3);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+/* Footer */
+.side-footer{
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.side-logout{
+    width: 100%;
+    padding: 12px 14px;
     border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.side-logout:hover{
+    background: rgba(255,255,255,0.3);
 }
 
 .headerW-buttons{
@@ -387,7 +437,7 @@ body.dark-mode .header {
 }
 
 .headerW-buttons p{
-    font-family: ';
+    font-family: Arial, sans-serif;
 }
 
 .open-menu-bar-button {
@@ -407,7 +457,7 @@ body.dark-mode .header {
 }
 
 .open-menu-bar-button.menu-open{
-    margin-left: 200px;
+    margin-left: 240px;
 }
 
 .open-menu-bar-button:hover{
@@ -477,7 +527,7 @@ body.dark-mode .header {
 .notes-list{
     margin-top: 16px;
     text-align: left;
-    padding: 0;
+    padding: 5px 10px;
     font-size: 18px;
 }
 
@@ -978,6 +1028,36 @@ body.dark-mode .header {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
 }
+
+.search-note{
+    width: min(420px, 90%);
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.search-note input{
+    width: 100%;
+    border: none;
+    padding: 10px 0;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+}
+
+.search-icon{
+    color: #9ca3af;
+    font-size: 16px;
+    margin-left: 0;
+}
+
+
 
 
 

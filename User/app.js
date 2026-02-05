@@ -915,3 +915,19 @@ async function updateNote(noteId){
         alert('Failed to update note: ' + error.message);
     }
 }
+
+function searchNotes(){
+    const input = document.getElementById('search-note-input');
+    const filter = input.value.toLowerCase();
+
+    const notesContainer = document.getElementById('notes-container');
+    const notes = notesContainer.getElementsByClassName('note-list');
+
+    for(let i =0; i < notes.length; i++){
+        if(notes[i].innerText.toLowerCase().includes(filter)){
+            notes[i].style.display = '';
+        } else {
+            notes[i].style.display = 'none';
+        }
+    }
+}

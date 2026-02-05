@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
     <!-- Firebase SDK -->   
@@ -121,12 +122,38 @@
         <div id="app-section" style="display: none;">
             <!-- side menu bar-->
             <div class="side-menu-bar" id="side-menu-bar">
-                <div class = "headerW-buttons">
-                    <p><a href="../Doctor/DoctorList.html" class = "doctor-list-button" aria-label="Doctor List"><img id = "doctor-icon" src="../image/doctorlist.png"></a>Doctor list</p>
-                    <a href="../calculator/calculatorIndex.html" class = "calculator-button" aria-label="Calculator"><img id = "calculator-icon" src="../image/calculator.png"></a>
-                    <!--<button onclick="logout()" class="logout-btn">Logout</button>-->
-                    <a href="../ToDoList/ToDo.html" class = "todo-button" aria-label="To-do List"><img id = "todo-icon" src="../image/to-do-list.png"></a>
-                    <a href="../User/UserProfile.html" class = "user-profile-button" aria-label="Profile"><img id = "profile-icon" src="../image/user.png"></a>
+                <div class="side-header">
+                    <img class="side-avatar" src="../image/user.png" alt="User">
+                    <div class="side-user">
+                        <div class="side-name" id="side-user-name">User</div>
+                        <div class="side-role">Member</div>
+                    </div>
+                </div>
+
+                <nav class="side-nav">
+                    <a href="UserProfile.html" class="side-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="../Doctor/DoctorList.html" class="side-link">
+                        <i class="fas fa-user-md"></i>
+                        <span>Doctor List</span>
+                    </a>
+                    <a href="../ToDoList/ToDo.html" class="side-link">
+                        <i class="fas fa-list-check"></i>
+                        <span>To‑Do</span>
+                    </a>
+                    <a href="../calculator/calculatorIndex.html" class="side-link">
+                        <i class="fas fa-calculator"></i>
+                        <span>Calculator</span>
+                    </a>
+                </nav>
+
+                <div class="side-footer">
+                    <button class="side-logout">
+                        <i class="fas fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
                 </div>
             </div>
 
@@ -148,6 +175,10 @@
                 <!-- Notes List -->
                 <div class="notes-list">
                     <h3>Your Notes</h3>
+                    <div class="search-note">
+                        <input type="text" id="search-note-input" placeholder="Search notes" onkeyup="searchNotes()">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
                     <div id="notes-container">
                         <!-- Notes will be dynamically added here, show list of notes -->
                     </div>
