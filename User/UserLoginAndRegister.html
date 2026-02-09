@@ -6,6 +6,7 @@
     <title>User Website</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../theme.css">
     <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
     <!-- Firebase SDK -->   
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -16,7 +17,7 @@
     <div class="container">
         <!-- Theme Toggle -->
         <div class="theme-toggle" aria-label="Theme toggle">
-            <button id="themeToggle" class="theme-toggle-button" title="Toggle dark mode" onclick="toggleDarkMode()">🌙</button>
+            <button id="themeToggle" class="theme-toggle-button" type="button" title="Toggle dark mode">🌙</button>
         </div>
         <!-- Auth Section -->
         <div id="auth-section">
@@ -212,5 +213,6 @@
     <!-- JavaScript Files -->
     <script src="../firebase-config.js"></script>
     <script src="app.js"></script>
+    <script src="../theme.js"></script>
 </body>
 </html>

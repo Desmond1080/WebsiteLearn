@@ -1,0 +1,60 @@
+:root {
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f9;
+    --border: #e2e8f0;
+    --link: #2563eb;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    --bg: #0b1220;
+    --text: #e5e7eb;
+    --surface: #111827;
+    --surface-alt: #0f172a;
+    --border: #334155;
+    --link: #93c5fd;
+    color-scheme: dark;
+}
+
+a {
+    color: var(--link);
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+/* Theme toggle positioning */
+.theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+}
+
+.theme-toggle-button {
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: #ffffff;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+body.dark-mode .theme-toggle-button {
+    border-color: #334155;
+    background: #1f2937;
+    color: #e5e7eb;
+}

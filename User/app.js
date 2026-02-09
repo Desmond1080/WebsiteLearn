@@ -795,12 +795,6 @@ async function displayMedia(mediaId) {
     `<img src="${url}" alt="uploaded media">`;
 }
 
-// switch between light and dark mode
-function toggleDarkMode(){
-    var body = document.body;
-    body.classList.toggle("dark-mode");
-}
-
 async function uploadProfilePicture(event) {
     const file = event.target.files[0];
     const user = auth.currentUser;

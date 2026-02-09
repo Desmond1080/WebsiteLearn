@@ -11,6 +11,7 @@
             background-color: #f4f4f4;
         }
     </style>
+    <link rel="stylesheet" href="../theme.css">
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -18,6 +19,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     </head>
     <body>
+        <div class="theme-toggle" aria-label="Theme toggle">
+            <button id="themeToggle" class="theme-toggle-button" type="button" title="Toggle dark mode">🌙</button>
+        </div>
         <!-- back to home icon button-->
         <a href="../User/UserLoginAndRegister.html" class = "home-button" style="margin-bottom: 10px; margin-left: 10px; padding: 10px 16px; color: white; text-decoration: none; border-radius: 10px;"><img id = "home-icon" src="../image/favicon (1).ico"></a>
         <a href="../Appointment/ViewAppointment.html" class = "appointment-view-button" style="margin-bottom: 10px; margin-left: 10px; padding: 10px 16px; color: white; text-decoration: none; border-radius: 10px;"><img id = "appointment-icon" src="../Doctor/doctorimage/view.png" style="width: 30px; height: 30px;"></a>
@@ -34,5 +38,6 @@
         </div>        
         <script src="../firebase-config.js"></script>
         <script src="DoctorList.js"></script>
+        <script src="../theme.js"></script>
     </body>
 </html>

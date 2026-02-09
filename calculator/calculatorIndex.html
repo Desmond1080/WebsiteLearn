@@ -4,10 +4,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="calculatorStyle.css">
+        <link rel="stylesheet" href="../theme.css">
         <link rel="icon" type="image/x-icon" href="image/favicon (1).ico"/>
         <title>Calculator</title>
     </head>
     <body>
+        <div class="theme-toggle" aria-label="Theme toggle">
+            <button id="themeToggle" class="theme-toggle-button" type="button" title="Toggle dark mode">🌙</button>
+        </div>
         <h1 class = "calculator-title">Calculator</h1> 
         <div>
             <a class="backHomeButton" href="../User/UserLoginAndRegister.html">Back to Home</a>
@@ -48,5 +52,6 @@
             <br><br>
         </div>
         <script src="calculator.js"></script>
+        <script src="../theme.js"></script>
     </body>
 </html>
