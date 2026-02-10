@@ -264,20 +264,40 @@ async function register(){
     }
 }
 
-// logout function
-async function logout(){
-    if(confirm('Are you sure you want to log out?')){
-        // proceed with logout
-        // sign out user
+// logout confirmation flow
+function requestLogout(){
+    showLogoutConfirmation();
+}
+
+async function confirmLogout(){
+    try{
         await auth.signOut();
-        // show auth section and hide app section
-        authSection.style.display = 'block';
-        appSection.style.display = 'none';
+        localStorage.removeItem('userRole'); // remove role from local storage
         console.log('User logged out');
-    } else {
-        // cancel logout
-        console.log('Logout cancelled');
-        return;
+        window.location.href = '../User/UserLoginAndRegister.html';
+    } catch(error){
+        console.error('Logout error:', error);
+    }
+}
+
+function cancelLogout(){
+    const popup = document.getElementById('logout-confirmation-popup');
+    if(popup){
+        popup.style.display = 'none';
+        const sectionsToUnblur = [
+            'profile-section',
+            'profile-options',
+            'edit-profile-section',
+            'change-password-section',
+            'notes-section'
+        ];
+        sectionsToUnblur.forEach((id) => {
+            const section = document.getElementById(id);
+            if(section){
+                section.style.filter = 'none';
+            }
+        });
+        document.body.style.overflow = 'auto';
     }
 }
 
@@ -300,7 +320,9 @@ async function loadUserData(){
             window.location.href = '../Doctor/DoctorDashboard.html';
         } else {
             // user role - show normal app
-            document.getElementById('user-name').textContent = userData?.name || user.email;
+            document.querySelectorAll('.user-name').forEach((el) => {
+                el.textContent = userData?.name || user.email;
+            });
             authSection.style.display = 'none';
             appSection.style.display = 'block'; // show app section 
             console.log('User data loaded:', userData);
@@ -924,4 +946,25 @@ function searchNotes(){
             notes[i].style.display = 'none';
         }
     }
+}
+
+function showLogoutConfirmation(){
+    const popup = document.getElementById('logout-confirmation-popup');
+    if(popup){
+        popup.style.display = 'flex';
+    }
+    const sectionsToBlur = [
+        'profile-section',
+        'profile-options',
+        'edit-profile-section',
+        'change-password-section',
+        'notes-section'
+    ];
+    sectionsToBlur.forEach((id) => {
+        const section = document.getElementById(id);
+        if(section && section.style.display !== 'none'){
+            section.style.filter = 'blur(5px)';
+        }
+    });
+    document.body.style.overflow = 'hidden';
 }

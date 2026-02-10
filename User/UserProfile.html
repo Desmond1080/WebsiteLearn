@@ -5,6 +5,7 @@
     <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link rel="preload" as="image" href="../image/user.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="theme.css">
 
@@ -20,12 +21,12 @@
     </div>
     <div class = "container">
         <!--back to userLoginand register html page-->
-        <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserLoginAndRegister.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
         <!-- User Profile Display Section -->
         <div class = "profile-section" id = "profile-section">
+            <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserLoginAndRegister.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
             <h1>Profile</h1>
             <div class="profile-picture">
-                <button type="button" onclick="document.getElementById('profile-picture-input').click()" class="upload-button"><img id="profile-picture" src="../image/user.png" alt="Profile Picture"></button>
+                <button type="button" onclick="document.getElementById('profile-picture-input').click()" class="upload-button"><img id="profile-picture" src="../image/user.png" alt="Profile Picture" fetchpriority="high"></button>
                 <input type="file" id="profile-picture-input" accept="image/*" style="display: none;" onchange="uploadProfilePicture(event)">       
             </div>
             <div class="profile-info">
@@ -36,6 +37,7 @@
 
         <!-- Edit Profile Section (Hidden by default) -->
         <div class="edit-profile-section" id="edit-profile-section" style="display: none;">
+            <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserProfile.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
             <h2>Edit Profile</h2>
             <form>
                 <div class="floating-input">
@@ -67,6 +69,7 @@
         <!-- change password section (hidden by default)-->
         <div class="change-password-section" id = "change-password-section" style="display: none;">
             <h2>Change Password</h2>
+            <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserProfile.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
             <form>
                 <div class="floating-input">
                     <input type="password" id="current-password" placeholder=" " required>
@@ -85,6 +88,7 @@
         </div>
 
         <div class="notes-section" id="notes-section">
+            <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserProfile.html'; return false;" alt="Back Button">
             <!-- notes header-->
             <h2>Your Notes</h2>
             <div class="notes-list" id="notes-container">
@@ -98,7 +102,16 @@
             <button onclick="changePassword()"><img class="edit-profile-icon" src="../User/UserProfileImage/padlock.png">Change Password</button>
             <button onclick="window.location.href='../Appointment/ViewAppointment.html'"><img class="edit-profile-icon" src="../User/UserProfileImage/appointment.png">View Appointment</button>
             <button onclick="viewNotes()"><img class="edit-profile-icon" src="../User/UserProfileImage/notes.png">View Notes</button>
-            <button onclick="logout()"><img class="edit-profile-icon" src="../User/UserProfileImage/logout.png">Logout</button>
+            <button onclick="requestLogout()"><img class="edit-profile-icon" src="../User/UserProfileImage/logout.png">Logout</button>
+        </div>
+
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+            </div>
         </div>
     </div>
 

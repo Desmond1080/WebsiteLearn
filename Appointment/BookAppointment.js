@@ -65,7 +65,18 @@ function displayDoctorDetails(doctor) {
     `;
 }
 
+function closeEmptyAppointmentFieldPopout(){
+    document.getElementById('check-empty-appointment-field').style.display = 'none';
+    document.getElementById('appointment-content').style.filter = 'none';
+    document.body.style.overflow = 'auto'; // Enable background scrolling
+}
 
+function closeAppointmentSuccessMessage(){
+    document.getElementById('appointment-success-message').style.display = 'none';
+    document.getElementById('appointment-content').style.filter = 'none';
+    document.body.style.overflow = 'auto'; // Enable background scrolling
+    window.location.href = '../Doctor/DoctorList.html'; // Redirect after user closes
+}
 
 // set minimum date for appointment date input to today
 const appointmentDate = document.getElementById('appointment-date');
@@ -102,11 +113,14 @@ appointmentForm.addEventListener('submit', async (e) => {
 
     // Validate that all required fields are filled
     if(patientName === "" || patientEmail === "" || appointmentDateValue === "" || appointmentTime === ""){
-        alert("Please fill in all required fields.");
+        // Show the empty field error message
+        document.getElementById('appointment-content').style.filter = 'blur(5px)';
+        document.getElementById('check-empty-appointment-field').style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Disable background scrolling
         return;
     }
 
-    if(appointmentDateValue.includes(trydisbaledDate)){
+    if(trydisbaledDate.includes(appointmentDateValue)){
         alert("The selected date is not available. Please choose another date.");
         return;
     }
@@ -119,14 +133,18 @@ appointmentForm.addEventListener('submit', async (e) => {
         await db.collection("Notifications").add({
             userId: userId,
             title: "Appointment Booked Successfully!",
-            message: `Your appointment with Dr. ${doctorName} on ${appointmentDate} at ${appointmentTime} has been confirmed. You will receive a confirmation shortly.`,
+            message: `Your appointment with Dr. ${doctorName} on ${appointmentDateValue} at ${appointmentTime} has been confirmed. You will receive a confirmation shortly.`,
             isRead: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
-        alert("Appointment booked successfully!");
-        window.location.href = '../Doctor/DoctorList.html'; // Redirect back to doctor list
-        return; // Stop further execution after redirect
+
+
+        // Show success message
+        document.getElementById('appointment-form').reset(); // Reset form fields
+        document.getElementById('appointment-success-message').style.display = 'block';
+        document.getElementById('appointment-content').style.filter = 'blur(5px)';
+        document.body.style.overflow = 'hidden'; // Disable background scrolling
+        return;
     }catch(error){
         console.error("Error booking appointment: ", error);
         alert("Error booking appointment. Please try again.");

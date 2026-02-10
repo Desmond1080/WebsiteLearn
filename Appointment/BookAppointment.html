@@ -12,44 +12,64 @@
         <div class="theme-toggle" aria-label="Theme toggle">
             <button id="themeToggle" class="theme-toggle-button" type="button" title="Toggle dark mode">🌙</button>
         </div>
-        <div class="appointment-container">
-        <h1>Book Appointment</h1>
-        <div>
-            <!--selected doctor details will be displayed here-->
-            <div id="doctor-details" class="doctor-details">
-                <!-- Doctor details will be dynamically inserted here -->
-                 
+        <div class="appointment-container" id="appointment-container">
+            <div class="appointment-content" id="appointment-content">
+                <h1>Book Appointment</h1>
+                <div>
+                    <!--selected doctor details will be displayed here-->
+                    <div id="doctor-details" class="doctor-details">
+                        <!-- Doctor details will be dynamically inserted here -->
+                    </div>
 
-            </div>
+                    <hr>
 
-            <hr>
-
-            <div id="appointment-form-container" style="display:none;">
-                <div class="appointment-form">
-                    <h2>Appointment Details</h2>
-                    <form id="appointment-form">
-                        <label for="patient-name">Patient Name:</label>
-                        <input type="text" id="patient-name">
-                        <br>  
-                        <label for="patient-email">Patient Email:</label>
-                        <input type="email" id="patient-email">
-                        <br>
-                        <label for="appointment-date">Appointment Date:</label>
-                        <input type="date" id="appointment-date">
-                        <br>
-                        <label for="appointment-time">Appointment Time:</label>
-                        <input type="time" id="appointment-time">
-                        <br>
-                        <label for="appointment-reason">Reason for Appointment:</label>
-                        <input type="text" id="appointment-reason"></input>
-                        <br>
-                        <button type="submit">Book Appointment</button>
-                        <button type="button" onclick="window.location.href='../Doctor/DoctorList.html'; return false;">Cancel</button>
-                    </form>
+                    <div id="appointment-form-container" style="display:none;">
+                        <div class="appointment-form">
+                            <h2>Appointment Details</h2>
+                            <form id="appointment-form">
+                                <label for="patient-name">Patient Name:</label>
+                                <input type="text" id="patient-name">
+                                <br>  
+                                <label for="patient-email">Patient Email:</label>
+                                <input type="email" id="patient-email">
+                                <br>
+                                <label for="appointment-date">Appointment Date:</label>
+                                <input type="date" id="appointment-date">
+                                <br>
+                                <label for="appointment-time">Appointment Time:</label>
+                                <input type="time" id="appointment-time">
+                                <br>
+                                <label for="appointment-reason">Reason for Appointment:</label>
+                                <input type="text" id="appointment-reason"></input>
+                                <br>
+                                <button type="submit">Book Appointment</button>
+                                <button type="button" onclick="window.location.href='../Doctor/DoctorList.html'; return false;">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-        </div>
+            <!--book appointment validation error message same as save note for empty field unable to be field-->
+            <div class="check-empty-appointment-field" id="check-empty-appointment-field" style="display: none">
+                <div class="check-empty-appointment-content">
+                    <h2>Incomplete field</h2>
+                    <p><img class="empty-image" src="../Appointment/appointmentImage/survey.png" alt="Empty Field Image"></p>
+                    <p>Please fill in all the fields before booking the appointment.</p>
+                    <button onclick="closeEmptyAppointmentFieldPopout()">Close</button>
+                </div>
+            </div>
+
+            <!--appointment book success message-->
+            <div class="appointment-success-message" id="appointment-success-message" style="display:none">
+                <div class="appointment-success-content">
+                    <h2>Appointment Booked Successfully!!</h2>
+                    <p><img class="success-image" src="../Appointment/appointmentImage/check (1).png" alt="Success Image"></p>
+                    <p>Your appointment has been booked successfully.</p>
+                    <button onclick="closeAppointmentSuccessMessage()">Close</button>
+                </div>
+
+            </div>
         </div>
 
         <!-- Firebase SDKs -->
