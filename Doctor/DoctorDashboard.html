@@ -57,7 +57,7 @@
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" id="user-dropdown">
                             <i class="fas fa-user-circle"></i> 
-                            <span id="admin-name">Admin</span>
+                            <span id="doctor-name">Doctor</span>
                             <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu" id="dropdown-menu">
@@ -68,7 +68,7 @@
                                 <i class="fas fa-cog"></i> Settings
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a href="#" class="dropdown-link" id="admin-logout-button">
+                            <li><a href="#" class="dropdown-link" id="doctor-logout-button">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a></li>
                         </ul>
@@ -82,12 +82,12 @@
     <main class="admin-main">
         <div class="dashboard-container">
             <!-- Dashboard content goes here -->
-            <h1>Welcome to the Admin Dashboard</h1>
-            <p>Use the navigation bar to manage users, doctors, and view reports.</p>
+            <h1>Welcome to the Doctor Dashboard</h1>
+            <p>Use the navigation bar to manage patients and review appointments.</p>
             
             <br>
 
-            <h2>Total Users</h2>
+            <h2>Your Schedule</h2>
             <div class="total-user-section" id="total-user-section">
                 
             </div>
@@ -97,7 +97,7 @@
 
     <!-- script-->
     <script src="../firebase-config.js"></script>
-    <script src="../Admin/AdminDashboard.js"></script>
+    <script src="../Doctor/DoctorDashboard.js"></script>
     <script src="../theme.js"></script>
 </body>
 </html>

@@ -92,9 +92,19 @@
 
             <h2>Total Users</h2>
             <div class="total-user-section" id="total-user-section">
-                
+                <!-- Total users will be displayed here -->
             </div>
 
+            <!--logout confirmation pop-up-->
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup" style="display: none;">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <p><img src="../Admin/adminImage/logout (1).png" alt="Logout Icon"></p>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
         </div>
     </main>
 
