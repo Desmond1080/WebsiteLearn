@@ -50,14 +50,14 @@ checkAuthState();
 
 function showLogoutConfirmation(){
     if(logoutPopup){
-        logoutPopup.style.display = 'flex';
+        logoutPopup.classList.add('visible');
         document.body.style.overflow = 'hidden';
     }
 }
 
 function cancelLogout(){
     if(logoutPopup){
-        logoutPopup.style.display = 'none';
+        logoutPopup.classList.remove('visible');
         document.body.style.overflow = 'auto';
     }
 }

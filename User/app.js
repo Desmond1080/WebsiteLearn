@@ -283,22 +283,22 @@ async function confirmLogout(){
 function cancelLogout(){
     const popup = document.getElementById('logout-confirmation-popup');
     if(popup){
-        popup.style.display = 'none';
-        const sectionsToUnblur = [
-            'profile-section',
-            'profile-options',
-            'edit-profile-section',
-            'change-password-section',
-            'notes-section'
-        ];
-        sectionsToUnblur.forEach((id) => {
-            const section = document.getElementById(id);
-            if(section){
-                section.style.filter = 'none';
-            }
-        });
-        document.body.style.overflow = 'auto';
+        popup.classList.remove('visible');
     }
+    const sectionsToBlur = [
+        'profile-section',
+        'profile-options',
+        'edit-profile-section',
+        'change-password-section',
+        'notes-section'
+    ];
+    sectionsToBlur.forEach((id) => {
+        const section = document.getElementById(id);
+        if(section){
+            section.style.filter = 'none';
+        }
+    });
+    document.body.style.overflow = 'auto';
 }
 
 // load user data function
@@ -951,7 +951,7 @@ function searchNotes(){
 function showLogoutConfirmation(){
     const popup = document.getElementById('logout-confirmation-popup');
     if(popup){
-        popup.style.display = 'flex';
+        popup.classList.add('visible');
     }
     const sectionsToBlur = [
         'profile-section',

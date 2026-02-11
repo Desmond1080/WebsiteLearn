@@ -61,10 +61,10 @@
                             <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu" id="dropdown-menu">
-                            <li><a href="../Admin/AdminProfile.html" class="dropdown-link">
+                            <li><a href="../Doctor/DoctorProfile.html" class="dropdown-link">
                                 <i class="fas fa-user"></i> My Profile
                             </a></li>
-                            <li><a href="../Admin/AdminSettings.html" class="dropdown-link">
+                            <li><a href="../Doctor/DoctorSettings.html" class="dropdown-link">
                                 <i class="fas fa-cog"></i> Settings
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -79,18 +79,26 @@
     </header>
 
     <!-- Main Content -->
-    <main class="admin-main">
+    <main class="doctor-main">
         <div class="dashboard-container">
             <!-- Dashboard content goes here -->
             <h1>Welcome to the Doctor Dashboard</h1>
-            <p>Use the navigation bar to manage patients and review appointments.</p>
+            <p>Use the navigation bar to manage patients, appointments, and view reports.</p>
             
             <br>
 
-            <h2>Your Schedule</h2>
-            <div class="total-user-section" id="total-user-section">
-                
+            <h2>Total Users</h2>
+        
+            <!--logout confirmation pop-up-->
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup" style="display: none;">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <p><img src="../Admin/adminImage/logout (1).png" alt="Logout Icon"></p>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
             </div>
+        </div>
 
         </div>
     </main>

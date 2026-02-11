@@ -197,6 +197,10 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+.logout-confirmation-popup.visible{
+    display: flex;
+}
+
 .logout-confirmation-content{
     width: min(420px, 90vw);
     background: #ffffff;
@@ -205,6 +209,12 @@
     text-align: center;
     border: 1px solid #e0e6ed;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+    transform: scale(0.8);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logout-confirmation-popup.visible .logout-confirmation-content{
+    transform: scale(1);
 }
 
 .logout-confirmation-content h2{
@@ -226,10 +236,13 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logout-confirmation-content button:hover{
     background-color: #5a6fe0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(102, 126, 234, 0.3);
 }
 
 .logout-confirmation-content .cancel-btn{
