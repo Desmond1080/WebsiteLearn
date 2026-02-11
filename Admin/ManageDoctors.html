@@ -81,9 +81,26 @@
         </nav>
     </header>
 
+    <main class="admin-main">
+        <div class="manage-doctors-container">
+            <h1>Manage Doctors</h1>
+            <p>Here you can view, add, edit, and delete doctor profiles. Use the options below to manage the doctors in the system.</p>
+            <br>
+
+            <!-- Doctor List Section Showing with table -->
+            <div class="doctor-list-container" id="doctor-list-container">
+                <h2>Doctor List</h2>
+                <div class="doctor-list-content" id="doctor-list-content">
+                    <!-- Doctor list table will be populated here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
     <!-- script-->
     <script src="../firebase-config.js"></script>
-    <script src="../Admin/AdminDashboard.js"></script>
+    <script src="../Admin/ManageDoctors.js"></script>
     <script src="../theme.js"></script>
 </body>
 </html>

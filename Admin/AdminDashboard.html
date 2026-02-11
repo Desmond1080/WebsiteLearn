@@ -89,9 +89,35 @@
             <p>Use the navigation bar to manage users, doctors, and view reports.</p>
             <br>
 
-            <h2>Total Users</h2>
-            <div class="total-user-section" id="total-user-section">
-                <!-- Total users will be displayed here -->
+            <div class="total-user-container" id="total-user-container">
+                <h2>Total Users</h2>
+                <div class="total-user-section" id="total-user-section">
+                    <!-- total user by name will show on this-->
+                </div>
+            </div>
+
+            <div class="monthly-user-container" id="monthly-user-container">
+                <h2>Monthly New Users</h2>
+                <div class="monthly-user-table" id="monthly-user-table">
+                    <!-- monthly new user by name will show on this-->
+                </div>
+            </div>
+
+            <div class="total-staff-container" id="total-staff-container">
+                <h2>Total Staff</h2>
+                <div class="total-staff-section" id="total-staff-section">
+                    <!-- total staff by name will show on this-->
+                </div>
+            </div>
+
+            <div class="total-appointment-container" id="total-appointment-container">
+                <h2>Total Appointment per Month</h2>
+                <div class="total-appointment-section" id="total-appointment-section">
+                    <!-- total appointment per month will show on this-->
+                    <div class="appointments-chart">
+                        <canvas id="appointmentsChart" aria-label="Appointments per month bar chart" role="img"></canvas>
+                    </div>
+                </div>
             </div>
 
             <!--logout confirmation pop-up-->
@@ -108,6 +134,7 @@
     </main>
 
     <!-- script-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="../firebase-config.js"></script>
     <script src="../Admin/AdminDashboard.js"></script>
     <script src="../theme.js"></script>

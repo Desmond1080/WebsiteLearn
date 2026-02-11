@@ -351,3 +351,117 @@
         padding: 0 15px;
     }
 }
+
+#total-user-container{
+    border: solid 1px black;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+#total-user-section{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+#total-user-section table{
+    width: min(900px, 90vw);
+    font-size: large;
+}
+
+#total-user-section table, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 12px 18px;
+    text-align: left;
+}
+
+.appointments-chart{
+    width: min(900px, 95vw);
+    margin: 0 auto 30px;
+    padding: 16px;
+    border: 1px solid #e0e6ed;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.appointments-chart canvas{
+    width: 100%;
+    height: 360px;
+}
+
+#total-user-section th{
+    background-color: aliceblue;
+}
+
+#total-user-section tr:nth-child(even){
+    background-color: lightgray;
+}
+
+#monthly-user-container{
+    border: solid 1px black;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+#monthly-user-table{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+#monthly-user-table th{
+    background-color: aliceblue;
+}
+
+#monthly-user-table tr:nth-child(even){
+    background-color: lightgray;
+}
+
+#monthly-user-table table{
+    width: min(900px, 90vw);
+    font-size: large;
+}
+
+#total-staff-container{
+    border: solid 1px black;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+#total-staff-section{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+#total-staff-section table{
+    width: min(900px, 90vw);
+    font-size: large;
+}
+
+#total-staff-section table, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 12px 18px;
+    text-align: left;
+}
+
+#total-staff-section th{
+    background-color: aliceblue;
+}
+
+#total-staff-section tr:nth-child(even){
+    background-color: lightgray;
+}
