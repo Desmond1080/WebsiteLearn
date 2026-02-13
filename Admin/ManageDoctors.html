@@ -96,6 +96,52 @@
             </div>
         </div>
 
+
+        <!--logout confirmation pop-up-->
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup" style="display: none;">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <p><img src="../Admin/adminImage/logout (1).png" alt="Logout Icon"></p>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="edit-doctor-popup" class="edit-doctor-popup" style="display: none;">
+            <div class="edit-doctor-content" id="edit-doctor-content">
+                <!-- Edit doctor form will be populated here -->
+                <form>
+                    <div class="floating input">
+                        <input type="text" id="edit-doctor-name" placeholder=" " required>
+                        <label for="edit-doctor-name">Doctor Name</label>
+                    </div>
+
+                    <div class="floating input">
+                        <input type="text" id="edit-doctor-username" placeholder=" " required>
+                        <label for="edit-doctor-username">Username</label>
+                    </div>
+
+                    <div class="floating input">
+                        <input type="text" id="edit-doctor-specialization" placeholder=" " disabled>
+                        <label for="edit-doctor-specialization">Specialization</label>
+                    </div>
+
+
+                    <div class="floating input">
+                        <input type="text" id="edit-doctor-gender" placeholder=" " disabled>
+                        <label for="edit-doctor-gender">Gender</label>
+                    </div>
+
+                    <div class="floating input">
+                        <input type="email" id="edit-doctor-email" placeholder=" " disabled>
+                        <label for="edit-doctor-email">Email</label>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
     </main>
 
     <!-- script-->

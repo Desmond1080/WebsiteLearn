@@ -372,6 +372,45 @@
     font-size: large;
 }
 
+#doctor-list-container{
+    border: solid 1px black;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+#doctor-list-container h2{
+    text-align: center;
+}
+
+#doctor-list-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+#doctor-list-content table {
+    width: min(900px, 90vw);
+    font-size: large;
+}
+
+#doctor-list-content table, th, td{
+    border: 2px solid black;
+    border-collapse: collapse;
+    padding: 12px;
+    text-align: left;
+}
+
+#doctor-list-content th {
+    background-color: aliceblue;
+}
+
+#doctor-list-content tr:nth-child(even) {
+    background-color: lightgray;
+}
+
 #total-user-section table, th, td{
     border: 1px solid black;
     border-collapse: collapse;

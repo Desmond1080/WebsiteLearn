@@ -79,7 +79,9 @@ async function loadUserNames(){
             }
         }
         userListHTML += '</table>';
-        totalUser.innerHTML = userListHTML;
+        if(totalUser){
+            totalUser.innerHTML = userListHTML;
+        }
     } catch(error) {
         console.error('Error loading users:', error);
         if (totalUser) {
@@ -123,7 +125,9 @@ async function loadMonthlyUser(){
     }
     console.log('Monthly users: matched', monthlyUserCount);
     monthlyUserHTML += '</table>';
-    monthlyUserTable.innerHTML = monthlyUserHTML;
+    if(monthlyUserTable){
+        monthlyUserTable.innerHTML = monthlyUserHTML;
+    }
 }
 
 // load each staff name after checking the role is doctor, admin or etc
