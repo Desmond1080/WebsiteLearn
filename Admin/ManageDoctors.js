@@ -6,6 +6,9 @@ const editDoctorNameInput = document.getElementById('edit-doctor-name');
 const editDoctorUsernameInput = document.getElementById('edit-doctor-username');
 const editDoctorSpecializationInput = document.getElementById('edit-doctor-specialization');
 const editDoctorGenderInput = document.getElementById('edit-doctor-gender');
+const editDoctorEmailInput = document.getElementById('edit-doctor-email');
+let currentEditDoctorId = null;
+let currentEditUserId = null;
 
 
 //check auth state
@@ -46,7 +49,7 @@ async function loadDoctors(){
         console.log('Doctors: First doctor doc sample:', doctorsSnapshot.docs[0]?.data());
         console.log('Doctors: First user doc sample:', doctorsProfileSnapshot.docs[0]?.data());
         
-        let doctorListHTML = '<table style="width: 100%; border-collapse: collapse; margin: 20px auto;"><tr><th style="border: 1px solid #ccc; padding: 10px;">Doctor Name</th><th style="border: 1px solid #ccc; padding: 10px;">Username</th><th style="border: 1px solid #ccc; padding: 10px;">Specialization</th><th style="border: 1px solid #ccc; padding: 10px;">Gender</th><th style="border: 1px solid #ccc; padding: 10px;">Email</th></tr>';
+        let doctorListHTML = '<table style="width: 100%; border-collapse: collapse; margin: 20px auto;"><tr><th style="border: 1px solid #ccc; padding: 10px;">Doctor Name</th><th style="border: 1px solid #ccc; padding: 10px;">Username</th><th style="border: 1px solid #ccc; padding: 10px;">Specialization</th><th style="border: 1px solid #ccc; padding: 10px;">Gender</th><th style="border: 1px solid #ccc; padding: 10px;">Email</th><th style="border: 1px solid #ccc; padding: 10px;">Edit</th></tr>';
 
         if(!doctorsSnapshot.empty && !doctorsProfileSnapshot.empty){
             const doctorProfiles = {};
@@ -93,7 +96,7 @@ async function loadDoctors(){
 
                 doctorProfile = doctorProfile || {};
                 const genderLabel = doctorProfile.gender || doctorData.gender || 'N/A';
-                doctorListHTML += `<tr><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.name || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.username || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.specialization || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${genderLabel}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.email || 'N/A'}</td></tr>`;
+                doctorListHTML += `<tr><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.name || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.username || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.specialization || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${genderLabel}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.email || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px; text-align: center;"><button type="button" onclick="showEditDoctorForm('${doc.id}')">Edit</button></td></tr>`;
             });
             doctorListHTML += '</table>';
             console.log('Doctors: final HTML length', doctorListHTML.length);
@@ -108,7 +111,7 @@ async function loadDoctors(){
             }
         } else {
             console.log('Doctors: no matching data to display.');
-            doctorListHTML += '<tr><td colspan="5">No doctors found</td></tr></table>';
+            doctorListHTML += '<tr><td colspan="6">No doctors found</td></tr></table>';
             if(totalDoctors){
                 totalDoctors.innerHTML = doctorListHTML;
             }
@@ -120,13 +123,154 @@ async function loadDoctors(){
 
 checkAuthState();
 
+//show edit form with doctor details
+function showEditDoctorForm(doctorId){
+    const adminMain = document.getElementById('admin-main');
+    const editDoctorPopup = document.getElementById('edit-doctor-popup');
+    if(editDoctorPopup){
+        editDoctorPopup.style.display = 'flex';
+        if(adminMain){
+            adminMain.style.filter = 'blur(5px)';
+        }
+        document.body.style.overflow = 'hidden';
+    }
+
+    if(doctorId){
+        currentEditDoctorId = doctorId;
+        editDoctorDetails(doctorId);
+    }
+
+}
+
+function closeEditDoctorPopup(){
+    const adminMain = document.getElementById('admin-main');
+    const editDoctorPopup = document.getElementById('edit-doctor-popup');
+    if(editDoctorPopup){
+        editDoctorPopup.style.display = 'none';
+    }
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+    document.body.style.overflow = 'auto';
+}
+
+function showUpdateSuccessMessage(){
+    const updateSuccessMessage = document.getElementById('update-success-message');
+    if(updateSuccessMessage){
+        updateSuccessMessage.style.display = 'flex';
+        const adminMain = document.getElementById('admin-main');
+        if(adminMain){
+            adminMain.style.filter = 'blur(5px)';
+        }  
+        document.body.style.overflow = 'hidden';
+    }
+    
+}
+
+function closeUpdateSuccessMessage(){
+    const updateSuccessMessage = document.getElementById('update-success-message');
+    if(updateSuccessMessage){
+        updateSuccessMessage.style.display = 'none';
+    }
+    const adminMain = document.getElementById('admin-main');
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+    document.body.style.overflow = 'auto';
+}
+
+//update doctor details from edit form
+async function updateProfile(){
+    try{
+        if(!currentEditDoctorId){
+            console.error('No doctor selected for update.');
+            return;
+        }
+        const doctorDocRef = db.collection('Doctors').doc(currentEditDoctorId);
+        const doctorDoc = await doctorDocRef.get();
+        if(!doctorDoc.exists){
+            console.error('Doctor doc not found for update:', currentEditDoctorId);
+            return;
+        }
+        const doctorData = doctorDoc.data();
+        const userId = typeof doctorData.userId === 'string'
+            ? doctorData.userId
+            : doctorData.userId?.id;
+        if(!userId){
+            console.error('Doctor userId missing or invalid for update:', currentEditDoctorId);
+            return;
+        }
+        const doctorProfileDocRef = db.collection('Users').doc(userId);
+        const doctorProfileDoc = await doctorProfileDocRef.get();
+        if(!doctorProfileDoc.exists){
+            console.error('Doctor profile doc not found for update:', userId);
+            return;
+        }
+
+        const updatedDoctorData = {
+            name: editDoctorNameInput.value,
+            specialization: editDoctorSpecializationInput.value,
+        };
+        const updatedDoctorProfileData = {
+            username: editDoctorUsernameInput.value,
+            gender: editDoctorGenderInput.value,
+            email: editDoctorEmailInput.value,
+        };
+        await doctorDocRef.update(updatedDoctorData);
+        await doctorProfileDocRef.update(updatedDoctorProfileData);
+        closeEditDoctorPopup();
+        showUpdateSuccessMessage();
+        loadDoctors();
+    }
+    catch(error){
+        console.error('Error updating doctor details:', error);
+    }
+}
+
 //edit specific doctor details show in edit form like a pop up form 
 async function editDoctorDetails(doctorId){
     try{
         const doctorDoc = await db.collection('Doctors').doc(doctorId).get();
-        const doctorProfileDoc = await db.collection('Users').doc(doctorDoc.data().userId).get();
+        if(!doctorDoc.exists){
+            console.error('Doctor doc not found for edit:', doctorId);
+            return;
+        }
+
+        const doctorData = doctorDoc.data();
+        const userId = typeof doctorData.userId === 'string'
+            ? doctorData.userId
+            : doctorData.userId?.id;
+
+        if(!userId){
+            console.error('Doctor userId missing or invalid for edit:', doctorId);
+            return;
+        }
+
+        const doctorProfileDoc = await db.collection('Users').doc(userId).get();
+
+        if(doctorProfileDoc.exists){
+            const doctorData = doctorDoc.data();
+            const doctorProfileData = doctorProfileDoc.data();
+            if(editDoctorNameInput){
+                editDoctorNameInput.value = doctorData.name || '';
+            }
+            if(editDoctorUsernameInput){
+                editDoctorUsernameInput.value = doctorProfileData.username || '';
+            }
+            if(editDoctorSpecializationInput){
+                editDoctorSpecializationInput.value = doctorData.specialization || '';
+            }
+            if(editDoctorGenderInput){
+                editDoctorGenderInput.value = doctorProfileData.gender || '';
+            }
+            if(editDoctorEmailInput){
+                editDoctorEmailInput.value = doctorProfileData.email || '';
+            }
+        }
+    }catch(error){
+        console.error('Error fetching doctor details for edit:', error);
+        return;
     }
-    
 }
 
 function showLogoutConfirmation(){
