@@ -2,7 +2,9 @@ const doctorNameSpan = document.getElementById('doctor-name');
 const logoutPopup = document.getElementById('logout-confirmation-popup');
 const doctorLogoutButton = document.getElementById('doctor-logout-button');
 
-
+console.log('DoctorDashboard.js loaded');
+console.log('doctorLogoutButton:', doctorLogoutButton);
+console.log('logoutPopup:', logoutPopup);
 
 //check auth state
 async function checkAuthState() {
@@ -33,9 +35,14 @@ async function checkAuthState() {
 checkAuthState();
 
 function showLogoutConfirmation(){
+    console.log('showLogoutConfirmation called');
+    console.log('logoutPopup element:', logoutPopup);
     if(logoutPopup){
+        console.log('Adding visible class');
         logoutPopup.classList.add('visible');
         document.body.style.overflow = 'hidden';
+    } else {
+        console.log('logoutPopup is null!');
     }
 }
 
@@ -56,9 +63,14 @@ async function confirmLogout(){
     }
 }
 
+// Attach event listener to logout button
 if(doctorLogoutButton){
+    console.log('Adding click listener to logout button');
     doctorLogoutButton.addEventListener('click', (event) => {
+        console.log('Logout button clicked!');
         event.preventDefault();
         showLogoutConfirmation();
     });
+} else {
+    console.log('doctorLogoutButton not found!');
 }

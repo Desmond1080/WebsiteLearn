@@ -7,8 +7,12 @@ const editDoctorUsernameInput = document.getElementById('edit-doctor-username');
 const editDoctorSpecializationInput = document.getElementById('edit-doctor-specialization');
 const editDoctorGenderInput = document.getElementById('edit-doctor-gender');
 const editDoctorEmailInput = document.getElementById('edit-doctor-email');
+const addDoctorGenderSelect = document.getElementById('add-doctor-gender');
 let currentEditDoctorId = null;
 let currentEditUserId = null;
+    let isDoctorUpdateInProgress = false;
+let lastDoctorUpdateAttemptAt = 0;
+const DOCTOR_UPDATE_COOLDOWN_MS = 1200;
 
 
 //check auth state
@@ -127,6 +131,21 @@ checkAuthState();
 function showEditDoctorForm(doctorId){
     const adminMain = document.getElementById('admin-main');
     const editDoctorPopup = document.getElementById('edit-doctor-popup');
+    const updateButton = document.querySelector('.edit-doctor-content .update-btn');
+    
+    // Clear form fields first
+    if(editDoctorNameInput) editDoctorNameInput.value = '';
+    if(editDoctorUsernameInput) editDoctorUsernameInput.value = '';
+    if(editDoctorSpecializationInput) editDoctorSpecializationInput.value = '';
+    if(editDoctorGenderInput) editDoctorGenderInput.value = '';
+    if(editDoctorEmailInput) editDoctorEmailInput.value = '';
+    
+    // Disable update button until data loads
+    if(updateButton){
+        updateButton.disabled = true;
+        updateButton.textContent = 'Loading...';
+    }
+    
     if(editDoctorPopup){
         editDoctorPopup.style.display = 'flex';
         if(adminMain){
@@ -137,7 +156,19 @@ function showEditDoctorForm(doctorId){
 
     if(doctorId){
         currentEditDoctorId = doctorId;
-        editDoctorDetails(doctorId);
+        // Wait for data to load before enabling the button
+        editDoctorDetails(doctorId).then(() => {
+            if(updateButton){
+                updateButton.disabled = false;
+                updateButton.textContent = 'Update';
+            }
+        }).catch((error) => {
+            console.error('Error loading doctor details:', error);
+            if(updateButton){
+                updateButton.disabled = false;
+                updateButton.textContent = 'Update';
+            }
+        });
     }
 
 }
@@ -181,15 +212,140 @@ function closeUpdateSuccessMessage(){
 
 //update doctor details from edit form
 async function updateProfile(){
+    console.log('=== updateProfile() CALLED ===');
+    const updateButton = document.querySelector('.edit-doctor-content .update-btn');
+
+    if(isDoctorUpdateInProgress){
+        console.log('Update blocked: request already in progress');
+        return;
+    }
+
+    const now = Date.now();
+    if(now - lastDoctorUpdateAttemptAt < DOCTOR_UPDATE_COOLDOWN_MS){
+        console.log('Update blocked: cooldown active');
+        return;
+    }
+
+    isDoctorUpdateInProgress = true;
+    lastDoctorUpdateAttemptAt = now;
+    if(updateButton){
+        updateButton.disabled = true;
+        updateButton.textContent = 'Updating...';
+    }
+    
     try{
+        console.log('1. Checking currentEditDoctorId:', currentEditDoctorId);
         if(!currentEditDoctorId){
-            console.error('No doctor selected for update.');
+            alert('Error: No doctor selected for update.');
             return;
         }
+
+        // Validate inputs exist
+        console.log('2. Checking form field elements...');
+        if(!editDoctorNameInput || !editDoctorUsernameInput || !editDoctorSpecializationInput){
+            alert('Error: Form fields not found');
+            console.error('Missing form inputs:', {editDoctorNameInput, editDoctorUsernameInput, editDoctorSpecializationInput});
+            return;
+        }
+        console.log('3. Form fields found ✓');
+
+        const nameValue = editDoctorNameInput.value.trim();
+        const usernameValue = editDoctorUsernameInput.value.trim();
+        const specializationValue = editDoctorSpecializationInput.value.trim();
+        const genderValue = editDoctorGenderInput.value;
+        const emailValue = editDoctorEmailInput.value.trim();
+        
+        console.log('4. Form values:', {
+            name: nameValue,
+            nameLength: nameValue.length,
+            username: usernameValue,
+            usernameLength: usernameValue.length,
+            specialization: specializationValue,
+            specializationLength: specializationValue.length
+        });
+
+        // doctor name validation
+        console.log('5. Validating doctor name...');
+        if(!nameValue || nameValue.length === 0){
+            alert('Doctor name cannot be empty.');
+            editDoctorNameInput.focus();
+            return;
+        }
+        
+        if(nameValue.length < 3){
+            alert('Doctor name must be at least 3 characters long.');
+            editDoctorNameInput.focus();
+            return;
+        }
+
+        if(nameValue.length > 150){
+            alert('Doctor name must be less than 150 characters long.');
+            editDoctorNameInput.focus();
+            return;
+        }
+        console.log('6. Doctor name validation passed ✓');
+
+        // username validation
+        console.log('7. Validating username...');
+        if(!usernameValue || usernameValue.length === 0){
+            alert('Username cannot be empty.');
+            editDoctorUsernameInput.focus();
+            return;
+        }
+        
+        if(usernameValue.length < 3){
+            alert('Username must be at least 3 characters long.');
+            editDoctorUsernameInput.focus();
+            return;
+        }
+
+        if(usernameValue.length > 150){
+            alert('Username must be less than 150 characters long.');
+            editDoctorUsernameInput.focus();
+            return;
+        }
+        console.log('8. Username validation passed ✓');
+
+        // specialization validation
+        console.log('9. Validating specialization...');
+        if(!specializationValue || specializationValue.length === 0){
+            alert('Specialization cannot be empty.');
+            editDoctorSpecializationInput.focus();
+            return;
+        }
+        
+        if(specializationValue.length < 2){
+            alert('Specialization must be at least 2 characters long.');
+            editDoctorSpecializationInput.focus();
+            return;
+        }
+        console.log('10. Specialization validation passed ✓');
+
+        // gender validation
+        console.log('10.5. Validating gender...');
+        if(!genderValue || genderValue.length === 0){
+            alert('Gender must be selected.');
+            editDoctorGenderInput.focus();
+            return;
+        }
+        console.log('10.6. Gender validation passed ✓');
+
+        // email validation
+        console.log('10.7. Validating email...');
+        if(!emailValue || emailValue.length === 0){
+            alert('Email cannot be empty.');
+            return;
+        }
+        console.log('10.8. Email validation passed ✓');
+
+        console.log('✓ ALL VALIDATIONS PASSED');
+        console.log('11. Updating doctor with ID:', currentEditDoctorId);
+        
         const doctorDocRef = db.collection('Doctors').doc(currentEditDoctorId);
         const doctorDoc = await doctorDocRef.get();
         if(!doctorDoc.exists){
             console.error('Doctor doc not found for update:', currentEditDoctorId);
+            alert('Error: Doctor not found in database');
             return;
         }
         const doctorData = doctorDoc.data();
@@ -198,32 +354,55 @@ async function updateProfile(){
             : doctorData.userId?.id;
         if(!userId){
             console.error('Doctor userId missing or invalid for update:', currentEditDoctorId);
+            alert('Error: Doctor user ID is missing');
             return;
         }
         const doctorProfileDocRef = db.collection('Users').doc(userId);
         const doctorProfileDoc = await doctorProfileDocRef.get();
         if(!doctorProfileDoc.exists){
             console.error('Doctor profile doc not found for update:', userId);
+            alert('Error: Doctor profile not found');
             return;
         }
 
         const updatedDoctorData = {
-            name: editDoctorNameInput.value,
-            specialization: editDoctorSpecializationInput.value,
+            name: nameValue,
+            specialization: specializationValue,
         };
         const updatedDoctorProfileData = {
-            username: editDoctorUsernameInput.value,
+            username: usernameValue,
             gender: editDoctorGenderInput.value,
             email: editDoctorEmailInput.value,
         };
+        
+        console.log('Updating Doctors collection with:', updatedDoctorData);
+        console.log('Updating Users collection with:', updatedDoctorProfileData);
+        
         await doctorDocRef.update(updatedDoctorData);
+        console.log('✓ Doctors collection updated successfully');
+        
         await doctorProfileDocRef.update(updatedDoctorProfileData);
+        console.log('✓ Users collection updated successfully');
+        
         closeEditDoctorPopup();
         showUpdateSuccessMessage();
-        loadDoctors();
+        
+        // Reload the doctor list after a short delay
+        setTimeout(() => {
+            console.log('Reloading doctor list...');
+            loadDoctors();
+        }, 500);
     }
     catch(error){
-        console.error('Error updating doctor details:', error);
+        console.error('ERROR in updateProfile():', error);
+        console.error('Error stack:', error.stack);
+        alert('Error: ' + error.message);
+    } finally {
+        isDoctorUpdateInProgress = false;
+        if(updateButton){
+            updateButton.disabled = false;
+            updateButton.textContent = 'Update';
+        }
     }
 }
 
@@ -233,7 +412,7 @@ async function editDoctorDetails(doctorId){
         const doctorDoc = await db.collection('Doctors').doc(doctorId).get();
         if(!doctorDoc.exists){
             console.error('Doctor doc not found for edit:', doctorId);
-            return;
+            return Promise.reject(new Error('Doctor not found'));
         }
 
         const doctorData = doctorDoc.data();
@@ -243,7 +422,7 @@ async function editDoctorDetails(doctorId){
 
         if(!userId){
             console.error('Doctor userId missing or invalid for edit:', doctorId);
-            return;
+            return Promise.reject(new Error('Doctor user ID missing'));
         }
 
         const doctorProfileDoc = await db.collection('Users').doc(userId).get();
@@ -266,11 +445,143 @@ async function editDoctorDetails(doctorId){
             if(editDoctorEmailInput){
                 editDoctorEmailInput.value = doctorProfileData.email || '';
             }
+            console.log('Doctor details loaded successfully');
+            return Promise.resolve();
+        } else {
+            console.error('Doctor profile doc not found for edit:', userId);
+            return Promise.reject(new Error('Doctor profile not found'));
         }
     }catch(error){
         console.error('Error fetching doctor details for edit:', error);
-        return;
+        return Promise.reject(error);
     }
+}
+
+//show add doctor pop up 
+function showAddDoctorPopup(){
+    const adminMain = document.getElementById('admin-main');
+    const doctorPopup = document.getElementById('add-doctor-popup');
+
+    if(doctorPopup){
+        doctorPopup.style.display = 'flex';
+        if(adminMain){
+            adminMain.style.filter = 'blur(5px)';
+        }
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+
+// cancel add doctor pop up
+function closeAddDoctorPopup(){
+    const adminMain = document.getElementById('admin-main');
+    const doctorPopup = document.getElementById('add-doctor-popup');
+
+    if(doctorPopup){
+        doctorPopup.style.display = 'none';
+    }
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+    document.body.style.overflow = 'auto';
+}
+
+//add new doctor
+async function addNewDoctor(){
+    try{
+        const nameInput = document.getElementById('add-doctor-name');
+        const usernameInput = document.getElementById('add-doctor-username');
+        const specializationInput = document.getElementById('add-doctor-specialization');
+        const genderInput = document.getElementById('add-doctor-gender');
+        const descriptionInput = document.getElementById('add-doctor-description');
+        const roomInput = document.getElementById('add-doctor-room');
+        const phoneNumberInput = document.getElementById('add-doctor-phone');
+        const emailInput = document.getElementById('add-doctor-email');
+        const passwordInput = document.getElementById('add-doctor-password');
+
+        const name = nameInput.value;
+        const username = usernameInput.value;
+        const specialization = specializationInput.value;
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const gender = genderInput.value;
+        const description = descriptionInput.value;
+        const phoneNumber = phoneNumberInput.value;
+        const room = roomInput.value;
+
+        if(!auth.currentUser){
+            throw new Error('No user logged in.');
+        }
+
+        console.log('Getting ID token for user:', auth.currentUser.uid);
+        const idToken = await auth.currentUser.getIdToken();
+        console.log('ID token obtained, length:', idToken.length);
+        
+        const response = await fetch('http://localhost:3000/api/admin/create-doctor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+                name,
+                username,
+                specialization,
+                description,
+                room,
+                gender,
+                phoneNumber,
+                email,
+                password
+            })
+        });
+
+        console.log('Response status:', response.status);
+        
+        // Check if response has content before parsing JSON
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        
+        let result;
+        if(responseText){
+            try{
+                result = JSON.parse(responseText);
+            }catch(e){
+                throw new Error('Server returned invalid response: ' + responseText);
+            }
+        }else{
+            throw new Error('Server returned empty response');
+        }
+        
+        console.log('Server response:', result);
+        
+        if(!response.ok){
+            throw new Error(result.error || 'Failed to create doctor');
+        }
+        
+        console.log('Doctor created successfully');
+        alert('Doctor added successfully!');
+        closeAddDoctorPopup();
+        loadDoctors();
+
+    } catch(error){
+        console.error('Error adding new doctor:', error);
+        alert('Error: ' + error.message);
+    }
+}
+
+function closeAddDoctorPopup(){
+    const adminMain = document.getElementById('admin-main');
+    const doctorPopup = document.getElementById('add-doctor-popup');
+
+    if(doctorPopup){
+        doctorPopup.style.display = 'none';
+    }
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+    document.body.style.overflow = 'auto';
+
 }
 
 function showLogoutConfirmation(){
@@ -318,4 +629,26 @@ function setActiveNavLink(){
     });
 }
 
-document.addEventListener('DOMContentLoaded', setActiveNavLink);
+function initAddDoctorGenderSelect(){
+    if(!addDoctorGenderSelect){
+        return;
+    }
+
+    const removePlaceholder = () => {
+        const placeholder = addDoctorGenderSelect.querySelector('option[value=""]');
+        if(placeholder){
+            placeholder.remove();
+        }
+    };
+
+    addDoctorGenderSelect.addEventListener('change', () => {
+        if(addDoctorGenderSelect.value){
+            removePlaceholder();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setActiveNavLink();
+    initAddDoctorGenderSelect();
+});

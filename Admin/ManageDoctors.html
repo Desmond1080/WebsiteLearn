@@ -23,7 +23,7 @@
             <div class="navbar-container">
                 <!-- Logo/Brand -->
                 <div class="navbar-brand">
-                    <span class="brand-text">Admin Dashboard</span>
+                    <span class="brand-text">Manage Doctors</span>
                 </div>
 
                 <!-- Hamburger Menu for Mobile -->
@@ -87,6 +87,14 @@
             <p>Here you can view, add, edit, and delete doctor profiles. Use the options below to manage the doctors in the system.</p>
             <br>
 
+            <!-- add new doctor button-->
+            <div class="add-new-doctor-section" id="add-new-doctor-section">
+                <button class="add-new-doctor-button" id="add-new-doctor-button" onclick="showAddDoctorPopup(); return false;">
+                    <i class="fas fa-user-plus"></i> Add New Doctor
+                </button>
+            </div>
+
+
             <!-- Doctor List Section Showing with table -->
             <div class="doctor-list-container" id="doctor-list-container">
                 <h2>Doctor List</h2>
@@ -95,19 +103,11 @@
                 </div>
             </div>
 
-            <div class="add-new-doctor-section" id="add-new-doctor-section">
-                <h2>Add New Doctor</h2>
-                <form id="add-doctor-form">
-                    <div class="form-field">
-                        
-                    </div>
-            </div>
-
         </div>
 
 
         <!--logout confirmation pop-up-->
-        <div class="logout-confirmation-popup" id="logout-confirmation-popup" style="display: none;">
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup">
             <div class="logout-confirmation-content">
                 <h2>Confirm Logout</h2>
                 <p>Are you sure you want to logout?</p>
@@ -142,7 +142,11 @@
 
                     <div class="form-field">
                         <label for="edit-doctor-gender">Gender</label>
-                        <input type="text" id="edit-doctor-gender" placeholder=" " disabled>
+                        <select id="edit-doctor-gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
                     </div>
 
                     <div class="form-field">
@@ -150,10 +154,74 @@
                         <input type="email" id="edit-doctor-email" placeholder=" " disabled>
                     </div>
 
-                    <button type="button" onclick="updateProfile()" class="update-btn">Update</button>
-                    <button type="button" onclick="closeEditDoctorPopup()" class="cancel-btn">Cancel</button>
+                    <div class="button-group">
+                        <button type="button" onclick="updateProfile()" class="update-btn">Update</button>
+                        <button type="button" onclick="closeEditDoctorPopup()" class="cancel-btn">Cancel</button>
+                    </div>
                 </form>
 
+            </div>
+        </div>
+
+        <!-- add new doctor pop up page-->
+        <div class="add-doctor-popup" id="add-doctor-popup" style="display:none">
+            <div class="add-doctor-content" id="add-doctor-content">
+                <h2> Add New Doctor</h2>
+                <form>
+                    <div class="form-field">
+                        <label for="add-doctor-name">Doctor Name</label>
+                        <input type="text" id="add-doctor-name" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-username">Username</label>
+                        <input type="text" id="add-doctor-username" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-specialization">Specialization</label>
+                        <input type="text" id="add-doctor-specialization" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-description">Description</label>
+                        <textarea id="add-doctor-description" placeholder=" " required></textarea>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-room">Room Number</label>
+                        <input type="text" id="add-doctor-room" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-gender">Gender</label>
+                        <select id="add-doctor-gender" required>
+                            <option value="" >Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-phone">Phone Number</label>
+                        <input type="tel" id="add-doctor-phone" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-email">Email</label>
+                        <input type="email" id="add-doctor-email" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-doctor-password">Password</label>
+                        <input type="password" id="add-doctor-password" placeholder=" " required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" onclick="addNewDoctor()" class="add-btn">Add Doctor</button>
+                        <button type="button" onclick="closeAddDoctorPopup()" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -166,6 +234,9 @@
                 <button onclick="closeUpdateSuccessMessage()">OK</button>
             </div>
         </div>
+
+        <!-- add doctor successful message -->
+        
 
     <!-- script-->
     <script src="../firebase-config.js"></script>

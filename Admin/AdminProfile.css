@@ -1,0 +1,18 @@
+.profile-container{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-profile-content {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-profile-content p {
+    margin: 0px 0px 4px;
+    font-size: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
