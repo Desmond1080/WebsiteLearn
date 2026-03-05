@@ -90,6 +90,44 @@
             </div>
         </div>
 
+
+        <div class="edit-admin-profile" id="edit-admin-profile">
+            <form>
+                <h2>Identity</h2>
+                <label for="admin-name-input">Name:</label>
+                <input type="text" id="admin-name-input" name="admin-name" disabled>
+
+                <label for="admin-username-input">Username:</label>
+                <input type="text" id="admin-username-input" name="admin-username" disabled>
+
+                <label for="admin-description-input">Description:</label>
+                <input type="text" id="admin-description-input" name="admin-description" disabled>
+
+                <label for="admin-gender-input">Gender:</label>
+                <input type="text" id="admin-gender-input" name="admin-gender" disabled>
+
+                <label for="admin-role-input">Role:</label>
+                <input type="text" id="admin-role-input" name="admin-role" disabled>
+            </form>
+
+            <form>
+                <h2>Contact Information</h2>
+                <label for="admin-phone-input">Phone:</label>
+                <input type="text" id="admin-phone-input" name="admin-phone" disabled>
+
+                <label for="admin-email-input">Email:</label>
+                <input type="email" id="admin-email-input" name="admin-email" disabled>
+
+                <label for="admin-address-input">Address:</label>
+                <input type="text" id="admin-address-input" name="admin-address" disabled>
+            </form>
+
+            <div class="save-admin-profile-button" id="save-admin-profile-button" style="display: none;">
+                <button type="button" id="save-profile-button" onclick="saveProfile()">Save Changes</button>
+                <button type="button" id="cancel-profile-button" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </div>
+
     </main>
 
     <!-- Scripts -->
