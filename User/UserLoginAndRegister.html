@@ -98,15 +98,50 @@
          
             <div id="forgot-password-form" class = "form-container">
                 <h2>Reset Password</h2>
-                <form>
-                    <div class="floating-input">
-                        <input type="email" id="forgot-password-email" placeholder=" " required>
-                        <label for="forgot-password-email">Email Address</label>
-                    </div>
-                    <button type="button" class="reset-button" onclick="resetPassword()">Send Reset Link</button>
-                    <p>Remember your password? <a href="#" onclick="showLogin()" class="button-secondary">Back to Login</a></p>
-                    <p id="forgot-password-error" class="error"></p>
-                </form>
+                
+                <!-- Step 1: Email Input -->
+                <div id="email-step">
+                    <form>
+                        <div class="floating-input">
+                            <input type="email" id="forgot-password-email" placeholder=" " required>
+                            <label for="forgot-password-email">Email Address</label>
+                        </div>
+                        <button type="button" class="reset-button" onclick="sendOTP()">Send OTP</button>
+                        <p>Remember your password? <a href="#" onclick="showLogin()" class="button-secondary">Back to Login</a></p>
+                        <p id="forgot-password-error" class="error"></p>
+                    </form>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="otp-step" style="display: none">
+                    <form>
+                        <div class="floating-input">
+                            <input type="text" id="otp-code" placeholder=" " maxlength="6" required>
+                            <label for="otp-code">6-Digit OTP Code</label>
+                        </div>
+                        <button type="button" class="reset-button" onclick="verifyOTP()">Verify OTP</button>
+                        <button type="button" class="reset-button secondary" onclick="resendOTP()">Resend OTP</button>
+                        <p id="otp-error" class="error"></p>
+                    </form>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="new-password-step" style="display: none">
+                    <form>
+                        <div class="floating-input" style="position: relative;">
+                            <input type="password" id="new-password" placeholder=" " required>
+                            <label for="new-password">New Password</label>
+                            <button type="button" onclick="togglePasswordVisibility('new-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img src="../image/eye.png" style="width: 20px; height: 20px;"></button>
+                        </div>
+                        <div class="floating-input" style="position: relative;">
+                            <input type="password" id="confirm-password" placeholder=" " required>
+                            <label for="confirm-password">Confirm Password</label>
+                            <button type="button" onclick="togglePasswordVisibility('confirm-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"><img src="../image/eye.png" style="width: 20px; height: 20px;"></button>
+                        </div>
+                        <button type="button" class="reset-button" onclick="resetPasswordWithOTP()">Reset Password</button>
+                        <p id="reset-error" class="error"></p>
+                    </form>
+                </div>
             </div>
 
 

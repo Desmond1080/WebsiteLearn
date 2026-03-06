@@ -10,6 +10,8 @@ const forgotPasswordForm = document.getElementById('forgot-password-form');
 const termsAndConditionsForm = document.getElementById('terms-and-conditions-form');
 
 let selectedRole = 'user'; // default role
+let resetEmail = ''; // Store email for password reset
+let resetToken = ''; // Store reset token for password reset flow
 
 // role selection function 
 function selectRole(role){
@@ -967,4 +969,212 @@ function showLogoutConfirmation(){
         }
     });
     document.body.style.overflow = 'hidden';
+}
+
+// send otp
+async function sendOTP(){
+    const emailInput = document.getElementById('forgot-password-email');
+    const email = emailInput.value.trim();
+    const errorMsg = document.getElementById('forgot-password-error');
+
+    emailInput.style.border = '';
+    errorMsg.innerText = '';
+
+    if(!email){
+        errorMsg.innerText = 'Please enter your email';
+        errorMsg.style.color = 'red';
+        return;
+    }
+
+    try{
+        const response = await fetch('http://localhost:3000/api/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+            resetEmail = email;
+            errorMsg.innerText = 'OTP sent to your email! Check your inbox. (Valid for 10 minutes)';
+            errorMsg.style.color = 'green';
+
+            // Show OTP input step
+            setTimeout(() => {
+                document.getElementById('email-step').style.display = 'none';
+                document.getElementById('otp-step').style.display = 'block';
+            }, 500);
+            
+            emailInput.disabled = true; // Disable email input after sending OTP
+        } else {
+            errorMsg.innerText = data.error || 'Failed to send OTP. Please try again.';
+            errorMsg.style.color = 'red';
+        }
+    } catch(error){
+        console.error('Error sending OTP:', error);
+        errorMsg.innerText = 'An error occurred while sending OTP. Please try again.';
+        errorMsg.style.color = 'red';
+    }
+}
+
+// verify otp 
+async function verifyOTP(){
+    const otpInput = document.getElementById('otp-code');
+    const otp = otpInput.value.trim();
+    const errorMsg = document.getElementById('otp-error');
+    otpInput.style.border = '';
+    
+    if(!otp || otp.length !== 6){
+        errorMsg.innerText = 'Please enter a valid 6-digit OTP';
+        errorMsg.style.color = 'red';
+        return;
+    }
+
+    try{
+        const response = await fetch('http://localhost:3000/api/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: resetEmail, otp })
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+            resetToken = data.resetToken; // Store reset token for password reset
+            errorMsg.innerText = 'OTP verified! Please enter your new password.';
+            errorMsg.style.color = 'green';
+
+            // Show new password input
+            setTimeout(() => {
+                document.getElementById('otp-step').style.display = 'none';
+                document.getElementById('new-password-step').style.display = 'block';
+            }, 500);
+            
+            otpInput.disabled = true; // disable OTP input after successful verification
+        } else{
+            errorMsg.innerText = data.error || 'Invalid OTP. Please try again.';
+            errorMsg.style.color = 'red';
+        }
+    }catch(error){
+        console.error('Error verifying OTP:', error);
+        errorMsg.innerText = 'An error occurred while verifying OTP. Please try again.';
+        errorMsg.style.color = 'red';
+    }
+}
+
+// reset password with token
+async function resetPasswordWithOTP(){
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const errorMsg = document.getElementById('reset-error');
+
+    errorMsg.innerText = '';
+
+    if(!newPassword || !confirmPassword){
+        errorMsg.innerText = 'Please fill in all fields';
+        errorMsg.style.color = 'red';
+        return;
+    }
+
+    if(newPassword !== confirmPassword){
+        errorMsg.innerText = 'Passwords do not match';
+        errorMsg.style.color = 'red';
+        return;
+    }
+
+    if(newPassword.length < 6){
+        errorMsg.innerText = 'Password must be at least 6 characters long';
+        errorMsg.style.color = 'red';
+        return;
+    }
+
+    try{
+        const response = await fetch('http://localhost:3000/api/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: resetEmail,
+                resetToken,
+                newPassword
+            })
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+            errorMsg.innerText = 'Password reset successful! Redirecting to login...';
+            errorMsg.style.color = 'green';
+            
+            // Reset form for next use
+            setTimeout(() => {
+                document.getElementById('forgot-password-email').value = '';
+                document.getElementById('otp-code').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                document.getElementById('email-step').style.display = 'block';
+                document.getElementById('otp-step').style.display = 'none';
+                document.getElementById('new-password-step').style.display = 'none';
+                document.getElementById('forgot-password-email').disabled = false;
+                showLogin();
+            }, 2000);
+        } else {
+            errorMsg.innerText = data.error || 'Failed to reset password. Please try again.';
+            errorMsg.style.color = 'red';
+        }
+    } catch(error){
+        console.error('Error resetting password:', error);
+        errorMsg.innerText = 'An error occurred while resetting password. Please try again.';
+        errorMsg.style.color = 'red';
+    }
+}
+
+// resend otp function by handling spamming issue with a cooldown timer
+let otpCooldown = false;
+
+async function resendOTP(){
+    if(otpCooldown){
+        alert('Please wait 1 minute before requesting another OTP.');
+        return;
+    }
+    
+    const emailInput = document.getElementById('forgot-password-email');
+    const email = emailInput.value.trim();
+    const otpError = document.getElementById('otp-error');
+    
+    if(!email){
+        otpError.innerText = 'Please enter your email address first';
+        otpError.style.color = 'red';
+        return;
+    }
+
+    try{
+        const response = await fetch('http://localhost:3000/api/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+            otpError.innerText = 'OTP resent to your email! (Valid for 10 minutes)';
+            otpError.style.color = 'green';
+            
+            otpCooldown = true;
+            setTimeout(() => {
+                otpCooldown = false;
+                otpError.innerText = '';
+            }, 60000); // 1 minute cooldown
+        } else {
+            otpError.innerText = data.error || 'Failed to resend OTP. Please try again.';
+            otpError.style.color = 'red';
+        }
+    } catch(error){
+        console.error('Error resending OTP:', error);
+        otpError.innerText = 'An error occurred. Please try again.';
+        otpError.style.color = 'red';
+    }
 }

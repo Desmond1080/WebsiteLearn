@@ -9,8 +9,97 @@ const adminPhoneInput = document.getElementById('admin-phone-input');
 const adminRoleInput = document.getElementById('admin-role-input');
 const saveAdminProfileButton = document.getElementById('save-admin-profile-button');
 const logoutButton = document.getElementById('admin-logout-button');
+const currentPasswordInput = document.getElementById('current-password');
+const newPasswordInput = document.getElementById('new-password');
+const confirmPasswordInput = document.getElementById('confirm-new-password');
 
 console.log('AdminProfile.js loaded, adminProfile element:', adminProfile);
+
+// Tab switching function
+function showTab(tabId) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => tab.classList.remove('active'));
+    
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => button.classList.remove('active'));
+    
+    // Show selected tab content
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+    
+    // Add active class to clicked button
+    const clickedButton = event.target.closest('.tab-button');
+    if (clickedButton) {
+        clickedButton.classList.add('active');
+    }
+}
+
+// Toggle password visibility
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = event.target;
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Clear password fields
+function clearPasswordFields() {
+    if (currentPasswordInput) currentPasswordInput.value = '';
+    if (newPasswordInput) newPasswordInput.value = '';
+    if (confirmPasswordInput) confirmPasswordInput.value = '';
+    
+    // Clear messages
+    const errorMsg = document.getElementById('password-error-message');
+    const successMsg = document.getElementById('password-success-message');
+    if (errorMsg) errorMsg.classList.remove('show');
+    if (successMsg) successMsg.classList.remove('show');
+}
+
+// Show error message
+function showPasswordError(message) {
+    const errorMsg = document.getElementById('password-error-message');
+    const successMsg = document.getElementById('password-success-message');
+    
+    if (successMsg) successMsg.classList.remove('show');
+    if (errorMsg) {
+        errorMsg.textContent = message;
+        errorMsg.classList.add('show');
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            errorMsg.classList.remove('show');
+        }, 5000);
+    }
+}
+
+// Show success message
+function showPasswordSuccess(message) {
+    const errorMsg = document.getElementById('password-error-message');
+    const successMsg = document.getElementById('password-success-message');
+    
+    if (errorMsg) errorMsg.classList.remove('show');
+    if (successMsg) {
+        successMsg.textContent = message;
+        successMsg.classList.add('show');
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            successMsg.classList.remove('show');
+        }, 5000);
+    }
+}
 
 // check auth state
 async function checkAuthState() {
@@ -193,6 +282,88 @@ function saveProfile(){
     }
 }
 
+async function updatePassword(){
+    const currentPassword = currentPasswordInput.value;
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showPasswordError('All fields are required');
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showPasswordError('New password and confirm password do not match');
+        return;
+    }
+
+    if (currentPassword === newPassword) {
+        showPasswordError('New password must be different from current password');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        showPasswordError('New password must be at least 6 characters long');
+        return;
+    }
+
+    if (newPassword.length > 100) {
+        showPasswordError('New password must be less than 100 characters long');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            showPasswordError('No user logged in');
+            return;
+        }
+
+        // Disable button during update
+        const updateBtn = document.getElementById('update-password-btn');
+        if (updateBtn) {
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        }
+
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+        
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        
+        showPasswordSuccess('Password updated successfully!');
+        clearPasswordFields();
+        
+        // Re-enable button
+        if (updateBtn) {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = '<i class="fas fa-key"></i> Update Password';
+        }
+    } catch (error) {
+        console.error('Error updating password:', error);
+        
+        let errorMessage = 'Error updating password';
+        if (error.code === 'auth/wrong-password') {
+            errorMessage = 'Current password is incorrect';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'Password is too weak. Please choose a stronger password';
+        } else if (error.code === 'auth/requires-recent-login') {
+            errorMessage = 'Please log out and log back in before changing your password';
+        } else {
+            errorMessage = error.message;
+        }
+        
+        showPasswordError(errorMessage);
+        
+        // Re-enable button
+        const updateBtn = document.getElementById('update-password-btn');
+        if (updateBtn) {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = '<i class="fas fa-key"></i> Update Password';
+        }
+    }
+}
 checkAuthState();
 
 function showLogoutConfirmation(){

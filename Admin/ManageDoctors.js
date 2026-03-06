@@ -53,7 +53,18 @@ async function loadDoctors(){
         console.log('Doctors: First doctor doc sample:', doctorsSnapshot.docs[0]?.data());
         console.log('Doctors: First user doc sample:', doctorsProfileSnapshot.docs[0]?.data());
         
-        let doctorListHTML = '<table style="width: 100%; border-collapse: collapse; margin: 20px auto;"><tr><th style="border: 1px solid #ccc; padding: 10px;">Doctor Name</th><th style="border: 1px solid #ccc; padding: 10px;">Username</th><th style="border: 1px solid #ccc; padding: 10px;">Specialization</th><th style="border: 1px solid #ccc; padding: 10px;">Gender</th><th style="border: 1px solid #ccc; padding: 10px;">Email</th><th style="border: 1px solid #ccc; padding: 10px;">Edit</th></tr>';
+        let doctorListHTML = `<table>
+            <thead>
+                <tr>
+                    <th>Doctor Name</th>
+                    <th>Username</th>
+                    <th>Specialization</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>`;
 
         if(!doctorsSnapshot.empty && !doctorsProfileSnapshot.empty){
             const doctorProfiles = {};
@@ -100,9 +111,20 @@ async function loadDoctors(){
 
                 doctorProfile = doctorProfile || {};
                 const genderLabel = doctorProfile.gender || doctorData.gender || 'N/A';
-                doctorListHTML += `<tr><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.name || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.username || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorData.specialization || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px;">${genderLabel}</td><td style="border: 1px solid #ccc; padding: 10px;">${doctorProfile.email || 'N/A'}</td><td style="border: 1px solid #ccc; padding: 10px; text-align: center;"><button type="button" onclick="showEditDoctorForm('${doc.id}')">Edit</button></td></tr>`;
+                doctorListHTML += `<tr>
+                    <td>${doctorData.name || 'N/A'}</td>
+                    <td>${doctorProfile.username || 'N/A'}</td>
+                    <td>${doctorData.specialization || 'N/A'}</td>
+                    <td>${genderLabel}</td>
+                    <td>${doctorProfile.email || 'N/A'}</td>
+                    <td style="text-align: center;">
+                        <button type="button" class="edit-btn" onclick="showEditDoctorForm('${doc.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                </tr>`;
             });
-            doctorListHTML += '</table>';
+            doctorListHTML += '</tbody></table>';
             console.log('Doctors: final HTML length', doctorListHTML.length);
             console.log('Doctors: HTML preview:', doctorListHTML.substring(0, 200));
             console.log('Doctors: totalDoctors element exists?', !!totalDoctors);
@@ -115,7 +137,7 @@ async function loadDoctors(){
             }
         } else {
             console.log('Doctors: no matching data to display.');
-            doctorListHTML += '<tr><td colspan="6">No doctors found</td></tr></table>';
+            doctorListHTML += '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #64748b;">No doctors found</td></tr></tbody></table>';
             if(totalDoctors){
                 totalDoctors.innerHTML = doctorListHTML;
             }

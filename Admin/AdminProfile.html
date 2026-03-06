@@ -85,15 +85,26 @@
     <main class="admin-profile-main">
         <div class="profile-container">
             <h1>My Profile</h1>
-            <div class="admin-profile-content" id="admin-profile-content">
-                
+            
+            <!-- Tab Navigation -->
+            <div class="profile-tabs">
+                <button class="tab-button active" onclick="showTab('profile-tab')">
+                    <i class="fas fa-user"></i> Profile Information
+                </button>
+                <button class="tab-button" onclick="showTab('password-tab')">
+                    <i class="fas fa-lock"></i> Reset Password
+                </button>
             </div>
-        </div>
 
+            <!-- Profile Tab Content -->
+            <div id="profile-tab" class="tab-content active">
+                <div class="admin-profile-content" id="admin-profile-content">
+                    
+                </div>
 
-        <div class="edit-admin-profile" id="edit-admin-profile">
+                <div class="edit-admin-profile" id="edit-admin-profile">
             <form>
-                <h2>Identity</h2>
+                <h2><i class="fas fa-id-card identity-icon" id="identity-icon" title="Identity"></i>Identity</h2>
                 <label for="admin-name-input">Name:</label>
                 <input type="text" id="admin-name-input" name="admin-name" disabled>
 
@@ -111,7 +122,7 @@
             </form>
 
             <form>
-                <h2>Contact Information</h2>
+                <h2><i class="fas fa-phone identity-icon" id="contact-icon" title="Contact Information"></i>Contact Information</h2>
                 <label for="admin-phone-input">Phone:</label>
                 <input type="text" id="admin-phone-input" name="admin-phone" disabled>
 
@@ -127,6 +138,54 @@
                 <button type="button" id="cancel-profile-button" onclick="cancelEdit()">Cancel</button>
             </div>
         </div>
+    </div>
+
+    <!-- Password Reset Tab Content -->
+    <div id="password-tab" class="tab-content">
+        <div class="reset-password-section">
+            <h2><i class="fas fa-lock identity-icon"></i>Change Password</h2>
+            <p class="password-hint">Enter your current password and choose a new one.</p>
+            
+            <form id="password-reset-form">
+                <div class="password-field-group">
+                    <label for="current-password">Current Password:</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="current-password" name="current-password" placeholder="Enter current password">
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('current-password')"></i>
+                    </div>
+                </div>
+
+                <div class="password-field-group">
+                    <label for="new-password">New Password:</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="new-password" name="new-password" placeholder="Enter new password (min 6 characters)">
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('new-password')"></i>
+                    </div>
+                </div>
+                
+                <div class="password-field-group">
+                    <label for="confirm-new-password">Confirm New Password:</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirm-new-password" name="confirm-new-password" placeholder="Confirm new password">
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirm-new-password')"></i>
+                    </div>
+                </div>
+
+                <div class="password-error-message" id="password-error-message"></div>
+                <div class="password-success-message" id="password-success-message"></div>
+
+                <div class="update-password-button">
+                    <button type="button" id="update-password-btn" onclick="updatePassword()">
+                        <i class="fas fa-key"></i> Update Password
+                    </button>
+                    <button type="button" id="cancel-password-btn" onclick="clearPasswordFields()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     </main>
 
