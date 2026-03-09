@@ -224,6 +224,105 @@ body.dark-mode .header {
     font-weight: 600;
 }
 
+/* Address block in register form */
+.address-input {
+    margin-bottom: 16px;
+    padding: 14px;
+    border: 1px solid #ead8dd;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fff9fc 0%, #fff 100%);
+}
+
+.address-title {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #a74f6a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.register-address {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.address-field {
+    position: relative;
+}
+
+.address-field-full {
+    grid-column: 1 / -1;
+}
+
+.address-field input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #fff;
+}
+
+.address-field input:focus {
+    border-color: palevioletred;
+}
+
+.address-field label {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #999;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    background-color: #fff;
+    padding: 0 5px;
+}
+
+.address-field input:focus ~ label,
+.address-field input:not(:placeholder-shown) ~ label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: palevioletred;
+    font-weight: 600;
+}
+
+body.dark-mode .address-input {
+    border-color: #334155;
+    background: linear-gradient(180deg, #0f1b2d 0%, #111827 100%);
+}
+
+body.dark-mode .address-title {
+    color: #fda4c4;
+}
+
+body.dark-mode .address-field input {
+    border-color: #334155;
+    background-color: #111827;
+    color: #e5e7eb;
+}
+
+body.dark-mode .address-field label {
+    background-color: #111827;
+    color: #94a3b8;
+}
+
+@media (max-width: 600px) {
+    .register-address {
+        grid-template-columns: 1fr;
+    }
+
+    .address-field-full {
+        grid-column: auto;
+    }
+}
+
 .error {
     color: red;
     font-size: 14px;
@@ -1196,6 +1295,120 @@ body.dark-mode .header {
     color: #9ca3af;
     font-size: 16px;
     margin-left: 0;
+}
+
+/* Register page visual refresh */
+#register-form.register-enhanced {
+    max-width: 460px;
+    border: 1px solid #e6d6dd;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 166, 193, 0.24) 0%, rgba(255, 166, 193, 0) 36%),
+        linear-gradient(180deg, #fff7fb 0%, #ffffff 58%);
+    box-shadow: 0 18px 40px rgba(143, 67, 95, 0.16);
+    padding: 26px;
+    animation: registerCardEnter 0.45s ease;
+}
+
+#register-form.register-enhanced h2 {
+    margin-bottom: 8px;
+    color: #8f435f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 28px;
+    letter-spacing: 0.2px;
+}
+
+#register-form .register-subtitle {
+    margin: 0 auto 18px;
+    max-width: 340px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #7d5a69;
+}
+
+#register-form.register-enhanced form {
+    display: grid;
+    gap: 4px;
+}
+
+#register-form.register-enhanced .floating-input input,
+#register-form.register-enhanced .floating-input select,
+#register-form.register-enhanced .address-field input {
+    border-radius: 11px;
+    border-color: #d8b8c3;
+    background: #fff;
+}
+
+#register-form.register-enhanced .floating-input input:focus,
+#register-form.register-enhanced .floating-input select:focus,
+#register-form.register-enhanced .address-field input:focus {
+    border-color: #cf5e8a;
+    box-shadow: 0 0 0 4px rgba(207, 94, 138, 0.15);
+}
+
+#register-form.register-enhanced .register-button {
+    margin-top: 10px;
+    border-radius: 999px;
+    padding: 13px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    background: linear-gradient(90deg, #c94f77 0%, #d875a0 100%);
+    box-shadow: 0 10px 20px rgba(201, 79, 119, 0.26);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+
+#register-form.register-enhanced .register-button:hover {
+    filter: brightness(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(201, 79, 119, 0.3);
+}
+
+#register-form.register-enhanced .secondary {
+    margin-top: 16px;
+    line-height: 1.4;
+}
+
+body.dark-mode #register-form.register-enhanced {
+    border-color: #334155;
+    background:
+        radial-gradient(circle at top right, rgba(253, 164, 196, 0.2) 0%, rgba(253, 164, 196, 0) 36%),
+        linear-gradient(180deg, #0f1b2d 0%, #111827 65%);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode #register-form.register-enhanced h2 {
+    color: #f9a8c6;
+}
+
+body.dark-mode #register-form .register-subtitle {
+    color: #cbd5e1;
+}
+
+@keyframes registerCardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 520px) {
+    #register-form.register-enhanced {
+        padding: 18px 16px;
+        border-radius: 14px;
+    }
+
+    #register-form.register-enhanced h2 {
+        font-size: 24px;
+    }
 }
 
 

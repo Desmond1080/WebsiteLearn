@@ -266,6 +266,75 @@ app.post('/api/admin/create-doctor', verifyAdmin, async (req, res) => {
   }
 });
 
+// Create user with any role (admin/user/doctor) - creates Doctors doc if role=doctor
+app.post('/api/admin/create-user', verifyAdmin, async (req, res) => {
+  try {
+    const {
+      name,
+      username,
+      description,
+      role,
+      gender,
+      phoneNumber,
+      email,
+      password,
+      // Doctor-specific fields (optional, only used if role=doctor)
+      specialization,
+      room,
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !username || !role || !gender || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields.' });
+    }
+
+    // If role is doctor, require specialization
+    if (role === 'doctor' && !specialization) {
+      return res.status(400).json({ error: 'Specialization is required for doctors.' });
+    }
+
+    // Create Firebase Auth user
+    const userRecord = await admin.auth().createUser({
+      email,
+      password,
+      displayName: name,
+    });
+
+    const userId = userRecord.uid;
+    const firestore = admin.firestore();
+
+    // Create Users collection document
+    await firestore.collection('Users').doc(userId).set({
+      name,
+      username,
+      description: description || '',
+      gender,
+      email,
+      role,
+      imageUrl: '',
+      phoneNumber: phoneNumber || '',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // If role is doctor, also create Doctors collection document
+    if (role === 'doctor') {
+      await firestore.collection('Doctors').doc(userId).set({
+        userId,
+        name,
+        specialization,
+        room: room || '',
+        imageUrl: '',
+        description: description || '',
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
+    return res.json({ success: true, uid: userId, role });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

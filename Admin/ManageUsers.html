@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../Admin/Dashboard.css">
     <link rel="stylesheet" href="../Admin/ManageUsers.css">
     <link rel="stylesheet" href="../theme.css">
-    <title>Admin Dashboard</title> 
+    <title>Manage Users</title> 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -24,7 +24,7 @@
             <div class="navbar-container">
                 <!-- Logo/Brand -->
                 <div class="navbar-brand">
-                    <span class="brand-text">Admin Dashboard</span>
+                    <span class="brand-text">Manage Users</span>
                 </div>
 
                 <!-- Hamburger Menu for Mobile -->
@@ -88,8 +88,158 @@
             <!-- Manage Users content goes here -->
             <h1>Manage Users</h1>
             <p>This is the Manage Users page.</p>
+
+
+            <!-- add new user button-->
+            <div class="add-new-user-section" id="add-new-user-section">
+                <button class="add-new-user-button" id="add-new-user-button" onclick="showAddUserPopup(); return false;">
+                    <i class="fas fa-user-plus"></i> Add New User
+                </button>
+            </div>
+
+            <!-- user list -->
+            <div class="user-list-container" id="user-list-container">
+                <h2>User List</h2>
+                <div class="user-list-content" id="user-list-content">
+                    <!-- User list will be dynamically populated here -->
+                </div>
+            </div>
         </div>
+
+        <!--logout confirmation pop-up-->
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <p><img src="../Admin/adminImage/logout (1).png" alt="Logout Icon"></p>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
     </main>
+
+
+    <div id="edit-user-popup" class="edit-user-popup" style="display: none;">
+            <div class="edit-user-content" id="edit-user-content">
+                <!-- Edit user form will be populated here -->
+                 <h2>Edit User Profile</h2>
+                <form>
+                    <div class="form-field">
+                        <label for="edit-user-name">User Name</label>
+                        <input type="text" id="edit-user-name" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit-user-username">Username</label>
+                        <input type="text" id="edit-user-username" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit-user-gender">Gender</label>
+                        <select id="edit-user-gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="edit-user-email">Email</label>
+                        <input type="email" id="edit-user-email" placeholder=" " disabled>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" onclick="updateProfile()" class="update-btn">Update</button>
+                        <button type="button" onclick="closeEditUserPopup()" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    <!-- add new user pop up page-->
+        <div class="add-user-popup" id="add-user-popup" style="display:none">
+            <div class="add-user-content" id="add-user-content">
+                <h2> Add New User</h2>
+                <form>
+                    <div class="form-field">
+                        <label for="add-user-name">User Name</label>
+                        <input type="text" id="add-user-name" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-username">Username</label>
+                        <input type="text" id="add-user-username" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-description">Description</label>
+                        <input type="text" id="add-user-description" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-role">Role</label>
+                        <select id="add-user-role" required onchange="toggleDoctorFields()">
+                            <option value="" >Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            <option value="doctor">Doctor</option>
+                        </select>
+                    </div>
+
+                    <!-- Doctor-specific fields (hidden by default) -->
+                    <div class="form-field doctor-only-field" id="specialization-field" style="display: none;">
+                        <label for="add-user-specialization">Specialization <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="add-user-specialization" placeholder="e.g., Cardiology, Pediatrics">
+                    </div>
+
+                    <div class="form-field doctor-only-field" id="room-field" style="display: none;">
+                        <label for="add-user-room">Room Number</label>
+                        <input type="text" id="add-user-room" placeholder="e.g., 101">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-gender">Gender</label>
+                        <select id="add-user-gender" required>
+                            <option value="" >Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-phone">Phone Number</label>
+                        <input type="tel" id="add-user-phone" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-email">Email</label>
+                        <input type="email" id="add-user-email" placeholder=" " required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="add-user-password">Password</label>
+                        <input type="password" id="add-user-password" placeholder=" " required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" onclick="addNewUser()" class="add-btn">Add User</button>
+                        <button type="button" onclick="closeAddUserPopup()" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <!-- update successful message -->
+        <div id="update-success-message" class="update-success-message" style="display: none;">
+            <div class="update-success-content">
+                <h2>Update Successful!</h2>
+                <p>User profile has been updated successfully.</p>
+                <p><img src="../Admin/adminImage/checked.png" alt="Success Icon"></p>
+                <button onclick="closeUpdateSuccessMessage()">OK</button>
+            </div>
+        </div>
 
     <!-- script-->
     <script src="../firebase-config.js"></script>

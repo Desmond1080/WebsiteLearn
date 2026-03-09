@@ -52,8 +52,9 @@
                 </form>
             </div>
             
-            <div id="register-form" class="form-container" style="display: none;">
-                <h2>Register</h2>
+            <div id="register-form" class="form-container register-enhanced" style="display: none;">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <p class="register-subtitle">Create your account to start managing appointments and health notes.</p>
                 <form>
                     <!--upload profile pictures-->
                     <div class="floating-input">
@@ -75,6 +76,28 @@
                             <option value="Female">Female</option>
                             <option value="Not To Say">Prefer Not to Say</option>
                         </select>
+                    </div>
+                    <!--address -->
+                    <div class="address-input">
+                        <h3 class="address-title"><i class="fas fa-location-dot"></i> Address</h3>
+                        <div class="register-address" id="register-address">
+                            <div class="address-field address-field-full">
+                                <input type="text" id="register-street" placeholder=" " required>
+                                <label for="register-street">Street</label>
+                            </div>
+                            <div class="address-field">
+                                <input type="text" id="register-city" placeholder=" " required>
+                                <label for="register-city">City</label>
+                            </div>
+                            <div class="address-field">
+                                <input type="text" id="register-state" placeholder=" " required>
+                                <label for="register-state">State</label>
+                            </div>
+                            <div class="address-field address-field-full">
+                                <input type="text" id="register-post" placeholder=" " required>
+                                <label for="register-post">Postal Code</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="floating-input">
                         <input type="text" id="register-description" placeholder = " " >

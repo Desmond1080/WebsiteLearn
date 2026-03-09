@@ -1,10 +1,14 @@
 const adminProfile = document.getElementById('admin-profile-content');
+const adminNameEl = document.getElementById('admin-name');
 const adminNameInput = document.getElementById('admin-name-input');
 const adminUsernameInput = document.getElementById('admin-username-input');
 const adminDescriptionInput = document.getElementById('admin-description-input');
 const adminGenderInput = document.getElementById('admin-gender-input');
 const adminEmailInput = document.getElementById('admin-email-input');
-const adminAddressInput = document.getElementById('admin-address-input');
+const adminStreetInput = document.getElementById('admin-street-input');
+const adminCityInput = document.getElementById('admin-city-input');
+const adminStateInput = document.getElementById('admin-state-input');
+const adminPostalInput = document.getElementById('admin-postal-input');
 const adminPhoneInput = document.getElementById('admin-phone-input');
 const adminRoleInput = document.getElementById('admin-role-input');
 const saveAdminProfileButton = document.getElementById('save-admin-profile-button');
@@ -14,6 +18,43 @@ const newPasswordInput = document.getElementById('new-password');
 const confirmPasswordInput = document.getElementById('confirm-new-password');
 
 console.log('AdminProfile.js loaded, adminProfile element:', adminProfile);
+
+function isPhoneNumberValid(phone) {
+    return /^\d+$/.test(phone);
+}
+
+function isEmailValid(email) {
+    // Practical check for public email formats (not full RFC parser)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+function enforceMaxLength(inputElement, maxLength) {
+    if (!inputElement) return;
+    inputElement.addEventListener('input', () => {
+        if (inputElement.value.length > maxLength) {
+            inputElement.value = inputElement.value.slice(0, maxLength);
+        }
+    });
+}
+
+if (adminPhoneInput) {
+    adminPhoneInput.addEventListener('input', () => {
+        const digitsOnly = adminPhoneInput.value.replace(/\D/g, '');
+        if (adminPhoneInput.value !== digitsOnly) {
+            adminPhoneInput.value = digitsOnly;
+        }
+    });
+}
+
+enforceMaxLength(adminNameInput, 100);
+enforceMaxLength(adminUsernameInput, 30);
+enforceMaxLength(adminDescriptionInput, 200);
+enforceMaxLength(adminEmailInput, 254);
+enforceMaxLength(adminStreetInput, 100);
+enforceMaxLength(adminCityInput, 50);
+enforceMaxLength(adminStateInput, 50);
+enforceMaxLength(adminPostalInput, 10);
+enforceMaxLength(adminPhoneInput, 11);
 
 // Tab switching function
 function showTab(tabId) {
@@ -111,6 +152,11 @@ async function checkAuthState() {
             window.location.href = '../User/UserLoginAndRegister.html';
             return;
         }
+
+        if(adminNameEl){
+            adminNameEl.textContent = user.displayName || user.email;
+        }
+        
         console.log('User authenticated, fetching profile');
         fetchAdminProfile();   
         editProfile(); // Call editProfile to populate the form with current profile data
@@ -174,7 +220,10 @@ function enableProfileEditing(){
     adminDescriptionInput.disabled = false;
     adminGenderInput.disabled = false;
     adminEmailInput.disabled = false;
-    adminAddressInput.disabled = false;
+    adminStreetInput.disabled = false;
+    adminCityInput.disabled = false;
+    adminStateInput.disabled = false;
+    adminPostalInput.disabled = false;
     adminPhoneInput.disabled = false;
     adminRoleInput.disabled = false;
 
@@ -187,7 +236,10 @@ function cancelEdit(){
     adminDescriptionInput.disabled = true;
     adminGenderInput.disabled = true;
     adminEmailInput.disabled = true;
-    adminAddressInput.disabled = true;
+    adminStreetInput.disabled = true;
+    adminCityInput.disabled = true;
+    adminStateInput.disabled = true;
+    adminPostalInput.disabled = true;
     adminPhoneInput.disabled = true;
     adminRoleInput.disabled = true;
 
@@ -204,6 +256,7 @@ function editProfile(){
         // Populate form fields with current profile data
         const user = auth.currentUser;
         if(user){
+
             db.collection('Users').doc(user.uid).get().then((doc) => {
                 if(doc.exists){
                     const data = doc.data();
@@ -213,9 +266,23 @@ function editProfile(){
                     adminDescriptionInput.value = data.description || '';
                     adminGenderInput.value = data.gender || '';
                     adminEmailInput.value = data.email || '';
-                    adminAddressInput.value = data.address || '';
                     adminPhoneInput.value = data.phoneNumber || '';
                     adminRoleInput.value = data.role || '';
+                    
+                    // Split address into separate fields
+                    const address = data.address || '';
+                    if (address) {
+                        const addressParts = address.split(',').map(part => part.trim());
+                        adminStreetInput.value = addressParts[0] || '';
+                        adminCityInput.value = addressParts[1] || '';
+                        adminStateInput.value = addressParts[2] || '';
+                        adminPostalInput.value = addressParts[3] || '';
+                    } else {
+                        adminStreetInput.value = '';
+                        adminCityInput.value = '';
+                        adminStateInput.value = '';
+                        adminPostalInput.value = '';
+                    }
                 }
             }).catch((error) => {
                 console.error('Error fetching user data for edit:', error);
@@ -239,13 +306,55 @@ function saveProfile(){
         const description = adminDescriptionInput.value.trim();
         const gender = adminGenderInput.value.trim();
         const email = adminEmailInput.value.trim();
-        const address = adminAddressInput.value.trim();
+        const street = adminStreetInput.value.trim();
+        const city = adminCityInput.value.trim();
+        const state = adminStateInput.value.trim();
+        const postalCode = adminPostalInput.value.trim();
         const phone = adminPhoneInput.value.trim();
+        
+        // Combine address fields into a single string
+        const addressParts = [street, city, state, postalCode].filter(part => part);
+        const address = addressParts.join(', ');
 
         if(!name || !username){
             alert('Name and Username are required');
             return;
         }
+
+        // validate name length to prevent excessively long names that could break the layout
+        if(name.length > 100){
+            alert('Name must be less than 100 characters');
+            return;
+        }
+
+        // validate username length and format (alphanumeric and underscores only)
+        if(username.length > 30 || !/^[a-zA-Z0-9_]+$/.test(username)){
+            alert('Username must be less than 30 characters and can only contain letters, numbers, and underscores');
+            return;
+        }
+
+        if (email && (!adminEmailInput.checkValidity() || !isEmailValid(email))) {
+            alert('Please enter a valid email address (example: name@example.com)');
+            adminEmailInput.focus();
+            return;
+        }
+
+        // validate description length if exceed to length of characters stop from typing and alert user
+        if(description.length > 200){
+            alert('Description must be less than 200 characters');
+            return;
+        }
+
+        if (phone && !isPhoneNumberValid(phone)) {
+            alert('Phone number must contain digits only');
+            return;
+        }
+
+        // validate phone number length for malaysia context 
+        if (phone && (phone.length < 10 || phone.length > 11)) {
+            alert('Phone number must be between 10 and 11 digits');
+            return;
+        } 
 
         // Prepare data to update
         const updateData = {
@@ -255,7 +364,7 @@ function saveProfile(){
             gender,
             email,
             address,
-            phone
+            phoneNumber: phone
         };
 
         console.log('Saving profile data:', updateData);

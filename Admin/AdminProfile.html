@@ -106,13 +106,13 @@
             <form>
                 <h2><i class="fas fa-id-card identity-icon" id="identity-icon" title="Identity"></i>Identity</h2>
                 <label for="admin-name-input">Name:</label>
-                <input type="text" id="admin-name-input" name="admin-name" disabled>
+                <input type="text" id="admin-name-input" name="admin-name" maxlength="100" disabled>
 
                 <label for="admin-username-input">Username:</label>
-                <input type="text" id="admin-username-input" name="admin-username" disabled>
+                <input type="text" id="admin-username-input" name="admin-username" maxlength="30" disabled>
 
                 <label for="admin-description-input">Description:</label>
-                <input type="text" id="admin-description-input" name="admin-description" disabled>
+                <input type="text" id="admin-description-input" name="admin-description" maxlength="200" disabled>
 
                 <label for="admin-gender-input">Gender:</label>
                 <input type="text" id="admin-gender-input" name="admin-gender" disabled>
@@ -124,13 +124,32 @@
             <form>
                 <h2><i class="fas fa-phone identity-icon" id="contact-icon" title="Contact Information"></i>Contact Information</h2>
                 <label for="admin-phone-input">Phone:</label>
-                <input type="text" id="admin-phone-input" name="admin-phone" disabled>
+                <input type="tel" id="admin-phone-input" name="admin-phone" inputmode="numeric" pattern="[0-9]*" maxlength="11" disabled>
 
                 <label for="admin-email-input">Email:</label>
-                <input type="email" id="admin-email-input" name="admin-email" disabled>
+                <input type="email" id="admin-email-input" name="admin-email" maxlength="254" disabled>
+            </form>
 
-                <label for="admin-address-input">Address:</label>
-                <input type="text" id="admin-address-input" name="admin-address" disabled>
+            <form>
+                <h2><i class="fas fa-location-dot identity-icon" id="address-icon" title="Address"></i>Address</h2>
+                <div class="admin-address-section">
+                    <div class="address-field address-field-full">
+                        <label for="admin-street-input">Street:</label>
+                        <input type="text" id="admin-street-input" name="admin-street" maxlength="100" disabled>
+                    </div>
+                    <div class="address-field">
+                        <label for="admin-city-input">City:</label>
+                        <input type="text" id="admin-city-input" name="admin-city" maxlength="50" disabled>
+                    </div>
+                    <div class="address-field">
+                        <label for="admin-state-input">State:</label>
+                        <input type="text" id="admin-state-input" name="admin-state" maxlength="50" disabled>
+                    </div>
+                    <div class="address-field address-field-full">
+                        <label for="admin-postal-input">Postal Code:</label>
+                        <input type="text" id="admin-postal-input" name="admin-postal" maxlength="10" disabled>
+                    </div>
+                </div>
             </form>
 
             <div class="save-admin-profile-button" id="save-admin-profile-button" style="display: none;">

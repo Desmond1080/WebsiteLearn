@@ -198,6 +198,15 @@ async function loginWithGoogle(){
 
 //register function
 async function register(){
+    // Validation helpers
+    function isEmailValid(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    }
+
+    function isPhoneNumberValid(phone) {
+        return /^\d+$/.test(phone);
+    }
+
     const nameInput = document.getElementById('register-name');
     const usernameInput = document.getElementById('register-username');
     const emailInput = document.getElementById('register-email');
@@ -205,6 +214,10 @@ async function register(){
     const phoneInput = document.getElementById('register-phone');
     const genderInput = document.getElementById('register-gender');
     const descriptionInput = document.getElementById('register-description');
+    const streetInput = document.getElementById('register-street');
+    const cityInput = document.getElementById('register-city');
+    const stateInput = document.getElementById('register-state');
+    const postalCodeInput = document.getElementById('register-post');
     const name = nameInput.value;
     const username = usernameInput.value;
     const email = emailInput.value;
@@ -212,6 +225,15 @@ async function register(){
     const phoneNumber = phoneInput.value;
     const gender = genderInput.value;
     const description = descriptionInput.value;
+    const street = streetInput.value.trim();
+    const city = cityInput.value.trim();
+    const state = stateInput.value.trim();
+    const postalCode = postalCodeInput.value.trim();
+    
+    // Combine address fields into a single string
+    const addressParts = [street, city, state, postalCode].filter(part => part);
+    const address = addressParts.join(', ');
+    
     const errorMsg = document.getElementById('register-error');
 
     // Clear previous errors
@@ -223,6 +245,45 @@ async function register(){
     phoneInput.style.border = '';
     genderInput.style.border = '';
     descriptionInput.style.border = '';
+
+    // Validate required fields
+    if (!name || !username || !email || !password || !phoneNumber) {
+        errorMsg.innerText = 'Please fill in all required fields';
+        if (!name) nameInput.style.border = '2px solid red';
+        if (!username) usernameInput.style.border = '2px solid red';
+        if (!email) emailInput.style.border = '2px solid red';
+        if (!password) passwordInput.style.border = '2px solid red';
+        if (!phoneNumber) phoneInput.style.border = '2px solid red';
+        return;
+    }
+
+    // Validate email format
+    if (!isEmailValid(email)) {
+        emailInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Please enter a valid email address (example: name@example.com)';
+        return;
+    }
+
+    // Validate phone format (digits only)
+    if (!isPhoneNumberValid(phoneNumber)) {
+        phoneInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Phone number must contain digits only';
+        return;
+    }
+
+    // Validate phone number length for Malaysia (10-11 digits)
+    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+        phoneInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Phone number must be between 10 and 11 digits';
+        return;
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+        passwordInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Password must be at least 6 characters long';
+        return;
+    }
 
     try{
         // create user with email and password
@@ -236,9 +297,11 @@ async function register(){
             username: username,
             email: email,
             phoneNumber: phoneNumber,
+            address: address,
             imageUrl: '',
             gender: gender,
             description: description,
+            address: address,
             role: selectedRole,  // Use selected role from dropdown
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -252,17 +315,18 @@ async function register(){
         // Handle Firebase errors
         if(firebaseError.code === 'auth/email-already-in-use'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "Email already registered. Try logging in.";
+            errorMsg.innerText = 'Email already registered. Try logging in.';
         } else if(firebaseError.code === 'auth/invalid-email'){
             emailInput.style.border = '2px solid red';
-            errorMsg.innerText = "Invalid email format.";
+            errorMsg.innerText = 'Invalid email format.';
         } else if(firebaseError.code === 'auth/weak-password'){
             passwordInput.style.border = '2px solid red';
-            errorMsg.innerText = "Password is too weak. Use at least 6 characters.";
+            errorMsg.innerText = 'Password is too weak. Use at least 6 characters.';
         } else {
             errorMsg.innerText = firebaseError.message;
         }
-        console.error('Register error:', firebaseError);
+        console.error('Registration error:', firebaseError);
+        return firebaseError;
     }
 }
 

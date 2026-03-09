@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .profile-container{
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .profile-container h1,
 .admin-profile-content h2,
 .edit-admin-profile h2 {
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     letter-spacing: 0.2px;
 }
 
@@ -24,7 +24,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -72,7 +72,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -90,7 +90,7 @@
 .edit-admin-profile label {
     margin-bottom: 5px;
     font-weight: bold;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .edit-admin-profile input {
@@ -98,7 +98,7 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
     transition: all 0.3s ease;
 }
@@ -114,6 +114,60 @@
     box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
 }
 
+/* Address section styling */
+.admin-address-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.admin-address-section .address-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-address-section .address-field-full {
+    grid-column: 1 / -1;
+}
+
+.admin-address-section .address-field label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.admin-address-section .address-field input {
+    margin-bottom: 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.admin-address-section .address-field input:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.1);
+}
+
+.admin-address-section .address-field input:focus:not(:disabled) {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
+}
+
+@media (max-width: 600px) {
+    .admin-address-section {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-address-section .address-field-full {
+        grid-column: auto;
+    }
+}
+
 .save-admin-profile-button {
     display: flex;
     justify-content: flex-end;
@@ -125,7 +179,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 600;
     transition: all 0.3s ease;
 }
@@ -188,7 +242,7 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 600;
     font-size: 16px;
     color: #666;
@@ -240,7 +294,7 @@
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -251,7 +305,7 @@
 .reset-password-section h2 {
     margin-top: 0;
     margin-bottom: 10px;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 24px;
     color: var(--text-color);
 }
@@ -271,7 +325,7 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     color: var(--text-color);
 }
 
@@ -287,7 +341,7 @@
     padding-right: 45px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
     transition: all 0.3s ease;
 }
@@ -354,7 +408,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 600;
     font-size: 15px;
     transition: all 0.3s ease;
@@ -394,3 +448,4 @@
 #cancel-password-btn:active {
     transform: translateY(0);
 }
+
