@@ -167,8 +167,17 @@
                 <!-- Appointment Statistics with Chart -->
                 <div class="report-card full-width">
                     <div class="report-header">
-                        <h2><i class="fas fa-chart-pie"></i> Appointment Status</h2>
-                        <p>Breakdown of all appointments by status</p>
+                        <div class="report-header-content">
+                            <div>
+                                <h2><i class="fas fa-chart-pie"></i> Appointment Status</h2>
+                                <p>Breakdown of all appointments by status</p>
+                            </div>
+                            <div class="export-button">
+                                <button class="export-btn" onclick="exportAppointmentStatus()">
+                                    <i class="fas fa-file-download"></i> Export CSV
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="report-content chart-report">
                         <div class="chart-wrapper">
@@ -241,6 +250,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--logout confirmation pop-up-->
+        <div class="logout-confirmation-popup" id="logout-confirmation-popup">
+            <div class="logout-confirmation-content">
+                <h2>Confirm Logout</h2>
+                <p>Are you sure you want to logout?</p>
+                <i class="fas fa-sign-out-alt"></i>
+                <button onclick="confirmLogout()">Logout</button>
+                <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
             </div>
         </div>
     </main>

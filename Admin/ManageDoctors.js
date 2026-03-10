@@ -10,7 +10,7 @@ const editDoctorEmailInput = document.getElementById('edit-doctor-email');
 const addDoctorGenderSelect = document.getElementById('add-doctor-gender');
 let currentEditDoctorId = null;
 let currentEditUserId = null;
-    let isDoctorUpdateInProgress = false;
+let isDoctorUpdateInProgress = false;
 let lastDoctorUpdateAttemptAt = 0;
 const DOCTOR_UPDATE_COOLDOWN_MS = 1200;
 

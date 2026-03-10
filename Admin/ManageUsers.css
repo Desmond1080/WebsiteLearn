@@ -1,3 +1,22 @@
+.fa-sign-out-alt {
+    font-size: 24px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.dropdown-link .fa-sign-out-alt {
+    font-size: 16px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.logout-confirmation-content .fa-sign-out-alt {
+    font-size: 48px;
+    display: block;
+    margin: 20px auto;
+}
+
+
 .manage-users-container {
     max-width: 1400px;
     margin: 0 auto;

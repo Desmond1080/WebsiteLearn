@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <title>User Website</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../theme.css">
     <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
     <!-- Firebase SDK -->   
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -280,11 +282,38 @@
             </div>
         </div>
 
+        <!-- Password Setup Popup for Google Users -->
+        <div class="password-setup-popup" id="password-setup-popup">
+            <div class="password-setup-content">
+                <h2><i class="fas fa-key"></i> Set Up Password</h2>
+                <p>You signed in with Google. Would you like to set a password for email/password login?</p>
+                <div class="password-setup-form">
+                    <div class="floating-input">
+                        <input type="password" id="setup-password" placeholder=" " minlength="6">
+                        <label for="setup-password">New Password</label>
+                        <button type="button" onclick="togglePasswordVisibility('setup-password')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;">
+                            <img src="../image/eye.png" style="width: 20px; height: 20px;">
+                        </button>
+                    </div>
+                    <div class="floating-input">
+                        <input type="password" id="setup-password-confirm" placeholder=" " minlength="6">
+                        <label for="setup-password-confirm">Confirm Password</label>
+                        <button type="button" onclick="togglePasswordVisibility('setup-password-confirm')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;">
+                            <img src="../image/eye.png" style="width: 20px; height: 20px;">
+                        </button>
+                    </div>
+                    <p id="password-setup-error" class="error"></p>
+                </div>
+                <button onclick="linkPasswordToAccount()">Set Password</button>
+                <button onclick="skipPasswordSetup()" class="skip-btn">Skip for Now</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- JavaScript Files -->
-    <script src="../firebase-config.js"></script>
-    <script src="app.js"></script>
-    <script src="../theme.js"></script>
+    <script defer src="../firebase-config.js"></script>
+    <script defer src="app.js"></script>
+    <script defer src="../theme.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ const adminStreetInput = document.getElementById('admin-street-input');
 const adminCityInput = document.getElementById('admin-city-input');
 const adminStateInput = document.getElementById('admin-state-input');
 const adminPostalInput = document.getElementById('admin-postal-input');
+const adminCountryInput = document.getElementById('admin-country-input');
 const adminPhoneInput = document.getElementById('admin-phone-input');
 const adminRoleInput = document.getElementById('admin-role-input');
 const saveAdminProfileButton = document.getElementById('save-admin-profile-button');
@@ -16,6 +17,28 @@ const logoutButton = document.getElementById('admin-logout-button');
 const currentPasswordInput = document.getElementById('current-password');
 const newPasswordInput = document.getElementById('new-password');
 const confirmPasswordInput = document.getElementById('confirm-new-password');
+let adminDocUnsubscribe = null;
+
+const countryStateMap = {
+    Malaysia: [
+        'Johor', 'Kedah', 'Kelantan', 'Kuala Lumpur', 'Labuan', 'Malacca', 'Negeri Sembilan',
+        'Pahang', 'Penang', 'Perak', 'Perlis', 'Putrajaya', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu'
+    ],
+    Singapore: ['N/A'],
+    Indonesia: [
+        'Aceh', 'Bali', 'Banten', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur',
+        'Kalimantan Barat', 'Kalimantan Selatan', 'Papua', 'Sulawesi Selatan', 'Sumatera Utara', 'Yogyakarta'
+    ],
+    Thailand: [
+        'Bangkok', 'Chiang Mai', 'Chiang Rai', 'Chonburi', 'Khon Kaen', 'Nakhon Ratchasima', 'Phuket', 'Songkhla'
+    ],
+    'United States': ['California', 'Florida', 'Illinois', 'New York', 'Texas', 'Washington'],
+    China: [
+        'Anhui', 'Fujian', 'Gansu', 'Guangdong', 'Guizhou', 'Hainan', 'Hebei', 'Heilongjiang', 'Henan', 'Hubei', 'Hunan','Jiangsu','Jiangxi','Jilin','Liaoning','Qinghai','Shaanxi','Shandong','Shanxi','Sichuan','Yunnan','Zhejiang'],
+};
+
+// Store original profile data for change detection
+let originalProfileData = {};
 
 console.log('AdminProfile.js loaded, adminProfile element:', adminProfile);
 
@@ -52,9 +75,55 @@ enforceMaxLength(adminDescriptionInput, 200);
 enforceMaxLength(adminEmailInput, 254);
 enforceMaxLength(adminStreetInput, 100);
 enforceMaxLength(adminCityInput, 50);
-enforceMaxLength(adminStateInput, 50);
 enforceMaxLength(adminPostalInput, 10);
 enforceMaxLength(adminPhoneInput, 11);
+
+function populateCountryOptions(selectedCountry = '') {
+    if (!adminCountryInput) return;
+
+    adminCountryInput.innerHTML = '<option value="">Select Country</option>';
+    Object.keys(countryStateMap).forEach((country) => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        adminCountryInput.appendChild(option);
+    });
+
+    adminCountryInput.value = selectedCountry || '';
+}
+
+function populateStateOptions(country = '', selectedState = '') {
+    if (!adminStateInput) return;
+
+    const states = countryStateMap[country] || [];
+    adminStateInput.innerHTML = '<option value="">Select State</option>';
+
+    states.forEach((state) => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        adminStateInput.appendChild(option);
+    });
+
+    if (selectedState && !states.includes(selectedState)) {
+        const customOption = document.createElement('option');
+        customOption.value = selectedState;
+        customOption.textContent = selectedState;
+        adminStateInput.appendChild(customOption);
+    }
+
+    adminStateInput.value = selectedState || '';
+}
+
+if (adminCountryInput) {
+    populateCountryOptions('');
+    populateStateOptions('', '');
+
+    adminCountryInput.addEventListener('change', () => {
+        populateStateOptions(adminCountryInput.value, '');
+        adminStateInput.disabled = !adminCountryInput.value;
+    });
+}
 
 // Tab switching function
 function showTab(tabId) {
@@ -142,23 +211,95 @@ function showPasswordSuccess(message) {
     }
 }
 
+// Show profile update success modal
+function showProfileSuccess() {
+    console.log('showProfileSuccess() called');
+    const successContainer = document.getElementById('update-successful-container');
+    console.log('Success container element:', successContainer);
+    if (successContainer) {
+        console.log('Showing success modal');
+        successContainer.style.display = 'flex';
+    } else {
+        console.error('Success container element not found!');
+    }
+}
+
+// Close success message modal
+function closeSuccessMessage() {
+    const successContainer = document.getElementById('update-successful-container');
+    if (successContainer) {
+        successContainer.style.display = 'none';
+    }
+}
+
+// Show notification when trying to edit while already in edit mode
+function showEditModeNotification() {
+    const editBtn = document.getElementById('edit-profile-btn');
+    if (editBtn) {
+        // Add pulse animation
+        editBtn.classList.add('already-editing');
+        
+        // Remove after animation completes
+        setTimeout(() => {
+            editBtn.classList.remove('already-editing');
+        }, 600);
+    }
+    
+    // You could also show a toast message here
+    console.log('Already in edit mode');
+}
+
+function subscribeToAdminProfile(user) {
+    if (!user) return;
+
+    if (adminDocUnsubscribe) {
+        adminDocUnsubscribe();
+        adminDocUnsubscribe = null;
+    }
+
+    adminDocUnsubscribe = db.collection('Users').doc(user.uid).onSnapshot((doc) => {
+        if (!doc.exists) {
+            window.location.href = '../User/UserLoginAndRegister.html';
+            return;
+        }
+
+        const userData = doc.data();
+
+        if (userData?.role !== 'admin') {
+            window.location.href = '../User/UserLoginAndRegister.html';
+            return;
+        }
+
+        if (adminNameEl) {
+            adminNameEl.textContent = userData?.name || user.displayName || user.email || 'Admin';
+        }
+    }, (error) => {
+        console.error('Error listening to admin profile:', error);
+        if (adminNameEl) {
+            adminNameEl.textContent = user.displayName || user.email || 'Admin';
+        }
+    });
+}
+
 // check auth state
 async function checkAuthState() {
     console.log('checkAuthState() called');
     auth.onAuthStateChanged(async (user) => {
         console.log('Auth state changed, user:', user?.uid);
         if (!user) {
+            if (adminDocUnsubscribe) {
+                adminDocUnsubscribe();
+                adminDocUnsubscribe = null;
+            }
             console.log('No user, redirecting to login');
             window.location.href = '../User/UserLoginAndRegister.html';
             return;
         }
 
-        if(adminNameEl){
-            adminNameEl.textContent = user.displayName || user.email;
-        }
-        
+        subscribeToAdminProfile(user);
+
         console.log('User authenticated, fetching profile');
-        fetchAdminProfile();   
+        fetchAdminProfile();
         editProfile(); // Call editProfile to populate the form with current profile data
     });
 }
@@ -201,7 +342,9 @@ async function fetchAdminProfile(){
             const html = `
                 <p><strong>Name:</strong> ${userData.name || 'N/A'}</p>
                 <p><strong>Role:</strong> ${userData.role || 'N/A'}</p>
-                <button onclick="enableProfileEditing()">Edit Profile</button>
+                <button id="edit-profile-btn" onclick="enableProfileEditing()">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
             `;
             adminProfile.innerHTML = html;
             console.log('Profile HTML inserted');
@@ -215,22 +358,65 @@ async function fetchAdminProfile(){
 
 // enable form fields for editing and populate with current profile data
 function enableProfileEditing(){
+    // Get the edit button
+    const editBtn = document.getElementById('edit-profile-btn');
+    
+    // Check if already in edit mode
+    if (!adminNameInput.disabled) {
+        // Already in edit mode, show notification
+        showEditModeNotification();
+        return;
+    }
+    
     adminNameInput.disabled = false;
     adminUsernameInput.disabled = false;
     adminDescriptionInput.disabled = false;
     adminGenderInput.disabled = false;
-    adminEmailInput.disabled = false;
+    // Email should stay disabled - it's tied to Firebase Auth
+    // adminEmailInput.disabled = false;
     adminStreetInput.disabled = false;
     adminCityInput.disabled = false;
     adminStateInput.disabled = false;
     adminPostalInput.disabled = false;
+    adminCountryInput.disabled = false;
     adminPhoneInput.disabled = false;
-    adminRoleInput.disabled = false;
+    // Role should stay disabled - security concern
+    // adminRoleInput.disabled = false;
 
     saveAdminProfileButton.style.display = 'block';
+    
+    // Update button to show edit mode is active
+    if (editBtn) {
+        editBtn.disabled = true;
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Editing...';
+        editBtn.classList.add('editing-active');
+    }
+
+    if (!adminCountryInput.value) {
+        adminStateInput.disabled = true;
+    }
 }
 
 function cancelEdit(){
+    // Restore original values
+    if (originalProfileData) {
+        adminNameInput.value = originalProfileData.name || '';
+        adminUsernameInput.value = originalProfileData.username || '';
+        adminDescriptionInput.value = originalProfileData.description || '';
+        adminGenderInput.value = originalProfileData.gender || '';
+        adminEmailInput.value = originalProfileData.email || '';
+        adminPhoneInput.value = originalProfileData.phoneNumber || '';
+        
+        // Restore address fields
+        adminStreetInput.value = originalProfileData.street || '';
+        adminCityInput.value = originalProfileData.city || '';
+        adminPostalInput.value = originalProfileData.postalCode || '';
+        populateCountryOptions(originalProfileData.country || '');
+        adminCountryInput.value = originalProfileData.country || '';
+        populateStateOptions(adminCountryInput.value, originalProfileData.state || '');
+    }
+    
+    // Disable fields
     adminNameInput.disabled = true;
     adminUsernameInput.disabled = true;
     adminDescriptionInput.disabled = true;
@@ -240,11 +426,19 @@ function cancelEdit(){
     adminCityInput.disabled = true;
     adminStateInput.disabled = true;
     adminPostalInput.disabled = true;
+    adminCountryInput.disabled = true;
     adminPhoneInput.disabled = true;
     adminRoleInput.disabled = true;
 
     saveAdminProfileButton.style.display = 'none';
-
+    
+    // Re-enable the edit button
+    const editBtn = document.getElementById('edit-profile-btn');
+    if (editBtn) {
+        editBtn.disabled = false;
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Profile';
+        editBtn.classList.remove('editing-active');
+    }
 }
 
 //show edit profile form details first, then allow to change when click edit profile button
@@ -269,20 +463,45 @@ function editProfile(){
                     adminPhoneInput.value = data.phoneNumber || '';
                     adminRoleInput.value = data.role || '';
                     
-                    // Split address into separate fields
+                    // Split address into separate fields (legacy format had no country)
                     const address = data.address || '';
                     if (address) {
                         const addressParts = address.split(',').map(part => part.trim());
-                        adminStreetInput.value = addressParts[0] || '';
-                        adminCityInput.value = addressParts[1] || '';
-                        adminStateInput.value = addressParts[2] || '';
-                        adminPostalInput.value = addressParts[3] || '';
+                        const street = addressParts[0] || '';
+                        const city = addressParts[1] || '';
+                        const state = addressParts[2] || '';
+                        const postalCode = addressParts[3] || '';
+                        const country = addressParts.length >= 5 ? (addressParts[4] || '') : 'Malaysia';
+
+                        adminStreetInput.value = street;
+                        adminCityInput.value = city;
+                        adminPostalInput.value = postalCode;
+                        populateCountryOptions(country);
+                        adminCountryInput.value = country;
+                        populateStateOptions(country, state);
                     } else {
                         adminStreetInput.value = '';
                         adminCityInput.value = '';
-                        adminStateInput.value = '';
                         adminPostalInput.value = '';
+                        populateCountryOptions('');
+                        adminCountryInput.value = '';
+                        populateStateOptions('', '');
                     }
+                    
+                    // Store original data for change detection
+                    originalProfileData = {
+                        name: data.name || '',
+                        username: data.username || '',
+                        description: data.description || '',
+                        gender: data.gender || '',
+                        email: data.email || '',
+                        street: adminStreetInput.value || '',
+                        city: adminCityInput.value || '',
+                        state: adminStateInput.value || '',
+                        postalCode: adminPostalInput.value || '',
+                        country: adminCountryInput.value || '',
+                        phoneNumber: data.phoneNumber || ''
+                    };
                 }
             }).catch((error) => {
                 console.error('Error fetching user data for edit:', error);
@@ -305,19 +524,34 @@ function saveProfile(){
         const username = adminUsernameInput.value.trim();
         const description = adminDescriptionInput.value.trim();
         const gender = adminGenderInput.value.trim();
-        const email = adminEmailInput.value.trim();
         const street = adminStreetInput.value.trim();
         const city = adminCityInput.value.trim();
         const state = adminStateInput.value.trim();
         const postalCode = adminPostalInput.value.trim();
+        const country = adminCountryInput.value.trim();
         const phone = adminPhoneInput.value.trim();
-        
-        // Combine address fields into a single string
-        const addressParts = [street, city, state, postalCode].filter(part => part);
-        const address = addressParts.join(', ');
 
         if(!name || !username){
             alert('Name and Username are required');
+            return;
+        }
+
+        // Check if any changes were made (email excluded - not editable)
+        const hasChanges = (
+            name !== originalProfileData.name ||
+            username !== originalProfileData.username ||
+            description !== originalProfileData.description ||
+            gender !== originalProfileData.gender ||
+            street !== originalProfileData.street ||
+            city !== originalProfileData.city ||
+            state !== originalProfileData.state ||
+            postalCode !== originalProfileData.postalCode ||
+            country !== originalProfileData.country ||
+            phone !== originalProfileData.phoneNumber
+        );
+
+        if (!hasChanges) {
+            alert('No changes detected');
             return;
         }
 
@@ -330,12 +564,6 @@ function saveProfile(){
         // validate username length and format (alphanumeric and underscores only)
         if(username.length > 30 || !/^[a-zA-Z0-9_]+$/.test(username)){
             alert('Username must be less than 30 characters and can only contain letters, numbers, and underscores');
-            return;
-        }
-
-        if (email && (!adminEmailInput.checkValidity() || !isEmailValid(email))) {
-            alert('Please enter a valid email address (example: name@example.com)');
-            adminEmailInput.focus();
             return;
         }
 
@@ -356,16 +584,39 @@ function saveProfile(){
             return;
         } 
 
-        // Prepare data to update
+
+        // validate post code can only contain digits and have a length of 5 or 6 characters
+        if (postalCode && (!/^\d{5,6}$/.test(postalCode))) {
+            alert('Postal code must contain only digits and be 5 or 6 characters long');
+            return;
+        }
+
+        if (!country) {
+            alert('Please select a country');
+            return;
+        }
+
+        if (!state) {
+            alert('Please select a state');
+            return;
+        }
+
+        // Combine address fields into a single string
+        const addressParts = [street, city, state, postalCode, country].filter(part => part);
+        const address = addressParts.join(', ');
+
+        // Prepare data to update (email excluded - tied to Firebase Auth)
         const updateData = {
             name,
             username,
             description,
             gender,
-            email,
             address,
             phoneNumber: phone
         };
+        
+        // Note: email is not included because it's tied to Firebase Authentication
+        // To change email, use Firebase Auth's updateEmail() method with re-authentication
 
         console.log('Saving profile data:', updateData);
 
@@ -373,7 +624,24 @@ function saveProfile(){
         db.collection('Users').doc(user.uid).update(updateData)
             .then(() => {
                 console.log('Profile updated successfully');
-                alert('Profile saved successfully!');
+                
+                // Update original data after successful save
+                originalProfileData = {
+                    name: name,
+                    username: username,
+                    description: description,
+                    gender: gender,
+                    email: originalProfileData.email, // Keep original email
+                    street: street,
+                    city: city,
+                    state: state,
+                    postalCode: postalCode,
+                    country: country,
+                    phoneNumber: phone
+                };
+                
+                // Show success modal instead of alert
+                showProfileSuccess();
                 
                 // Refresh the profile display
                 fetchAdminProfile();
@@ -389,6 +657,24 @@ function saveProfile(){
         console.error('Error in saveProfile():', error);
         alert('Error: ' + error.message);
     }
+}
+
+function initializeEnterToSaveProfile() {
+    const editProfileSection = document.getElementById('edit-admin-profile');
+    if (!editProfileSection) return;
+
+    editProfileSection.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        const targetTag = event.target.tagName;
+        if (targetTag === 'BUTTON' || targetTag === 'TEXTAREA') return;
+
+        // Trigger save only when profile form is currently editable
+        if (!adminNameInput.disabled && saveAdminProfileButton.style.display !== 'none') {
+            event.preventDefault();
+            saveProfile();
+        }
+    });
 }
 
 async function updatePassword(){
@@ -473,6 +759,7 @@ async function updatePassword(){
         }
     }
 }
+initializeEnterToSaveProfile();
 checkAuthState();
 
 function showLogoutConfirmation(){
@@ -483,6 +770,10 @@ function showLogoutConfirmation(){
 
 async function confirmLogout(){
     try{
+        if (adminDocUnsubscribe) {
+            adminDocUnsubscribe();
+            adminDocUnsubscribe = null;
+        }
         await auth.signOut();
         localStorage.removeItem('userRole');
         window.location.href = '../User/UserLoginAndRegister.html';

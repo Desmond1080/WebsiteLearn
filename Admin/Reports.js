@@ -584,6 +584,25 @@ function resetDateFilter() {
     console.log('Date filter reset - showing all appointments');
 }
 
+// Export appointment status data to CSV
+function exportAppointmentStatus() {
+    const statusData = getStatusData(allAppointments);
+    const csvContent = "data:text/csv;charset=utf-8,Status,Count\n" +
+        `Completed,${statusData.completed}\n` +
+        `Pending,${statusData.pending}\n` +
+        `Cancelled,${statusData.cancelled}\n` +
+        `No Show,${statusData.noshow}`;
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "appointment_status.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log('Exported appointment status data to CSV');
+}
+
 // Update all charts with filtered data
 function updateCharts(appointments) {
     if(appointmentStatusChart) {

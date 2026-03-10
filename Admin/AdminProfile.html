@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
         <link rel="icon" type="x-icon" href="../image/favicon (1).ico">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="../Admin/AdminProfile.css">
@@ -10,9 +12,9 @@
         <link rel="stylesheet" href="../theme.css">
         <title>Admin Profile</title>
         <!-- Firebase SDK -->
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>  
+        <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>  
     </head>
     <body>
         <div class="theme-toggle" aria-label="Theme toggle">
@@ -115,7 +117,13 @@
                 <input type="text" id="admin-description-input" name="admin-description" maxlength="200" disabled>
 
                 <label for="admin-gender-input">Gender:</label>
-                <input type="text" id="admin-gender-input" name="admin-gender" disabled>
+                <select id="admin-gender-input" name="admin-gender" disabled>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                    <option value="Other">Other</option>
+                </select>
 
                 <label for="admin-role-input">Role:</label>
                 <input type="text" id="admin-role-input" name="admin-role" disabled>
@@ -143,11 +151,19 @@
                     </div>
                     <div class="address-field">
                         <label for="admin-state-input">State:</label>
-                        <input type="text" id="admin-state-input" name="admin-state" maxlength="50" disabled>
+                        <select id="admin-state-input" name="admin-state" disabled>
+                            <option value="" selected>Select State</option>
+                        </select>
                     </div>
                     <div class="address-field address-field-full">
                         <label for="admin-postal-input">Postal Code:</label>
                         <input type="text" id="admin-postal-input" name="admin-postal" maxlength="10" disabled>
+                    </div>
+                    <div class="address-field">
+                        <label for="admin-country-input">Country:</label>
+                        <select id="admin-country-input" name="admin-country" disabled>
+                            <option value="" selected>Select Country</option>
+                        </select>
                     </div>
                 </div>
             </form>
@@ -205,12 +221,23 @@
         </div>
     </div>
 </div>
-
     </main>
 
+    <!-- Profile Update Success Modal -->
+    <div class="update-successful-container" id="update-successful-container" style="display: none;">
+        <div class="update-successful-content" id="update-successful-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>Profile Updated Successfully!</h2>
+            <p>Your profile information has been updated.</p>
+            <button type="button" id="close-success-message" onclick="closeSuccessMessage()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
     <!-- Scripts -->
-    <script src="../firebase-config.js"></script>
-    <script src="../Admin/AdminProfile.js"></script>
-    <script src="../theme.js"></script>
+    <script defer src="../firebase-config.js"></script>
+    <script defer src="../Admin/AdminProfile.js"></script>
+    <script defer src="../theme.js"></script>
     </body>
 </html>

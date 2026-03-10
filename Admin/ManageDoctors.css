@@ -5,6 +5,24 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+.fa-sign-out-alt {
+    font-size: 24px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.dropdown-link .fa-sign-out-alt {
+    font-size: 16px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.logout-confirmation-content .fa-sign-out-alt {
+    font-size: 48px;
+    display: block;
+    margin: 20px auto;
+}
+
 .manage-doctors-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -40,7 +58,9 @@
     padding: 14px 28px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+    background-size: 200% 200%;
+    animation: gradientFlow 3s ease infinite;
     color: #ffffff;
     font-size: 16px;
     font-weight: 600;
@@ -50,6 +70,18 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .add-new-doctor-button:hover {

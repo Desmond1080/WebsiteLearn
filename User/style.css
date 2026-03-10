@@ -1173,6 +1173,97 @@ body.dark-mode .address-field label {
     margin-bottom: 10px;
 }
 
+/* Password Setup Popup for Google Users */
+.password-setup-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.password-setup-popup.visible {
+    display: flex;
+}
+
+.password-setup-content {
+    width: min(500px, 90vw);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    padding: 30px 25px;
+    text-align: center;
+    border: 1px solid #e0e6ed;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.password-setup-popup.visible .password-setup-content {
+    transform: scale(1);
+}
+
+.password-setup-content h2 {
+    margin-bottom: 12px;
+    color: #1f2a37;
+    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.password-setup-content h2 i {
+    color: #667eea;
+}
+
+.password-setup-content > p {
+    margin-bottom: 25px;
+    color: #475569;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.password-setup-form {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.password-setup-form .floating-input {
+    margin-bottom: 18px;
+    position: relative;
+}
+
+.password-setup-content button {
+    margin: 8px 8px 0;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.password-setup-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.password-setup-content .skip-btn {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+}
+
+.password-setup-content .skip-btn:hover {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    box-shadow: 0 8px 20px rgba(100, 116, 139, 0.4);
+}
+
 .edit-note-container{
     display: block;
     position: relative;

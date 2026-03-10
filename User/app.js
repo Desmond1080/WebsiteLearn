@@ -157,8 +157,21 @@ async function login(){
             emailInput.style.border = '2px solid red';
             errorMsg.innerText = "Email not found. Please register first.";
         } else if(firebaseError.code === 'auth/wrong-password'){
-            passwordInput.style.border = '2px solid red';
-            errorMsg.innerText = "Password is incorrect.";
+            // Check if this is a Google-only account
+            try {
+                const signInMethods = await auth.fetchSignInMethodsForEmail(email);
+                if(signInMethods.includes('google.com') && !signInMethods.includes('password')){
+                    passwordInput.style.border = '2px solid #667eea';
+                    errorMsg.innerHTML = '<i class="fas fa-info-circle"></i> This account was created with Google. Please use the <strong>Google Sign-In</strong> button below.';
+                    errorMsg.style.color = '#667eea';
+                } else {
+                    passwordInput.style.border = '2px solid red';
+                    errorMsg.innerText = "Password is incorrect.";
+                }
+            } catch(error) {
+                passwordInput.style.border = '2px solid red';
+                errorMsg.innerText = "Password is incorrect.";
+            }
         } else if(firebaseError.code === 'auth/invalid-email'){
             emailInput.style.border = '2px solid red';
             errorMsg.innerText = "Invalid email format.";
@@ -185,13 +198,106 @@ async function loginWithGoogle(){
             await db.collection("Users").doc(user.uid).set({
                 name: user.displayName,
                 email: user.email,
+                role: selectedRole,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
-        loadUserData();
+
+        // Check if user has password linked
+        const signInMethods = await auth.fetchSignInMethodsForEmail(user.email);
+        const hasPassword = signInMethods.includes('password');
+
+        if(!hasPassword){
+            // Show password setup popup for Google-only users
+            showPasswordSetupPopup();
+        } else {
+            // User already has password linked, proceed to load data
+            loadUserData();
+        }
     } catch(error){
         console.error('Google login error:', error);
         alert('Error during Google login: ' + error.message);
+    }
+}
+
+// Show password setup popup
+function showPasswordSetupPopup(){
+    const popup = document.getElementById('password-setup-popup');
+    if(popup){
+        popup.classList.add('visible');
+        document.getElementById('setup-password').value = '';
+        document.getElementById('setup-password-confirm').value = '';
+        document.getElementById('password-setup-error').innerText = '';
+    }
+}
+
+// Link password to Google account
+async function linkPasswordToAccount(){
+    const passwordInput = document.getElementById('setup-password');
+    const confirmPasswordInput = document.getElementById('setup-password-confirm');
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const errorMsg = document.getElementById('password-setup-error');
+
+    // Clear previous errors
+    passwordInput.style.border = '';
+    confirmPasswordInput.style.border = '';
+    errorMsg.innerText = '';
+
+    // Validate password
+    if(!password || password.length < 6){
+        passwordInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Password must be at least 6 characters long.';
+        return;
+    }
+
+    // Check if passwords match
+    if(password !== confirmPassword){
+        confirmPasswordInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Passwords do not match.';
+        return;
+    }
+
+    try{
+        const user = auth.currentUser;
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+        
+        // Link password credential to the account
+        await user.linkWithCredential(credential);
+        
+        console.log('Password successfully linked to Google account');
+        errorMsg.style.color = '#10b981';
+        errorMsg.innerText = 'Password set successfully! Redirecting...';
+        
+        // Close popup and proceed after a short delay
+        setTimeout(() => {
+            closePasswordSetupPopup();
+            loadUserData();
+        }, 1500);
+    } catch(error){
+        console.error('Error linking password:', error);
+        if(error.code === 'auth/weak-password'){
+            passwordInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Password is too weak. Use at least 6 characters.';
+        } else if(error.code === 'auth/email-already-in-use'){
+            errorMsg.innerText = 'This email is already in use with a password.';
+        } else {
+            errorMsg.innerText = 'Error setting password: ' + error.message;
+        }
+    }
+}
+
+// Skip password setup
+function skipPasswordSetup(){
+    closePasswordSetupPopup();
+    loadUserData();
+}
+
+// Close password setup popup
+function closePasswordSetupPopup(){
+    const popup = document.getElementById('password-setup-popup');
+    if(popup){
+        popup.classList.remove('visible');
     }
 }
 
@@ -261,6 +367,14 @@ async function register(){
     if (!isEmailValid(email)) {
         emailInput.style.border = '2px solid red';
         errorMsg.innerText = 'Please enter a valid email address (example: name@example.com)';
+        return;
+    }
+
+    //validate if the phone number already exists in firestore
+    const phoneQuery = await db.collection('Users').where('phoneNumber', '==', phoneNumber).get();
+    if(!phoneQuery.empty){
+        phoneInput.style.border = '2px solid red';
+        errorMsg.innerText = 'Phone number already registered. Try a different number.';
         return;
     }
 
