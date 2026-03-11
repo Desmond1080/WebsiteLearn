@@ -5,7 +5,17 @@ const logoutPopup = document.getElementById('logout-confirmation-popup');
 const monthlyUserTable = document.getElementById('monthly-user-table');
 const totalStaff = document.getElementById('total-staff-section');
 const appointmentsChartCanvas = document.getElementById('appointmentsChart');
+// notification 
+const notificationBell = document.getElementById('notification-bell');
+const notificationBadge = document.getElementById('notification-badge');
+const notificationPanel = document.getElementById('notification-panel');
+const notificationPanelList = document.getElementById('notification-panel-list');
+const markAllReadButton = document.getElementById('mark-all-read-button');
+
 let appointmentsChartInstance = null;
+let unreadNotifications = null;
+let listenerUnsubscribe = null;
+let currentUserId = null;
 
 //check auth state
 async function checkAuthState() {
@@ -34,6 +44,7 @@ async function checkAuthState() {
         loadMonthlyUser();
         loadStaffNames();
         loadAppointmentPerMonth();
+        subscribeAdminNotifications(user.uid);
     });
 }
 
@@ -229,6 +240,105 @@ async function loadAppointmentPerMonth(){
 
 checkAuthState();
 
+// notification time 
+function formatTimestamp(timestamp) {
+    if (!timestamp) {
+        return 'just now';
+    }
+
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const diff = Date.now() - date.getTime(); // difference in milliseconds
+    const min = Math.floor(diff / 60000); // minutes
+
+    if (min < 1) return 'just now';
+    if (min < 60) return `${min} minute${min > 1 ? 's' : ''} ago`;
+
+    const hour = Math.floor(min / 60);
+    if (hour < 24) return `${hour} hour${hour > 1 ? 's' : ''} ago`;
+
+    const day = Math.floor(hour / 24);
+    if(day < 7) return `${day} day${day > 1 ? 's' : ''} ago`;
+
+    return date.toLocaleDateString();
+}
+
+function renderNotifications(docs){
+    if(!notificationPanelList){
+        return;
+    }
+
+    if(!docs.length){
+        notificationPanelList.innerHTML = '<p class="no-notifications">No notifications</p>';
+        return;
+    }
+
+    notificationPanelList.innerHTML = docs.map(doc => {
+        const data = doc.data();
+        const unread = data.isRead ? '' : 'unread';
+        const safeTitle = data.title || 'Notification';
+        const safeMessage = data.message || '';
+        const timeText = formatTimestamp(data.createdAt);
+        return `<div class="notification-item ${unread}" data-id="${doc.id}" data-target="${data.target || ''}">
+                    <h4>${safeTitle}</h4>
+                    <p>${safeMessage}</p>
+                    <span class="notification-time">${timeText}</span>
+                </div>`
+    }),join('');
+}
+
+// mark as read function
+async function markSingleNotificationAsRead(notificationId){
+    try{
+        await db.collection('Notifications').doc(notificationId).update({
+            isRead: true
+        })
+    } catch(error){
+        console.error('Error marking notification as read:', error);
+    }
+}
+
+async function markAllNotificationsAsRead(){
+    if(!currentUserId){
+        return;
+    }
+
+    try{
+        const unreadSnapshot = await db.collection('Notifications').where('userId', '==', currentUserId).where('isRead', '==', false).get();
+        const batch = db.batch();
+        unreadSnapshot.forEach(doc => {
+            batch.update(doc.ref, { isRead: true });
+        });
+        await batch.commit();
+    } catch(error){
+        console.error('Error marking all notifications as read:', error);
+    }
+}
+
+function subscribeAdminNotifications(userId){
+    currentUserId = userId;
+    
+    if(unreadNotifications) unreadNotifications();
+    if(listenerUnsubscribe) listenerUnsubscribe();
+
+    unreadNotifications = db.collection('Notifications').where('userId', '==', userId).where('isRead', '==', false).onSnapshot((snap) => {
+        const count = snap.size;
+        if(!notificationBadge) return;
+        if(count > 0){
+            notificationBadge.style.display = 'block';
+            notificationBadge.textContent = count > 99 ? '99+' : String(count);
+        } else {
+            notificationBadge.style.display = 'none';
+            notificationBadge.textContent = '0';
+        }
+    });
+    
+    listenerUnsubscribe = db.collection('Notifications').where('userId', '==', userId).orderBy('createdAt', 'desc').limit(20).onSnapshot((snap) => {
+        renderNotifications(snap.docs);
+    });
+}
+
+
+
 function showLogoutConfirmation(){
     if(logoutPopup){
         logoutPopup.classList.add('visible');
@@ -260,6 +370,44 @@ if(logoutButton){
     });
 }
 
+if(notificationBell && notificationPanel){
+    notificationBell.addEventListener('click', () => {
+        event.preventDefault();
+        const isOpen = notificationPanel.style.display === 'block';
+        notificationPanel.style.display = isOpen ? 'none' : 'block';
+    })
+}
+
+if(markAllReadButton){
+    markAllReadButton.addEventListener('click', async () => {
+        await markAllNotificationsAsRead();
+    });
+}
+
+if(notificationPanelList){
+    notificationPanelList.addEventListener('click', async (event) => {
+        const item = event.target.closest('.notification-item');
+        if(!item) return;
+
+        const notificationId = item.getAttribute('data-id');
+        const target = item.getAttribute('data-target');
+
+        if(notificationId){
+            await markSingleNotificationAsRead(notificationId);
+        }
+
+        if(target){
+            window.location.href = target;
+        }
+    });
+}
+
+document.addEventListener('click', (event) => {
+    if(!notificationPanel || !notificationBell) return;
+    if(!notificationPanel.contains(event.target) && !notificationBell.contains(event.target)){
+        notificationPanel.style.display = 'none';
+    }
+})
 function setActiveNavLink(){
     const currentPage = window.location.pathname.split('/').pop();
     document.querySelectorAll('.navbar-menu .nav-link').forEach((link) => {

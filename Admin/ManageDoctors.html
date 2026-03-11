@@ -226,6 +226,41 @@
             </div>
         </div>
 
+        <!--book appointment for specific doctor-->
+        <div class="book-appointment-popup" id="book-appointment-popup" style="display: none">
+            <div class="book-appointment-content" id="book-appointment-content">
+                <h2>Book Appointment</h2>
+                <form>
+                    <!--show list of available patient-->
+                    <div class="form-field">
+                        <label for="appointment-name">Patient Name</label>
+                        <select id="appointment-name" required>
+                            <option value="" disabled selected>Select Patient</option>
+                            <!-- patient options will be populated here -->
+                        </select>
+                    </div>
+
+                    <!-- show appointment date and time available-->
+                    <div class="form-field">
+                        <label for="appointment-date">Appointment Date</label>
+                        <input type="date" id="appointment-date" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="appointment-time">Appointment Time</label>
+                        <input type="time" id="appointment-time" required>
+                    </div>
+
+                    <!-- show appointment reason field -->
+                    <div class="form-field">
+                        <label for="appointment-reason">Reason for Appointment</label>
+                        <input type="text" id="appointment-reason" placeholder=" " required>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
         <!-- update successful message -->
         <div id="update-success-message" class="update-success-message" style="display: none;">
             <div class="update-success-content">

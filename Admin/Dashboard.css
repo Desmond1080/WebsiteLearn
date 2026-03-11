@@ -8,6 +8,108 @@ textarea {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+.notification-nav-item {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+    padding: 0 5px;
+    font-weight: 700;
+}
+
+.notification-panel {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 340px;
+    max-height: 420px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1200;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.notification-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-panel-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.notification-panel-header button {
+    border: none;
+    background: transparent;
+    color: #2563eb;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.notification-panel-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+}
+
+.notification-item.unread {
+    background: #eff6ff;
+}
+
+.notification-item h4 {
+    margin: 0 0 4px;
+    font-size: 14px;
+}
+
+.notification-item p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: #475569;
+}
+
+.notification-item .notification-time {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.notification-empty {
+    padding: 16px;
+    margin: 0;
+    color: #64748b;
+}
+
+.notification-view-all {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    border-top: 1px solid #eee;
+    color: #2563eb;
+    font-weight: 600;
+}
 .fa-sign-out-alt {
     font-size: 24px;
     vertical-align: middle;

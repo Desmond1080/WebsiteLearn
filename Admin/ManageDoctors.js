@@ -8,6 +8,17 @@ const editDoctorSpecializationInput = document.getElementById('edit-doctor-speci
 const editDoctorGenderInput = document.getElementById('edit-doctor-gender');
 const editDoctorEmailInput = document.getElementById('edit-doctor-email');
 const addDoctorGenderSelect = document.getElementById('add-doctor-gender');
+
+// appointment state
+const bookAppointmentPopup = document.getElementById('book-appointment-popup');
+const appointmentDoctorId = document.getElementById('appointment-doctor-id');
+const appointmentDoctorNameEl = document.getElementById('appointment-doctor-name');
+const appointmentDateInput = document.getElementById('appointment-date');
+const appointmentTimeInput = document.getElementById('appointment-time');
+const appointmentPatientNameInput = document.getElementById('appointment-name');
+
+let currentBookingDoctorId = null;
+let currentBookingDoctorDate = null;
 let currentEditDoctorId = null;
 let currentEditUserId = null;
 let isDoctorUpdateInProgress = false;
@@ -121,6 +132,9 @@ async function loadDoctors(){
                         <button type="button" class="edit-btn" onclick="showEditDoctorForm('${doc.id}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
+                        <button type="button" class="book-btn" onclick="showBookAppointmentForm('${doc.id}')">
+                            <i class="fas fa-calendar-plus"></i> Book
+                        </button>
                     </td>
                 </tr>`;
             });
@@ -149,8 +163,51 @@ async function loadDoctors(){
 
 checkAuthState();
 
+
+//show book appointment form with doctor details
+async function showBookAppointmentForm(doctorId){
+    currentBookingDoctorId = doctorId;
+
+    const adminMain = document.getElementById('admin-main');
+
+    if(bookAppointmentPopup){
+        bookAppointmentPopup.style.display = 'flex';
+    }
+
+    if(adminMain){
+        adminMain.style.filter = 'blur(5px)';
+    }
+    document.body.style.overflow = 'hidden';
+
+    await loadPatientsForAppointment();
+    await loadDoctorDetailsForAppointment(doctorId);
+}
+
+// load patients for appointment booking dropdown
+async function loadPatientsForAppointment(){
+    const patients = document.getElementById('appointment-name');
+    try{
+        const patientsSnapshot = await db.collection('Users').where('role', '==' , 'user').get();
+        if(patientsSnapshot.empty){
+            console.log('No patients found for appointment booking');
+            return;
+        }
+
+        patients.innerHTML = '<option value="">Select Patient</option>';
+        patientsSnapshot.forEach((doc) => {
+            const patientData = doc.data();
+            const option = document.createElement('option');
+            option.value = patientData.name || '';
+            option.textContent = patientData.name || 'Unnamed Patient';
+            patients.appendChild(option);
+        });
+    } catch(error){
+        console.error('Error loading patients for appointment:', error);
+    }
+}
+
 //show edit form with doctor details
-function showEditDoctorForm(doctorId){
+async function showEditDoctorForm(doctorId){
     const adminMain = document.getElementById('admin-main');
     const editDoctorPopup = document.getElementById('edit-doctor-popup');
     const updateButton = document.querySelector('.edit-doctor-content .update-btn');
