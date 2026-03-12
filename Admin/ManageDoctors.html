@@ -230,36 +230,86 @@
         <div class="book-appointment-popup" id="book-appointment-popup" style="display: none">
             <div class="book-appointment-content" id="book-appointment-content">
                 <h2>Book Appointment</h2>
-                <form>
+                <form id="bookAppointmentForm">
+                    <!-- hidden field for doctor id-->
+                    <input type="hidden" id="appointment-doctor-id">
+
+                    <!-- show specific doctor name -->
+                    <div class="form-field">
+                        <label for="appointment-doctor-name">Doctor Name</label>
+                        <input type="text" id="appointment-doctor-name" disabled>   
+                    </div>
+
+                    <!-- show specific doctor room number-->
+                    <div class="form-field">
+                        <label for="appointment-doctor-room">Room Number</label>
+                        <input type="text" id="appointment-doctor-room" disabled>
+                    </div>
+
                     <!--show list of available patient-->
                     <div class="form-field">
                         <label for="appointment-name">Patient Name</label>
                         <select id="appointment-name" required>
                             <option value="" disabled selected>Select Patient</option>
-                            <!-- patient options will be populated here -->
                         </select>
                     </div>
 
-                    <!-- show appointment date and time available-->
+                    <!-- appointment date -->
                     <div class="form-field">
                         <label for="appointment-date">Appointment Date</label>
                         <input type="date" id="appointment-date" required>
                     </div>
 
+                    <!-- appointment time -->
                     <div class="form-field">
                         <label for="appointment-time">Appointment Time</label>
                         <input type="time" id="appointment-time" required>
                     </div>
 
-                    <!-- show appointment reason field -->
+                    <!-- appointment reason field -->
                     <div class="form-field">
                         <label for="appointment-reason">Reason for Appointment</label>
-                        <input type="text" id="appointment-reason" placeholder=" " required>
+                        <input type="text" id="appointment-reason" placeholder="Enter reason for appointment" required>
                     </div>
                 </form>
+
+                <div class="button-group">
+                    <button type="button" onclick="bookAppointmentForDoctor()" class="book-btn">Book Appointment</button>
+                    <button type="button" onclick="closeBookAppointmentPopup()" class="cancel-btn">Cancel</button>
+                </div>
             </div>
         </div>
 
+        <!-- manage slots pop up -->
+        <div class="manage-slots-popup" id="manage-slots-popup">
+            <div class="manage-slots-content" id="manage-slots-content">
+                <h2>Manage Slots</h2>
+                <form id="manageSlotsForm">
+                    <!-- hidden field for doctor id-->
+                    <input type="hidden" id="slots-doctor-id">
+
+                    <!-- show specific doctor name -->
+                    <div class="form-field">
+                        <label for="slots-doctor-name">Doctor Name</label>
+                        <input type="text" id="slots-doctor-name" disabled>
+                    </div>
+
+                    <!-- show recurr date -->
+                    <div class="form-field">
+                        <label for="slots-recurr-date">Recurring Date</label>
+                        <input type="date" id="slots-recurr-date">
+                    </div>
+
+                    <!-- show start time -->
+                    <div class="form-field">
+                        <label for="slots-start-time">Start Time</label>
+                        <input type="time" id="slots-start-time">
+                    </div>
+
+                    
+                </form>
+            </div>
+        </div>
 
         <!-- update successful message -->
         <div id="update-success-message" class="update-success-message" style="display: none;">
@@ -271,8 +321,15 @@
             </div>
         </div>
 
-        <!-- add doctor successful message -->
-        
+        <!-- book appointment successful -->
+        <div class="book-appointment-success" id="book-appointment-success" style="display: none;">
+            <div class="book-appointment-content">
+                <h2>Appointment Booked Successfully!</h2>
+                <i ></i>
+                <p>Your appointment has been booked successfully.</p>
+                <button onclick="closeBookAppointmentSuccess()">OK</button>
+            </div>
+        </div>
 
     <!-- script-->
     <script src="../firebase-config.js"></script>

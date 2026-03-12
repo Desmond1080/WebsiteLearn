@@ -34,10 +34,14 @@
                                 <input type="email" id="patient-email">
                                 <br>
                                 <label for="appointment-date">Appointment Date:</label>
-                                <input type="date" id="appointment-date">
+                                <select id="appointment-date" required>
+                                    <option value="" disabled selected>Select a date</option>
+                                </select>
                                 <br>
                                 <label for="appointment-time">Appointment Time:</label>
-                                <input type="time" id="appointment-time">
+                                <select id="appointment-time" required>
+                                    <option value="" disabled selected>Select a time</option>
+                                </select>
                                 <br>
                                 <label for="appointment-reason">Reason for Appointment:</label>
                                 <input type="text" id="appointment-reason"></input>
@@ -67,7 +71,7 @@
                     <p><img class="success-image" src="../Appointment/appointmentImage/check (1).png" alt="Success Image"></p>
                     <p>Your appointment has been booked successfully.</p>
                     <button onclick="closeAppointmentSuccessMessage()">Close</button>
-                </div>
+                </div>x
 
             </div>
         </div>

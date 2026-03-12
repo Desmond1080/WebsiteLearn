@@ -332,7 +332,9 @@ function subscribeAdminNotifications(userId){
         }
     });
     
-    listenerUnsubscribe = db.collection('Notifications').where('userId', '==', userId).orderBy('createdAt', 'desc').limit(20).onSnapshot((snap) => {
+    console.log('Subscribed to notifications for user:', userId);
+
+    listenerUnsubscribe = db.collection('Notifications').where('userId', '==', userId).orderBy('createdAt', 'desc').onSnapshot((snap) => {
         renderNotifications(snap.docs);
     });
 }

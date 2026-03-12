@@ -225,6 +225,17 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
+.doctor-list-content .book-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.doctor-list-content .book-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
 /* Edit Doctor Popup Enhancements */
 @keyframes slideDown {
     from {
@@ -489,6 +500,195 @@
 .add-doctor-content .cancel-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(100, 116, 139, 0.4);
+}
+
+/* Book Appointment Popup Styling */
+.book-appointment-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-appointment-popup.show {
+    display: flex;
+}
+
+.book-appointment-content {
+    width: min(650px, 94vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 35px 30px;
+    border: 1px solid #e0e6ed;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
+    animation: slideDown 0.3s ease-out;
+}
+
+.book-appointment-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.book-appointment-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.book-appointment-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.book-appointment-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.book-appointment-content h2 {
+    margin-bottom: 25px;
+    color: #1f2a37;
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.book-appointment-content form {
+    display: grid;
+    gap: 18px;
+}
+
+.book-appointment-content .form-field {
+    display: grid;
+    gap: 8px;
+}
+
+.book-appointment-content label {
+    font-size: 14.5px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.book-appointment-content input,
+.book-appointment-content select {
+    box-sizing: border-box;
+    width: 100%;
+    display: block;
+    padding: 12px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.book-appointment-content input:hover,
+.book-appointment-content select:hover {
+    border-color: #cbd5f5;
+}
+
+.book-appointment-content input:focus,
+.book-appointment-content select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.book-appointment-content input:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+.book-appointment-content input:disabled::placeholder {
+    color: #cbd5e1;
+}
+
+.book-appointment-content .button-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.book-appointment-content .book-btn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15.5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    flex: 1;
+}
+
+.book-appointment-content .book-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+}
+
+.book-appointment-content .book-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.book-appointment-content .cancel-btn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15.5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+    flex: 1;
+}
+
+.book-appointment-content .cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(100, 116, 139, 0.4);
+}
+
+.manage-slots-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.manage-slots-content {
+    width: min(650px, 94vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 35px 30px;
+    border: 1px solid #e0e6ed;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3);
 }
 
 /* Responsive Design */

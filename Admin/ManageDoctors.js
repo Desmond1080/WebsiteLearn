@@ -13,12 +13,14 @@ const addDoctorGenderSelect = document.getElementById('add-doctor-gender');
 const bookAppointmentPopup = document.getElementById('book-appointment-popup');
 const appointmentDoctorId = document.getElementById('appointment-doctor-id');
 const appointmentDoctorNameEl = document.getElementById('appointment-doctor-name');
+const appointmentDoctorRoomInput = document.getElementById('appointment-doctor-room');
 const appointmentDateInput = document.getElementById('appointment-date');
 const appointmentTimeInput = document.getElementById('appointment-time');
 const appointmentPatientNameInput = document.getElementById('appointment-name');
+const appointmentReasonInput = document.getElementById('appointment-reason');
 
 let currentBookingDoctorId = null;
-let currentBookingDoctorDate = null;
+let currentBookingDoctorData = null;
 let currentEditDoctorId = null;
 let currentEditUserId = null;
 let isDoctorUpdateInProgress = false;
@@ -38,6 +40,7 @@ async function checkAuthState(){
         }
     });
     loadDoctors();
+    loadPatientsForAppointment();
 }
 
 
@@ -135,6 +138,9 @@ async function loadDoctors(){
                         <button type="button" class="book-btn" onclick="showBookAppointmentForm('${doc.id}')">
                             <i class="fas fa-calendar-plus"></i> Book
                         </button>
+                        <button type="button" class="manage-slots-btn" onclick="showManageSlotsForm('${doc.id}')">
+                            <i class="fas fa-clock"></i> Manage Slots
+                        </button>
                     </td>
                 </tr>`;
             });
@@ -163,6 +169,21 @@ async function loadDoctors(){
 
 checkAuthState();
 
+//show manage slots form with doctor details 
+async function showManageSlotsForm(doctorId){
+    const adminMain = document.getElementById('admin-main');
+    const manageSlotsPopup = document.getElementById('manage-slots-popup');
+
+    if(manageSlotsPopup){
+        manageSlotsPopup.style.display = 'flex';
+    }
+
+    if(adminMain){
+        adminMain.style.filter = 'blur(5px)';
+    }
+
+    document.body.style.overflow = 'hidden';
+}
 
 //show book appointment form with doctor details
 async function showBookAppointmentForm(doctorId){
@@ -183,8 +204,64 @@ async function showBookAppointmentForm(doctorId){
     await loadDoctorDetailsForAppointment(doctorId);
 }
 
+// load slots for each doctor and show in manage slots form
+async function loadSlotsForDoctor(doctorId){
+    if(!doctorId){
+        console.error('No doctor ID provided for loading slots');
+        return;
+    }
+    try{
+        const slotsSnapshot = await db.collection('Slots').where('doctorId', '==', doctorId).get();
+        if(slotsSnapshot.empty){
+            console.log('No slots found for doctor:', doctorId);
+            return;
+        }
+        const manageSlotsContent = document.getElementById('manage-slots-content');
+        if(!manageSlotsContent){
+            console.error('Manage slots content element not found');
+            return;
+        }
+        let slotsHTML = `<h2>Manage Slots for Doctor</h2><table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        slotsSnapshot.forEach((doc) => {
+            const slotData = doc.data();
+            const slotId = doc.id;
+            slotsHTML += `<tr>
+                <td>${slotData.date || 'N/A'}</td>
+                <td>${slotData.time || 'N/A'}</td>
+                <td style="text-align: center;">
+                    <button type="button" class="edit-slot-btn" onclick="showEditSlotForm('${slotId}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button type="button" class="delete-slot-btn" onclick="deleteSlot('${slotId}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>`;
+        })
+        slotsHTML += '</tbody></table>';
+        manageSlotsContent.innerHTML = slotsHTML;
+    }catch(error){
+        console.error('Error loading slots for doctor:', error);
+    }
+
+}
+
 // load patients for appointment booking dropdown
 async function loadPatientsForAppointment(){
+    if(!appointmentPatientNameInput){
+        console.error('Appointment patient name input not found');
+        return;
+    }
+
     const patients = document.getElementById('appointment-name');
     try{
         const patientsSnapshot = await db.collection('Users').where('role', '==' , 'user').get();
@@ -197,12 +274,149 @@ async function loadPatientsForAppointment(){
         patientsSnapshot.forEach((doc) => {
             const patientData = doc.data();
             const option = document.createElement('option');
-            option.value = patientData.name || '';
+            // Store user ID as the value so we can retrieve it later for booking
+            option.value = doc.id;
+            // Display the patient's name
             option.textContent = patientData.name || 'Unnamed Patient';
+            // Store user ID as data attribute for easy access
+            option.setAttribute('data-patient-id', doc.id);
+            option.setAttribute('data-patient-email', patientData.email || '');
             patients.appendChild(option);
         });
     } catch(error){
         console.error('Error loading patients for appointment:', error);
+    }
+}
+
+//load doctor details for appointment booking form
+async function loadDoctorDetailsForAppointment(doctorId){
+    if(!doctorId){
+        console.error('No doctor ID provided for appointment form');
+        return;
+    }
+
+    try{
+        const doctorDoc = await db.collection('Doctors').doc(doctorId).get();
+
+        if(!doctorDoc.exists){
+            console.error('Doctor not found for appointment booking:', doctorId);
+            return;
+        }
+
+        const doctorData = doctorDoc.data();
+        currentBookingDoctorData = doctorData;
+
+        if(appointmentDoctorNameEl){
+            appointmentDoctorNameEl.value = doctorData.name || 'N/A';
+        }
+
+        if(appointmentDoctorRoomInput){
+            appointmentDoctorRoomInput.value = doctorData.roomNumber || doctorData.room || 'N/A';
+        }
+
+        if(appointmentDoctorId){
+            appointmentDoctorId.value = doctorId;
+        }
+    } catch(error){
+        console.error('Error loading doctor details for appointment:', error);
+    }
+}
+
+//close book appointment pop up
+function closeBookAppointmentPopup(){
+    const adminMain = document.getElementById('admin-main');
+
+    if(bookAppointmentPopup){
+        bookAppointmentPopup.style.display = 'none';
+    }
+
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+
+    document.body.style.overflow = 'auto';
+
+    if(appointmentPatientNameInput){
+        appointmentPatientNameInput.selectedIndex = 0;
+    }
+
+    if(appointmentDoctorNameEl){
+        appointmentDoctorNameEl.value = '';
+    }
+
+    if(appointmentDoctorRoomInput){
+        appointmentDoctorRoomInput.value = '';
+    }
+
+    if(appointmentDateInput){
+        appointmentDateInput.value = '';
+    }
+
+    if(appointmentTimeInput){
+        appointmentTimeInput.value = '';
+    }
+
+    if(appointmentReasonInput){
+        appointmentReasonInput.value = '';
+    }
+
+    currentBookingDoctorData = null;
+    currentBookingDoctorId = null;
+}
+
+// book and save appointment info to firebase 
+async function bookAppointmentForDoctor(){
+    const patientSelectElement = document.getElementById('appointment-name');
+    const selectedOption = patientSelectElement.options[patientSelectElement.selectedIndex];
+    
+    // Get user ID from selected option value
+    const patientId = selectedOption.value;
+    const patientEmail = selectedOption.getAttribute('data-patient-email');
+    const patientName = selectedOption.textContent;
+    
+    const appointmentDate = appointmentDateInput.value;
+    const appointmentTime = appointmentTimeInput.value;
+    const appointmentReason = appointmentReasonInput ? appointmentReasonInput.value : '';
+
+    // Validate all fields
+    if(!patientId || !appointmentDate || !appointmentTime || !appointmentReason){
+        alert('Please fill in all appointment details');
+        return;
+    }
+
+    const appointmentData = {
+        userId: patientId,
+        patientName: patientName,
+        patientEmail: patientEmail,
+        doctorId: currentBookingDoctorId,
+        doctorName: currentBookingDoctorData.name || '',
+        appointmentDate: appointmentDate,
+        appointmentTime: appointmentTime,
+        reason: appointmentReason,
+        status: 'booked',
+        bookedByRole: 'admin',
+        bookedByAdminId: auth.currentUser.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+    const notificationData = {
+        userId: patientId,
+        title: 'Appointment Booked Successfully',
+        message: "Your appointment with Dr. " + (currentBookingDoctorData.name || 'N/A') + " on " + appointmentDate + " at " + appointmentTime + " has been booked successfully.",
+        isRead: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }
+
+    try{
+        await db.collection('Appointments').add(appointmentData);
+
+        await db.collection('Notifications').add(notificationData);
+
+        alert('Appointment booked successfully!');
+        closeBookAppointmentPopup();
+    } catch(error){
+        console.error('Error booking appointment:', error);
+        alert('Error booking appointment: ' + error.message);
     }
 }
 

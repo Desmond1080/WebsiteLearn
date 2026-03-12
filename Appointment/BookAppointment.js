@@ -1,6 +1,7 @@
 // Get doctor ID from URL
 const doctorId = getQueryParam('doctorId');
 let doctorName = ''; // Store doctor name globally
+let availableSlotsByDate = {};
 
 
 // Function to get query parameters
@@ -37,6 +38,7 @@ async function loadDoctorDetails(docId) {
             displayDoctorDetails(doctor);
             // Show the appointment form
             document.getElementById('appointment-form-container').style.display = 'block';
+            await loadAvailableSlots(docId);
         } else {
             document.getElementById('doctor-details').innerHTML = '<p>Doctor not found.</p>';
         }
@@ -45,6 +47,134 @@ async function loadDoctorDetails(docId) {
         document.getElementById('doctor-details').innerHTML = '<p>Error loading doctor information.</p>';
     }
 }
+
+// load available slots for the doctor and populate the date and time dropdowns
+async function loadAvailableSlots(docId){
+    const todayStr = new Date().toISOString().split('T')[0];
+    try{
+        const doctorRef = db.collection('Doctors').doc(docId);
+
+        let slotDocs = [];
+
+        // Primary query: current schema used across this project (doctorId as string, date/time fields)
+        try {
+            const stringIdQuery = await db.collection('Slots')
+                .where('DoctorID', '==', docId)
+                .where('status', '==', 'available')
+                .where('RecurrStartDate', '>=', todayStr)
+                .orderBy('RecurrStartDate')
+                .orderBy('startTime')
+                .get();
+
+            console.log('Slots string-id query returned', stringIdQuery.size, 'documents');
+            slotDocs = slotDocs.concat(stringIdQuery.docs);
+        } catch (err) {
+            console.warn('Slots string-id query failed, will try fallback schema:', err);
+        }
+
+        // Fallback query: alternative schema (DoctorId as reference, RecurrStartDate/startTime fields)
+        try {
+            const refIdQuery = await db.collection('Slots')
+                .where('DoctorID', '==', doctorRef)
+                .where('status', '==', 'available')
+                .where('RecurrStartDate', '>=', todayStr)
+                .orderBy('RecurrStartDate')
+                .orderBy('startTime')
+                .get();
+
+            slotDocs = slotDocs.concat(refIdQuery.docs);
+        } catch (err) {
+            console.warn('Slots reference-id query failed:', err);
+        }
+
+        // Last-resort fallback: single-field query then filter/sort in JS (avoids composite index blockers)
+        if(slotDocs.length === 0){
+            try {
+                const fallbackSnapshot = await db.collection('Slots')
+                    .where('doctorId', '==', docId)
+                    .get();
+                slotDocs = fallbackSnapshot.docs;
+            } catch (err) {
+                console.warn('Slots fallback query failed:', err);
+            }
+        }
+
+        availableSlotsByDate = {};
+        const seenSlotIds = new Set();
+
+        slotDocs.forEach(doc => {
+            if(seenSlotIds.has(doc.id)){
+                return;
+            }
+            seenSlotIds.add(doc.id);
+
+            const slot = doc.data();
+            const dateValue = slot.date || slot.RecurrStartDate;
+            const timeValue = slot.time || slot.startTime;
+            const statusValue = String(slot.status || '').toLowerCase();
+
+            if(!dateValue || !timeValue){
+                return;
+            }
+
+            if(dateValue < todayStr){
+                return;
+            }
+
+            if(statusValue && statusValue !== 'available'){
+                return;
+            }
+
+            if(!availableSlotsByDate[dateValue]){
+                availableSlotsByDate[dateValue] = [];
+            }
+
+            availableSlotsByDate[dateValue].push({ id: doc.id, time: timeValue });
+        });
+
+        // Keep times ordered for each date
+        Object.keys(availableSlotsByDate).forEach(dateKey => {
+            availableSlotsByDate[dateKey].sort((a, b) => a.time.localeCompare(b.time));
+        });
+
+        // Populate date dropdown
+        const dateSelect = document.getElementById('appointment-date');
+        const timeSelect = document.getElementById('appointment-time');
+        dateSelect.innerHTML = '<option value="" disabled selected>Select a date</option>';
+        Object.keys(availableSlotsByDate).forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            dateSelect.appendChild(option);
+        });
+
+        if(Object.keys(availableSlotsByDate).length === 0){
+            dateSelect.innerHTML = '<option value="" disabled selected>No available dates</option>';
+        }
+
+        timeSelect.innerHTML = '<option value="" disabled selected>Select a date first</option>';
+        timeSelect.disabled = true;
+    } catch(error){
+        console.error('Error loading available slots:', error);
+    }
+}
+
+// load times when date is selected
+document.getElementById('appointment-date').addEventListener('change', function() {
+    const selectedDate = this.value;
+    const timeSelect = document.getElementById('appointment-time');
+    const slots =  availableSlotsByDate[selectedDate] || [];
+
+    timeSelect.innerHTML = '<option value="" disabled selected>Select a time</option>';
+    slots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot.time;
+        option.textContent = slot.time;
+        option.setAttribute('data-slot-id', slot.id);
+        timeSelect.appendChild(option);
+    });
+    timeSelect.disabled = false;
+});
 
 // Function to display doctor details
 function displayDoctorDetails(doctor) {
@@ -78,10 +208,7 @@ function closeAppointmentSuccessMessage(){
     window.location.href = '../Doctor/DoctorList.html'; // Redirect after user closes
 }
 
-// set minimum date for appointment date input to today
-const appointmentDate = document.getElementById('appointment-date');
-const today = new Date().toISOString().split('T')[0];
-appointmentDate.min = today;
+// Date is controlled by available slot dropdown, so no native min-date setup is needed.
 
 // Handle appointment form submission
 const appointmentForm = document.getElementById('appointment-form');
@@ -94,6 +221,8 @@ appointmentForm.addEventListener('submit', async (e) => {
     const appointmentDateValue = document.getElementById('appointment-date').value;
     const appointmentTime = document.getElementById('appointment-time').value;
     const appointmentReason = document.getElementById('appointment-reason').value;
+    const selectedTimeOption = document.getElementById('appointment-time').selectedOptions[0];
+    const slotId = selectedTimeOption ? selectedTimeOption.getAttribute('data-slot-id') : null;
 
     const user = auth.currentUser;
     const userId = user ? user.uid : null;
@@ -112,7 +241,7 @@ appointmentForm.addEventListener('submit', async (e) => {
     }
 
     // Validate that all required fields are filled
-    if(patientName === "" || patientEmail === "" || appointmentDateValue === "" || appointmentTime === ""){
+    if(patientName === "" || patientEmail === "" || appointmentDateValue === "" || appointmentTime === "" || !slotId){
         // Show the empty field error message
         document.getElementById('appointment-content').style.filter = 'blur(5px)';
         document.getElementById('check-empty-appointment-field').style.display = 'block';
@@ -126,8 +255,39 @@ appointmentForm.addEventListener('submit', async (e) => {
     }
 
     try{
-        // Save appointment to database
-        await db.collection("Appointments").add(appointmentData);
+        const existingBooking = await db.collection('Appointments')
+            .where('doctorId', '==', doctorId)
+            .where('appointmentDate', '==', appointmentDateValue)
+            .where('appointmentTime', '==', appointmentTime)
+            .where('status', 'in', ['Pending', 'booked'])
+            .get();
+
+        if(!existingBooking.empty){
+            alert('The selected slot is no longer available. Please choose another slot.');
+            await loadAvailableSlots(doctorId);
+            return;
+        }
+
+        const slotRef = db.collection('Slots').doc(slotId);
+        let createdAppointmentId = null;
+
+        await db.runTransaction(async (transaction) => {
+            const slotDoc = await transaction.get(slotRef);
+
+            if(!slotDoc.exists || slotDoc.data().status !== 'available'){
+                throw new Error('Selected slot is no longer available. Please choose another slot.');
+            }
+
+            const appointmentRef = db.collection('Appointments').doc();
+            createdAppointmentId = appointmentRef.id;
+
+            transaction.set(appointmentRef, appointmentData);
+            transaction.update(slotRef, {
+                status: 'booked',
+                bookedByUserId: userId,
+                appointmentId: createdAppointmentId
+            });
+        });
         
         // Create notification for the user
         await db.collection("Notifications").add({
@@ -144,6 +304,7 @@ appointmentForm.addEventListener('submit', async (e) => {
         document.getElementById('appointment-success-message').style.display = 'block';
         document.getElementById('appointment-content').style.filter = 'blur(5px)';
         document.body.style.overflow = 'hidden'; // Disable background scrolling
+        await loadAvailableSlots(doctorId);
         return;
     }catch(error){
         console.error("Error booking appointment: ", error);
