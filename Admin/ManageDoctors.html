@@ -296,17 +296,41 @@
 
                     <!-- show recurr date -->
                     <div class="form-field">
-                        <label for="slots-recurr-date">Recurring Date</label>
-                        <input type="date" id="slots-recurr-date">
+                        <label for="slots-recurr-date">Recurring Start Date</label>
+                        <input type="date" id="slots-recurr-date" required>
+                    </div>
+
+                    <!-- recurring day of week -->
+                    <div class="form-field">
+                        <label for="slots-day-of-week">Recurring Day</label>
+                        <select id="slots-day-of-week" required>
+                            <option value="">Select Day</option>
+                            <option value="Sunday">Sunday</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                        </select>
                     </div>
 
                     <!-- show start time -->
                     <div class="form-field">
                         <label for="slots-start-time">Start Time</label>
-                        <input type="time" id="slots-start-time">
+                        <input type="time" id="slots-start-time" required>
                     </div>
 
-                    
+                    <!-- weeks to generate -->
+                    <div class="form-field">
+                        <label for="slots-weeks-ahead">Generate Weeks Ahead</label>
+                        <input type="number" id="slots-weeks-ahead" min="1" max="52" value="12" required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="book-btn" onclick="saveRecurringSlots()">Save Recurring Slots</button>
+                        <button type="button" class="cancel-btn" onclick="closeManageSlotsPopup()">Cancel</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -325,7 +349,6 @@
         <div class="book-appointment-success" id="book-appointment-success" style="display: none;">
             <div class="book-appointment-content">
                 <h2>Appointment Booked Successfully!</h2>
-                <i ></i>
                 <p>Your appointment has been booked successfully.</p>
                 <button onclick="closeBookAppointmentSuccess()">OK</button>
             </div>

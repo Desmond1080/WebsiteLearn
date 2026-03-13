@@ -19,6 +19,17 @@ const appointmentTimeInput = document.getElementById('appointment-time');
 const appointmentPatientNameInput = document.getElementById('appointment-name');
 const appointmentReasonInput = document.getElementById('appointment-reason');
 
+// manage slots state
+const manageSlotsPopup = document.getElementById('manage-slots-popup');
+const slotsDoctorIdInput = document.getElementById('slots-doctor-id');
+const slotsDoctorNameInput = document.getElementById('slots-doctor-name');
+const slotsRecurrDateInput = document.getElementById('slots-recurr-date');
+const slotsDayOfWeekInput = document.getElementById('slots-day-of-week');
+const slotsStartTimeInput = document.getElementById('slots-start-time');
+const slotsWeeksAheadInput = document.getElementById('slots-weeks-ahead');
+
+let currentManageSlotsDoctorId = null;
+let currentManageSlotsDoctorData = null;
 let currentBookingDoctorId = null;
 let currentBookingDoctorData = null;
 let currentEditDoctorId = null;
@@ -172,7 +183,38 @@ checkAuthState();
 //show manage slots form with doctor details 
 async function showManageSlotsForm(doctorId){
     const adminMain = document.getElementById('admin-main');
-    const manageSlotsPopup = document.getElementById('manage-slots-popup');
+
+    if(!doctorId){
+        alert('Doctor ID is missing for slot management.');
+        return;
+    }
+
+    currentManageSlotsDoctorId = doctorId;
+
+    try{
+        const doctorDoc = await db.collection('Doctors').doc(doctorId).get();
+        if(!doctorDoc.exists){
+            alert('Doctor not found.');
+            return;
+        }
+
+        currentManageSlotsDoctorData = doctorDoc.data();
+
+        if(slotsDoctorIdInput) slotsDoctorIdInput.value = doctorId;
+        if(slotsDoctorNameInput) slotsDoctorNameInput.value = currentManageSlotsDoctorData.name || 'N/A';
+        if(slotsRecurrDateInput){
+            const today = new Date().toISOString().split('T')[0];
+            slotsRecurrDateInput.min = today;
+            slotsRecurrDateInput.value = today;
+        }
+        if(slotsDayOfWeekInput) slotsDayOfWeekInput.value = '';
+        if(slotsStartTimeInput) slotsStartTimeInput.value = '';
+        if(slotsWeeksAheadInput) slotsWeeksAheadInput.value = '12';
+    } catch(error){
+        console.error('Error preparing manage slots form:', error);
+        alert('Unable to open manage slots form.');
+        return;
+    }
 
     if(manageSlotsPopup){
         manageSlotsPopup.style.display = 'flex';
@@ -183,6 +225,31 @@ async function showManageSlotsForm(doctorId){
     }
 
     document.body.style.overflow = 'hidden';
+}
+
+// close manage slots pop up 
+function closeManageSlotsPopup(){
+    const adminMain = document.getElementById('admin-main');
+
+    if(manageSlotsPopup){
+        manageSlotsPopup.style.display = 'none';
+    }
+
+    if(adminMain){
+        adminMain.style.filter = 'none';
+    }
+
+    document.body.style.overflow = 'auto';
+
+    if(slotsDoctorIdInput) slotsDoctorIdInput.value = '';
+    if(slotsDoctorNameInput) slotsDoctorNameInput.value = '';
+    if(slotsRecurrDateInput) slotsRecurrDateInput.value = '';
+    if(slotsDayOfWeekInput) slotsDayOfWeekInput.value = '';
+    if(slotsStartTimeInput) slotsStartTimeInput.value = '';
+    if(slotsWeeksAheadInput) slotsWeeksAheadInput.value = '12';
+
+    currentManageSlotsDoctorId = null;
+    currentManageSlotsDoctorData = null;
 }
 
 //show book appointment form with doctor details
@@ -204,55 +271,99 @@ async function showBookAppointmentForm(doctorId){
     await loadDoctorDetailsForAppointment(doctorId);
 }
 
-// load slots for each doctor and show in manage slots form
-async function loadSlotsForDoctor(doctorId){
-    if(!doctorId){
-        console.error('No doctor ID provided for loading slots');
+function dayNameToIndex(dayName){
+    const dayMap = {
+        Sunday: 0,
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6
+    };
+    return dayMap[dayName];
+}
+
+function formatDateKey(dateObj){
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+function firstMatchingDateOnOrAfter(startDate, targetDayIndex){
+    const date = new Date(startDate);
+    const diff = (targetDayIndex - date.getDay() + 7) % 7;
+    date.setDate(date.getDate() + diff);
+    return date;
+}
+
+// Generate weekly recurring slots from a recurrence rule.
+async function saveRecurringSlots(){
+    const doctorId = slotsDoctorIdInput ? slotsDoctorIdInput.value : currentManageSlotsDoctorId;
+    const dayOfWeek = slotsDayOfWeekInput ? slotsDayOfWeekInput.value : '';
+    const recurrStartDate = slotsRecurrDateInput ? slotsRecurrDateInput.value : '';
+    const startTime = slotsStartTimeInput ? slotsStartTimeInput.value : '';
+    const weeksAhead = slotsWeeksAheadInput ? parseInt(slotsWeeksAheadInput.value, 10) : 12;
+
+    if(!doctorId || !dayOfWeek || !recurrStartDate || !startTime || !weeksAhead){
+        alert('Please complete all recurring slot fields.');
         return;
     }
-    try{
-        const slotsSnapshot = await db.collection('Slots').where('doctorId', '==', doctorId).get();
-        if(slotsSnapshot.empty){
-            console.log('No slots found for doctor:', doctorId);
-            return;
-        }
-        const manageSlotsContent = document.getElementById('manage-slots-content');
-        if(!manageSlotsContent){
-            console.error('Manage slots content element not found');
-            return;
-        }
-        let slotsHTML = `<h2>Manage Slots for Doctor</h2><table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>`;
 
-        slotsSnapshot.forEach((doc) => {
-            const slotData = doc.data();
-            const slotId = doc.id;
-            slotsHTML += `<tr>
-                <td>${slotData.date || 'N/A'}</td>
-                <td>${slotData.time || 'N/A'}</td>
-                <td style="text-align: center;">
-                    <button type="button" class="edit-slot-btn" onclick="showEditSlotForm('${slotId}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button type="button" class="delete-slot-btn" onclick="deleteSlot('${slotId}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </td>
-            </tr>`;
-        })
-        slotsHTML += '</tbody></table>';
-        manageSlotsContent.innerHTML = slotsHTML;
-    }catch(error){
-        console.error('Error loading slots for doctor:', error);
+    const targetDayIndex = dayNameToIndex(dayOfWeek);
+    if(targetDayIndex === undefined){
+        alert('Invalid day of week selected.');
+        return;
     }
 
+    const doctorRef = db.collection('Doctors').doc(doctorId);
+    const startDateObj = new Date(`${recurrStartDate}T00:00:00`);
+    let currentDate = firstMatchingDateOnOrAfter(startDateObj, targetDayIndex);
+
+    let createdCount = 0;
+    let skippedCount = 0;
+
+    try{
+        for(let i = 0; i < weeksAhead; i++){
+            const dateKey = formatDateKey(currentDate);
+            const slotKey = `${doctorId}_${dateKey}_${startTime}`;
+
+            const existingSlot = await db.collection('Slots')
+                .where('slotKey', '==', slotKey)
+                .limit(1)
+                .get();
+
+            if(!existingSlot.empty){
+                skippedCount += 1;
+                currentDate.setDate(currentDate.getDate() + 7);
+                continue;
+            }
+
+            await db.collection('Slots').add({
+                DoctorID: doctorRef,
+                doctorId: doctorId,
+                date: dateKey,
+                RecurrStartDate: firebase.firestore.Timestamp.fromDate(new Date(`${dateKey}T00:00:00`)),
+                dayOfWeek: dayOfWeek,
+                startTime: startTime,
+                time: startTime,
+                status: 'available',
+                slotKey: slotKey,
+                isRecurringGenerated: true,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            createdCount += 1;
+            currentDate.setDate(currentDate.getDate() + 7);
+        }
+
+        alert(`Recurring slots saved. Created: ${createdCount}, Skipped duplicates: ${skippedCount}`);
+        closeManageSlotsPopup();
+    } catch(error){
+        console.error('Error saving recurring slots:', error);
+        alert('Failed to save recurring slots: ' + error.message);
+    }
 }
 
 // load patients for appointment booking dropdown
