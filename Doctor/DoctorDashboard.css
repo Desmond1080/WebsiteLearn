@@ -187,6 +187,89 @@
     text-align: center;
 }
 
+.total-appointment-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 14px;
+}
+
+.dashboard-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: #132238;
+    background: #ffffff;
+    border: 1px solid #d9e3ef;
+    border-radius: 16px;
+    padding: 20px 18px;
+    box-shadow: 0 10px 26px rgba(9, 30, 66, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.dashboard-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(11, 125, 155, 0.09), rgba(240, 246, 252, 0.25));
+    pointer-events: none;
+}
+
+.dashboard-card:hover,
+.dashboard-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 32px rgba(9, 30, 66, 0.14);
+    border-color: #7eb4d8;
+    background: #fafdff;
+    outline: none;
+}
+
+.dashboard-card i,
+.dashboard-card h3,
+.dashboard-card p {
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-card i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(9, 30, 66, 0.2);
+}
+
+.dashboard-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.06rem;
+}
+
+.dashboard-card p {
+    margin: 0;
+    color: #475569;
+    font-size: 0.93rem;
+    line-height: 1.5;
+}
+
+.appointment-today-card i {
+    background: linear-gradient(135deg, #0b7d9b, #16a34a);
+}
+
+.appointment-overall-card i {
+    background: linear-gradient(135deg, #f97316, #f59e0b);
+}
+
+.appointment-calendar-card i {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+}
+
 .logout-confirmation-popup{
     display: none;
     position: fixed;
@@ -324,6 +407,14 @@
 
     .navbar-container {
         height: 60px;
+    }
+
+    .total-appointment-container {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        text-align: left;
     }
 }
 

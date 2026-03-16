@@ -85,14 +85,32 @@
             <h2>Total Appointment for that day</h2>
             <div class="total-appointment-container" id="total-appointment-container">
                 <!-- Total appointments will be displayed here -->
+                <!-- appointment today card -->
+                <a class="dashboard-card appointment-today-card" id="appointment-today-card" href="../Doctor/ViewTodayAppointments.html" aria-label="Go to today appointments">
+                    <i class="fas fa-calendar-day"></i>
+                    <h3>Today Appointments</h3>
+                    <p>View today's appointments</p>
+                </a>
+                <!-- appointment overall status card, completed, pending, cancelled-->
+                <a class="dashboard-card appointment-overall-card" id="appointment-overall-card" href="../Doctor/ViewAppointmentStatus.html" aria-label="Go to overall appointment status">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Overall Appointments</h3>
+                    <p>View overall appointment status</p>
+                </a>
+                <!-- appointment calendar view for by month-->
+                <a class="dashboard-card appointment-calendar-card" id="appointment-calendar-card" href="../Doctor/ViewAppointmentCalendar.html" aria-label="Go to appointment calendar">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Appointment Calendar</h3>
+                    <p>View appointments by month</p>
+                </a>
             </div>
 
-            <!--logout confirmation pop-up-->
+        <!--logout confirmation pop-up-->
         <div class="logout-confirmation-popup" id="logout-confirmation-popup">
             <div class="logout-confirmation-content">
                 <h2>Confirm Logout</h2>
                 <p>Are you sure you want to logout?</p>
-                <p><img src="../Admin/adminImage/logout (1).png" alt="Logout Icon"></p>
+                <i class="fas fa-sign-out-alt"></i>
                 <button onclick="confirmLogout()">Logout</button>
                 <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
             </div>

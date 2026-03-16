@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../image/favicon (1).ico"/>
+        <link rel="stylesheet" href="../theme.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../Doctor/DoctorDashboard.css">
+        <link rel="stylesheet" href="ViewAppointmentStatus.css">
+
+        <title>Appointment Status</title>
+
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <header class="doctor-header">
+            <nav class="doctor-navbar">
+                <div class="navbar-container">
+                    <!-- Logo/Brand -->
+                    <div class="navbar-brand">
+                        <span class="brand-text">Doctor Dashboard</span>
+                    </div>
+
+                    <!-- Hamburger Menu for Mobile -->
+                    <button class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    <!-- Navigation Links -->
+                    <ul class="navbar-menu" id="navbar-menu">
+                        <li class="nav-item">
+                            <a href="../Doctor/DoctorDashboard.html" class="nav-link">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="../Doctor/ManageAppointments.html" class="nav-link">
+                                <i class="fas fa-calendar-check"></i> Appointments
+                            </a>
+                        </li>
+
+
+                        <!-- User Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" id="user-dropdown">
+                                <i class="fas fa-user-circle"></i> 
+                                <span id="doctor-name">Doctor</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <ul class="dropdown-menu" id="dropdown-menu">
+                                <li><a href="../Doctor/DoctorProfile.html" class="dropdown-link">
+                                    <i class="fas fa-user"></i> My Profile
+                                </a></li>
+                                <li><a href="../Doctor/DoctorSettings.html" class="dropdown-link">
+                                    <i class="fas fa-cog"></i> Settings
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a href="#" class="dropdown-link" id="doctor-logout-button">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="appointment-overall-status-container" id="appointment-overall-status-container">
+                <div class="appointment-overall-status-content" id="appointment-overall-status-content">
+                    <h1>Appointment Status</h1>
+                    <hr>
+                    <div class="appointment-status-section" id="appointment-status-section">
+                        <!-- appointment status will show on this-->
+                    </div>                </div>
+
+            </div>
+        </main>
+    </body>
+</html>
