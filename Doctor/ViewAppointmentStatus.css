@@ -1,0 +1,32 @@
+.appointment-overall-status-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 28px;
+}
+
+.appointment-overall-status-content {
+    background: #ffffff;
+    border: 1px solid #dbe5f0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.appointment-overall-status-content h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+.appointment-overall-status-content p {
+    margin: 6px 0;
+    color: #334155;
+}
+
+.fa-sign-out-alt{
+    font-size: 16px;
+    margin-right: 8px;
+    margin-top: 2px;
+    padding: 0;
+}
+

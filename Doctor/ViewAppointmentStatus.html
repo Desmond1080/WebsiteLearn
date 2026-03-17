@@ -73,15 +73,31 @@
         </header>
 
         <main>
+            <!-- a small navigate text back to the dashboard -->
+            <p><a href="../Doctor/DoctorDashboard.html">Dashboard</a> > Appointment Status</p>
+            <h1>Appointment Status</h1>
+            <hr>
             <div class="appointment-overall-status-container" id="appointment-overall-status-container">
                 <div class="appointment-overall-status-content" id="appointment-overall-status-content">
-                    <h1>Appointment Status</h1>
-                    <hr>
-                    <div class="appointment-status-section" id="appointment-status-section">
-                        <!-- appointment status will show on this-->
-                    </div>                </div>
-
+                </div>    
             </div>
+
+            <!--logout confirmation pop-up-->
+            <div class="logout-confirmation-popup" id="logout-confirmation-popup">
+                <div class="logout-confirmation-content">
+                    <h2>Confirm Logout</h2>
+                    <p>Are you sure you want to logout?</p>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <button onclick="confirmLogout()">Logout</button>
+                    <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+                </div>
+            </div>
+
         </main>
+
+        <script defer src="../firebase-config.js"></script>
+        <script defer src="../Doctor/ViewAppointmentStatus.js"></script>
+        <scipt defer src="../Doctor/DoctorDashboard.js"></script>
+        <script defer src="../theme.js"></script>
     </body>
 </html>

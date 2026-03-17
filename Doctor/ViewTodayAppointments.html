@@ -71,16 +71,31 @@
                 </div>
             </nav>
         </header>
-        <h1>Today's Appointments</h1>
-        <hr>
-        <div id="today-appointments-container" class="today-appointments-container">
-            <!-- Today's appointments will be dynamically inserted here -->
-            <div class="today-appointment-content" id="today-appointment-content">
+        <main>
+            <p><a href="../Doctor/DoctorDashboard.html">Dashboard</a> > Today's Appointments </p>
+            <h1>Today's Appointments</h1>
+            <hr>
+            <div id="today-appointments-container" class="today-appointments-container">
+                <!-- Today's appointments will be dynamically inserted here -->
+                <div class="today-appointment-content" id="today-appointment-content">
 
+                </div>
             </div>
-        </div>
-        <script src="../firebase-config.js"></script>
-        <script src="../Doctor/ViewTodayAppointments.js"></script>
-        <script src="../theme.js"></script>
+
+            <!-- logout confirmation message-->
+            <div class="logout-confirmation-popup" id="logout-confirmation-popup">
+                <div class="logout-confirmation-content">
+                    <h2>Confirm Logout</h2>
+                    <p>Are you sure you want to logout?</p>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <button onclick="confirmLogout()">Logout</button>
+                    <button onclick="cancelLogout()" class="cancel-btn">Cancel</button>
+                </div>
+            </div>
+            
+        </main>
+        <script defer src="../firebase-config.js"></script>
+        <script defer src="../Doctor/ViewTodayAppointments.js"></script>
+        <script defer src="../theme.js"></script>
     </body>
 </html>

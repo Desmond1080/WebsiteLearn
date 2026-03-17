@@ -20,6 +20,12 @@ hr {
     border-top: 1px solid #d9e2ec;
 }
 
+.fa-sign-out-alt{
+    font-size: 16px;
+    margin-right: 8px;
+    margin-top: 2px;
+}
+
 .today-appointments-container {
     max-width: 1200px;
     margin: 0 auto;

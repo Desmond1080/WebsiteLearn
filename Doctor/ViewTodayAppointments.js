@@ -1,5 +1,8 @@
 const todayAppointmentsContainer = document.getElementById('today-appointments-container');
 const todayAppointmentsContent = document.getElementById('today-appointment-content');
+const doctorName = document.getElementById('doctor-name');
+const logoutPopup = document.getElementById('logout-confirmation-popup');
+const doctorLogoutButton = document.getElementById('doctor-logout-button');
 
 function getTodayDateKey() {
     const now = new Date();
@@ -20,7 +23,6 @@ async function getDoctorIdForUser(userId) {
     if (!byRefSnapshot.empty) {
         return byRefSnapshot.docs[0].id;
     }
-
     return null;
 }
 
@@ -54,6 +56,10 @@ async function checkAuthState() {
         if (!doctorId) {
             renderEmpty('Doctor profile not found. Please contact admin.');
             return;
+        }
+
+        if (doctorName) {
+            doctorName.textContent = `Dr. ${userData.name || 'Unknown'}`;
         }
 
         await loadTodayAppointments(doctorId);
@@ -109,3 +115,44 @@ async function loadTodayAppointments(doctorId) {
 }
 
 checkAuthState();
+
+function showLogoutConfirmation(){
+    console.log('showLogoutConfirmation called');
+    console.log('logoutPopup element:', logoutPopup);
+    if(logoutPopup){
+        console.log('Adding visible class');
+        logoutPopup.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    } else {
+        console.log('logoutPopup is null!');
+    }
+}
+
+function cancelLogout(){
+    if(logoutPopup){
+        logoutPopup.classList.remove('visible');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+async function confirmLogout(){
+    try{
+        await auth.signOut();
+        localStorage.removeItem('userRole');
+        window.location.href = '../User/UserLoginAndRegister.html';
+    }catch(error){
+        console.error('Logout error:', error);
+    }
+}
+
+// Attach event listener to logout button
+if(doctorLogoutButton){
+    console.log('Adding click listener to logout button');
+    doctorLogoutButton.addEventListener('click', (event) => {
+        console.log('Logout button clicked!');
+        event.preventDefault();
+        showLogoutConfirmation();
+    });
+} else {
+    console.log('doctorLogoutButton not found!');
+}
