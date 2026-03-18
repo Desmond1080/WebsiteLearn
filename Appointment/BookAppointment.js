@@ -654,6 +654,7 @@ appointmentForm.addEventListener('submit', async (e) => {
         // Create notification for the user
         await db.collection("Notifications").add({
             userId: userId,
+            doctorId: doctorId,
             title: "Appointment Booked Successfully!",
             message: `Your appointment with Dr. ${doctorName} on ${appointmentDateValue} at ${appointmentTime} has been confirmed. You will receive a confirmation shortly.`,
             isRead: false,

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="x-icon" href="../image/favicon (1).ico">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../Doctor/DoctorProfile.css">
+        <link rel="stylesheet" href="../Doctor/DoctorDashboard.css">
+        <link rel="stylesheet" href="../Admin/AdminProfile.css">
+        <link rel="stylesheet" href="../theme.css">
+        <title>Doctor Profile</title>
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    </head>
+    <body>
+        <!-- navigation bar-->
+            <header class="doctor-header">
+                <nav class="doctor-navbar">
+                    <div class="navbar-container">
+                        <!-- Logo/Brand -->
+                        <div class="navbar-brand">
+                            <span class="brand-text">Doctor Profile</span>
+                        </div>
+
+                        <!-- Hamburger Menu for Mobile -->
+                        <button class="hamburger" id="hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+
+                        <!-- Navigation Links -->
+                        <ul class="navbar-menu" id="navbar-menu">
+                            <li class="nav-item">
+                                <a href="../Doctor/DoctorDashboard.html" class="nav-link">
+                                    <i class="fas fa-home"></i> Dashboard
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="../Doctor/ManageAppointments.html" class="nav-link">
+                                    <i class="fas fa-calendar-check"></i> Appointments
+                                </a>
+                            </li>
+
+
+                            <!-- User Profile Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" id="user-dropdown">
+                                    <i class="fas fa-user-circle"></i> 
+                                    <span id="doctor-name">Doctor</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </a>
+                                <ul class="dropdown-menu" id="dropdown-menu">
+                                    <li><a href="../Doctor/DoctorProfile.html" class="dropdown-link">
+                                        <i class="fas fa-user"></i> My Profile
+                                    </a></li>
+                                    <li><a href="../Doctor/DoctorSettings.html" class="dropdown-link">
+                                        <i class="fas fa-cog"></i> Settings
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a href="#" class="dropdown-link" id="doctor-logout-button">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <main>
+                <div class="profile-container">
+                    <h1>My Profile</h1>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="profile-tabs">
+                        <button class="tab-button active" onclick="showTab('profile-tab')">
+                            <i class="fas fa-user"></i> Profile Information
+                        </button>
+                        <button class="tab-button" onclick="showTab('password-tab')">
+                            <i class="fas fa-lock"></i> Reset Password
+                        </button>
+                    </div>
+
+                    <!-- Profile Tab Content -->
+                    <div id="profile-tab" class="tab-content active">
+                        <div class="admin-profile-content" id="admin-profile-content">
+                            
+                        </div>
+
+                        <div class="edit-admin-profile" id="edit-admin-profile">
+                    <form>
+                        <h2><i class="fas fa-id-card identity-icon" id="identity-icon" title="Identity"></i>Identity</h2>
+                        <label for="admin-name-input">Name:</label>
+                        <input type="text" id="admin-name-input" name="admin-name" maxlength="100" disabled>
+
+                        <label for="admin-username-input">Username:</label>
+                        <input type="text" id="admin-username-input" name="admin-username" maxlength="30" disabled>
+
+                        <label for="admin-description-input">Description:</label>
+                        <input type="text" id="admin-description-input" name="admin-description" maxlength="200" disabled>
+
+                        <label for="admin-gender-input">Gender:</label>
+                        <select id="admin-gender-input" name="admin-gender" disabled>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <label for="admin-role-input">Role:</label>
+                        <input type="text" id="admin-role-input" name="admin-role" disabled>
+                    </form>
+
+                    <form>
+                        <h2><i class="fas fa-phone identity-icon" id="contact-icon" title="Contact Information"></i>Contact Information</h2>
+                        <label for="admin-phone-input">Phone:</label>
+                        <input type="tel" id="admin-phone-input" name="admin-phone" inputmode="numeric" pattern="[0-9]*" maxlength="11" disabled>
+
+                        <label for="admin-email-input">Email:</label>
+                        <input type="email" id="admin-email-input" name="admin-email" maxlength="254" disabled>
+                    </form>
+
+                    <form>
+                        <h2><i class="fas fa-location-dot identity-icon" id="address-icon" title="Address"></i>Address</h2>
+                        <div class="admin-address-section">
+                            <div class="address-field address-field-full">
+                                <label for="admin-street-input">Street:</label>
+                                <input type="text" id="admin-street-input" name="admin-street" maxlength="100" disabled>
+                            </div>
+                            <div class="address-field">
+                                <label for="admin-city-input">City:</label>
+                                <input type="text" id="admin-city-input" name="admin-city" maxlength="50" disabled>
+                            </div>
+                            <div class="address-field">
+                                <label for="admin-state-input">State:</label>
+                                <select id="admin-state-input" name="admin-state" disabled>
+                                    <option value="" selected>Select State</option>
+                                </select>
+                            </div>
+                            <div class="address-field address-field-full">
+                                <label for="admin-postal-input">Postal Code:</label>
+                                <input type="text" id="admin-postal-input" name="admin-postal" maxlength="10" disabled>
+                            </div>
+                            <div class="address-field">
+                                <label for="admin-country-input">Country:</label>
+                                <select id="admin-country-input" name="admin-country" disabled>
+                                    <option value="" selected>Select Country</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                        <div class="save-admin-profile-button" id="save-admin-profile-button" style="display: none;">
+                            <button type="button" id="save-profile-button" onclick="saveProfile()">Save Changes</button>
+                            <button type="button" id="cancel-profile-button" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Password Reset Tab Content -->
+                    <div id="password-tab" class="tab-content">
+                        <div class="reset-password-section">
+                            <h2><i class="fas fa-lock identity-icon"></i>Change Password</h2>
+                            <p class="password-hint">Enter your current password and choose a new one.</p>
+                            
+                            <form id="password-reset-form">
+                                <div class="password-field-group">
+                                    <label for="current-password">Current Password:</label>
+                                    <div class="password-input-wrapper">
+                                        <input type="password" id="current-password" name="current-password" placeholder="Enter current password">
+                                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('current-password')"></i>
+                                    </div>
+                                </div>
+
+                                <div class="password-field-group">
+                                    <label for="new-password">New Password:</label>
+                                    <div class="password-input-wrapper">
+                                        <input type="password" id="new-password" name="new-password" placeholder="Enter new password (min 6 characters)">
+                                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('new-password')"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="password-field-group">
+                                    <label for="confirm-new-password">Confirm New Password:</label>
+                                    <div class="password-input-wrapper">
+                                        <input type="password" id="confirm-new-password" name="confirm-new-password" placeholder="Confirm new password">
+                                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirm-new-password')"></i>
+                                    </div>
+                                </div>
+
+                                <div class="password-error-message" id="password-error-message"></div>
+                                <div class="password-success-message" id="password-success-message"></div>
+
+                                <div class="update-password-button">
+                                    <button type="button" id="update-password-btn" onclick="updatePassword()">
+                                        <i class="fas fa-key"></i> Update Password
+                                    </button>
+                                    <button type="button" id="cancel-password-btn" onclick="clearPasswordFields()">
+                                        <i class="fas fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    </body>
+</html>
