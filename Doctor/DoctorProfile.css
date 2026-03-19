@@ -1,0 +1,704 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.profile-container{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Profile avatar polish */
+.doctor-profile-content {
+    text-align: center;
+}
+
+.upload-button {
+    --avatar-size: 132px;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border: 0;
+    padding: 0;
+    margin: 6px auto 14px;
+    border-radius: 999px;
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+    background:
+        linear-gradient(var(--card-bg, #fff), var(--card-bg, #fff)) padding-box,
+        linear-gradient(135deg, #4f46e5, #06b6d4, #22c55e) border-box;
+    border: 3px solid transparent;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+#profile-picture {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.upload-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.26);
+}
+
+.upload-button:hover #profile-picture {
+    transform: scale(1.06);
+    filter: saturate(1.08) contrast(1.03);
+}
+
+.upload-button::after {
+    content: "Change";
+    position: absolute;
+    right: -8px;
+    bottom: -6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    border-radius: 999px;
+    padding: 6px 10px;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+    letter-spacing: 0.2px;
+}
+
+.upload-button:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.45);
+    outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+    .upload-button {
+        --avatar-size: 108px;
+    }
+
+    .upload-button::after {
+        font-size: 10px;
+        padding: 5px 8px;
+    }
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.fa-sign-out-alt {
+    font-size: 24px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.dropdown-link .fa-sign-out-alt {
+    font-size: 16px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.logout-confirmation-content .fa-sign-out-alt {
+    font-size: 48px;
+    display: block;
+    margin: 20px auto;
+}
+
+.profile-container h1,
+.doctor-profile-content h2,
+.edit-doctor-profile h2 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: 0.2px;
+}
+
+.identity-icon {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.doctor-profile-content {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.doctor-profile-content:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.doctor-profile-content p {
+    margin: 0px 0px 4px;
+    font-size: 22px;
+    line-height: 1.35;
+}
+
+.doctor-profile-content h2 {
+    margin-top: 0;
+    font-size: 28px;
+}
+
+.doctor-profile-content button{
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 4px;
+    background-color: aliceblue;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.doctor-profile-content button:hover {
+    background-color: #0066cc;
+    color: white;
+    border-color: #0066cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.doctor-profile-content button:active {
+    transform: translateY(0);
+}
+
+/* Edit Profile Button - Editing State */
+.doctor-profile-content button:disabled,
+.doctor-profile-content button.editing-active {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.doctor-profile-content button.editing-active:hover {
+    background-color: #6c757d;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Pulse animation for already editing notification */
+.doctor-profile-content button.already-editing {
+    animation: editingPulse 0.6s ease-in-out;
+}
+
+@keyframes editingPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(108, 117, 125, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(108, 117, 125, 0);
+    }
+}
+
+.edit-doctor-profile {
+    margin-top: 20px;
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.edit-doctor-profile:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.edit-doctor-profile form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 0;
+}
+
+.edit-doctor-profile label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.edit-doctor-profile input,
+.edit-doctor-profile select {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    background-color: var(--input-bg, white);
+    color: var(--text-color, #333);
+    transition: all 0.3s ease;
+}
+
+.edit-doctor-profile input:hover:not(:disabled),
+.edit-doctor-profile select:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.1);
+}
+
+.edit-doctor-profile input:focus:not(:disabled),
+.edit-doctor-profile select:focus:not(:disabled) {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
+}
+
+/* Disabled input styling - for non-editable fields like email and role */
+.edit-doctor-profile input:disabled,
+.edit-doctor-profile select:disabled {
+    background-color: #f5f5f5;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+    border-color: #e0e0e0;
+}
+
+[data-theme="dark"] .edit-doctor-profile input:disabled,
+[data-theme="dark"] .edit-doctor-profile select:disabled {
+    background-color: #2a2a2a;
+    color: #888;
+    border-color: #444;
+}
+
+/* Address section styling */
+.doctor-address-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.doctor-address-section .address-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-address-section .address-field-full {
+    grid-column: 1 / -1;
+}
+
+.doctor-address-section .address-field label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.doctor-address-section .address-field input,
+.doctor-address-section .address-field select {
+    margin-bottom: 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.doctor-address-section .address-field input:hover:not(:disabled),
+.doctor-address-section .address-field select:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.1);
+}
+
+.doctor-address-section .address-field input:focus:not(:disabled),
+.doctor-address-section .address-field select:focus:not(:disabled) {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
+}
+
+@media (max-width: 600px) {
+    .doctor-address-section {
+        grid-template-columns: 1fr;
+    }
+
+    .doctor-address-section .address-field-full {
+        grid-column: auto;
+    }
+}
+
+.save-doctor-profile-button {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.save-doctor-profile-button button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.save-doctor-profile-button button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.save-doctor-profile-button button:active {
+    transform: translateY(0);
+}
+
+#save-profile-button {
+    background-color: #28a745;
+    color: white;
+}
+
+#save-profile-button:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.save-doctor-profile-button .cancel-button {
+    background-color: #ccc;
+    color: #333;
+}
+
+.save-doctor-profile-button .cancel-button:hover {
+    background-color: #b3b3b3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.save-doctor-profile-button .save-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#cancel-profile-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+#cancel-profile-button:hover {
+    background-color: #5a6268;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Tab Navigation Styles */
+.profile-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-button:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 102, 204, 0.05);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background-color: rgba(0, 102, 204, 0.05);
+}
+
+.tab-button i {
+    margin-right: 8px;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Password Reset Section Styles */
+.reset-password-section {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.reset-password-section:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.reset-password-section h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+.password-hint {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+.password-field-group {
+    margin-bottom: 20px;
+}
+
+.password-field-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-color);
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 45px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.password-input-wrapper input:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.1);
+}
+
+.password-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(0, 102, 204, 0.2);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+.password-error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(220, 53, 69, 0.1);
+    display: none;
+}
+
+.password-error-message.show {
+    display: block;
+}
+
+.password-success-message {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(40, 167, 69, 0.1);
+    display: none;
+}
+
+.password-success-message.show {
+    display: block;
+}
+
+.update-password-button {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.update-password-button button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.update-password-button button i {
+    margin-right: 8px;
+}
+
+#update-password-btn {
+    background-color: #0066cc;
+    color: white;
+    flex: 1;
+}
+
+#update-password-btn:hover {
+    background-color: #0052a3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+#update-password-btn:active {
+    transform: translateY(0);
+}
+
+#cancel-password-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+#cancel-password-btn:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+#cancel-password-btn:active {
+    transform: translateY(0);
+}
+
+/* Profile Update Success Modal */
+.update-successful-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.update-successful-content {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: #28a745;
+    margin-bottom: 20px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+.update-successful-content h2 {
+    color: var(--text-color);
+    margin: 15px 0;
+    font-size: 24px;
+}
+
+.update-successful-content p {
+    color: var(--text-color);
+    margin: 10px 0 25px;
+    font-size: 16px;
+}
+
+.update-successful-content button {
+    padding: 12px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.update-successful-content button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.update-successful-content button i {
+    margin-right: 8px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+

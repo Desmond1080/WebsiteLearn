@@ -6,14 +6,15 @@
         <link rel="icon" type="x-icon" href="../image/favicon (1).ico">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="../Doctor/DoctorProfile.css">
+        <link rel-="stylesheet" href="../Admin/Dashboard.css">
         <link rel="stylesheet" href="../Doctor/DoctorDashboard.css">
-        <link rel="stylesheet" href="../Admin/AdminProfile.css">
         <link rel="stylesheet" href="../theme.css">
         <title>Doctor Profile</title>
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     </head>
     <body>
         <!-- navigation bar-->
@@ -88,24 +89,24 @@
 
                     <!-- Profile Tab Content -->
                     <div id="profile-tab" class="tab-content active">
-                        <div class="admin-profile-content" id="admin-profile-content">
+                        <div class="doctor-profile-content" id="doctor-profile-content">
                             
                         </div>
 
-                        <div class="edit-admin-profile" id="edit-admin-profile">
+                        <div class="edit-doctor-profile" id="edit-doctor-profile">
                     <form>
                         <h2><i class="fas fa-id-card identity-icon" id="identity-icon" title="Identity"></i>Identity</h2>
-                        <label for="admin-name-input">Name:</label>
-                        <input type="text" id="admin-name-input" name="admin-name" maxlength="100" disabled>
+                        <label for="doctor-name-input">Name:</label>
+                        <input type="text" id="doctor-name-input" name="doctor-name" maxlength="100" disabled>
 
-                        <label for="admin-username-input">Username:</label>
-                        <input type="text" id="admin-username-input" name="admin-username" maxlength="30" disabled>
+                        <label for="doctor-username-input">Username:</label>
+                        <input type="text" id="doctor-username-input" name="doctor-username" maxlength="30" disabled>
 
-                        <label for="admin-description-input">Description:</label>
-                        <input type="text" id="admin-description-input" name="admin-description" maxlength="200" disabled>
+                        <label for="doctor-description-input">Description:</label>
+                        <input type="text" id="doctor-description-input" name="doctor-description" maxlength="200" disabled>
 
-                        <label for="admin-gender-input">Gender:</label>
-                        <select id="admin-gender-input" name="admin-gender" disabled>
+                        <label for="doctor-gender-input">Gender:</label>
+                        <select id="doctor-gender-input" name="doctor-gender" disabled>
                             <option value="" disabled selected>Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -113,50 +114,50 @@
                             <option value="Other">Other</option>
                         </select>
 
-                        <label for="admin-role-input">Role:</label>
-                        <input type="text" id="admin-role-input" name="admin-role" disabled>
+                        <label for="doctor-role-input">Role:</label>
+                        <input type="text" id="doctor-role-input" name="doctor-role" disabled>
                     </form>
 
                     <form>
                         <h2><i class="fas fa-phone identity-icon" id="contact-icon" title="Contact Information"></i>Contact Information</h2>
-                        <label for="admin-phone-input">Phone:</label>
-                        <input type="tel" id="admin-phone-input" name="admin-phone" inputmode="numeric" pattern="[0-9]*" maxlength="11" disabled>
+                        <label for="doctor-phone-input">Phone:</label>
+                        <input type="tel" id="doctor-phone-input" name="doctor-phone" inputmode="numeric" pattern="[0-9]*" maxlength="11" disabled>
 
-                        <label for="admin-email-input">Email:</label>
-                        <input type="email" id="admin-email-input" name="admin-email" maxlength="254" disabled>
+                        <label for="doctor-email-input">Email:</label>
+                        <input type="email" id="doctor-email-input" name="doctor-email" maxlength="254" disabled>
                     </form>
 
                     <form>
                         <h2><i class="fas fa-location-dot identity-icon" id="address-icon" title="Address"></i>Address</h2>
-                        <div class="admin-address-section">
+                        <div class="doctor-address-section">
                             <div class="address-field address-field-full">
-                                <label for="admin-street-input">Street:</label>
-                                <input type="text" id="admin-street-input" name="admin-street" maxlength="100" disabled>
+                                <label for="doctor-street-input">Street:</label>
+                                <input type="text" id="doctor-street-input" name="doctor-street" maxlength="100" disabled>
                             </div>
                             <div class="address-field">
-                                <label for="admin-city-input">City:</label>
-                                <input type="text" id="admin-city-input" name="admin-city" maxlength="50" disabled>
+                                <label for="doctor-city-input">City:</label>
+                                <input type="text" id="doctor-city-input" name="doctor-city" maxlength="50" disabled>
                             </div>
                             <div class="address-field">
-                                <label for="admin-state-input">State:</label>
-                                <select id="admin-state-input" name="admin-state" disabled>
+                                <label for="doctor-state-input">State:</label>
+                                <select id="doctor-state-input" name="doctor-state" disabled>
                                     <option value="" selected>Select State</option>
                                 </select>
                             </div>
                             <div class="address-field address-field-full">
-                                <label for="admin-postal-input">Postal Code:</label>
-                                <input type="text" id="admin-postal-input" name="admin-postal" maxlength="10" disabled>
+                                <label for="doctor-postal-input">Postal Code:</label>
+                                <input type="text" id="doctor-postal-input" name="doctor-postal" maxlength="10" disabled>
                             </div>
                             <div class="address-field">
-                                <label for="admin-country-input">Country:</label>
-                                <select id="admin-country-input" name="admin-country" disabled>
+                                <label for="doctor-country-input">Country:</label>
+                                <select id="doctor-country-input" name="doctor-country" disabled>
                                     <option value="" selected>Select Country</option>
                                 </select>
                             </div>
                         </div>
                     </form>
 
-                        <div class="save-admin-profile-button" id="save-admin-profile-button" style="display: none;">
+                        <div class="save-doctor-profile-button" id="save-doctor-profile-button" style="display: none;">
                             <button type="button" id="save-profile-button" onclick="saveProfile()">Save Changes</button>
                             <button type="button" id="cancel-profile-button" onclick="cancelEdit()">Cancel</button>
                         </div>
@@ -210,5 +211,9 @@
                     </div>
                 </div>
             </main>
+
+            <script src="../firebase-config.js"></script>
+            <script src="../Doctor/DoctorProfile.js"></script>
+            <script src="../theme.js"></script>
     </body>
 </html>
