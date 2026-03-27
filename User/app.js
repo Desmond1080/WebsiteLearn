@@ -150,6 +150,7 @@ async function login(){
         errorMsg.innerText = ""; // Clear error on success
 
         localStorage.setItem('userRole', userRole); // store role in local storage
+        saveRememberMe();
         loadUserData();
     } catch (firebaseError){
         // Handle Firebase errors
@@ -710,6 +711,16 @@ async function changeNewPassword(){
     }
 }
 
+//validation functions
+function isPhoneNumberValid(phone) {
+    return /^\d+$/.test(phone);
+}
+
+function isEmailValid(email) {
+    // Practical check for public email formats (not full RFC parser)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
 // Update user profile
 async function updateProfile(){
     const user = auth.currentUser;
@@ -739,6 +750,59 @@ async function updateProfile(){
     }
 
     if(user){
+        //validation if the phone number already exists in firestore
+        const phoneQuery = await db.collection('Users').where('phoneNumber', '==', phoneNumber).get();
+        if(!phoneQuery.empty){
+            const phoneDoc = phoneQuery.docs[0];
+            if(phoneDoc.id !== user.uid){
+                phoneInput.style.border = '2px solid red';
+                errorMsg.innerText = 'Phone number already registered. Try a different number.';
+                return;
+            }
+        }
+
+        // validate length for the description
+        if(description.length > 250){
+            descriptionInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Description must be less than 250 characters';
+            return;
+        }
+
+        //validate phone number format 
+        if(phoneNumber && !isPhoneNumberValid(phoneNumber)){
+            phoneInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Phone number must contain digits only';
+            return;
+        }
+
+        //validate phone number length 
+        if(phoneNumber && (phoneNumber.length < 10 || phoneNumber.length > 11)){
+            phoneInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Phone number must be between 10 and 11 digits';
+            return;
+        }
+
+        //validate name length 
+        if(name.length > 50){
+            nameInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Name must be less than 50 characters';
+            return;
+        }
+
+        //validate username length 
+        if(username.length > 30){
+            usernameInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Username must be less than 30 characters';
+            return; 
+        }
+
+        // validate email format 
+        if(email && !isEmailValid(email)){
+            emailInput.style.border = '2px solid red';
+            errorMsg.innerText = 'Please enter a valid email address (example: name@example.com)';
+            return;
+        }
+
         try{
             // Update email in Firebase Auth
             if(email !== user.email){
@@ -806,6 +870,11 @@ async function addNote(){
     const noteInput = document.getElementById('note-content');
     const content = noteInput.value;
     const user = auth.currentUser;
+    const errorMsg = document.getElementById('note-error');
+
+     // Clear previous errors
+    noteInput.style.border = '';
+    errorMsg.innerText = '';
 
     if(user){
         const userDocument = await db.collection("Users").doc(user.uid).get();
@@ -815,6 +884,12 @@ async function addNote(){
             // call pop up card 
             document.getElementById('save-note-popout').style.display = 'block';
             document.getElementById('app-section').style.filter = 'blur(5px)';
+            return;
+        }
+
+        if(content.length > 500){
+            errorMsg = document.getElementById('note-error');
+            errorMsg.innerText = 'Note content must be less than 500 characters else post out new note';
             return;
         }
 
@@ -1048,7 +1123,7 @@ async function uploadProfilePicture(event) {
         alert('Failed to upload profile picture: ' + error.message);
     }
 
-}
+}   
 
 async function loadProfilePicture(){
     const user = auth.currentUser;
@@ -1356,3 +1431,34 @@ async function resendOTP(){
         otpError.style.color = 'red';
     }
 }
+
+// save remember me function
+function saveRememberMe(){
+    const rememberMeCheckBox = document.getElementById('remember-me');
+    const emailInput = document.getElementById('login-email');
+
+    if(rememberMeCheckBox && rememberMeCheckBox.checked && emailInput.value){
+        localStorage.setItem('rememberedEmail', emailInput.value);
+        localStorage.setItem('rememberMe', 'true');
+    } else {
+        localStorage.removeItem('rememberedEmail');
+        localStorage.setItem('rememberMe', 'false');
+    }
+}
+
+function loadRememberedEmail(){
+    const rememberMeCheckBox = document.getElementById('remember-me');
+    const emailInput = document.getElementById('login-email');
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    const rememberMe = localStorage.getItem('rememberMe');
+
+    if(rememberMe === 'true' && rememberedEmail && emailInput && rememberMeCheckBox){
+        emailInput.value = rememberedEmail;
+        rememberMeCheckBox.checked = true;
+    }
+
+}   
+
+window.addEventListener('load' , () =>{
+    loadRememberedEmail();
+})

@@ -310,6 +310,22 @@
     color: #475569;
 }
 
+.logout-confirmation-content .fa-sign-out-alt{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 14px auto 12px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    background: #eef2ff;
+    font-size: 34px;
+    color: #667eea;
+    line-height: 1;
+}
+
 .logout-confirmation-content button{
     margin: 6px 6px 0;
     padding: 10px 18px;

@@ -340,6 +340,7 @@ async function fetchAdminProfile(){
         
         if(adminProfile){
             const html = `
+                <img src="${userData.imageUrl || '../image/default-profile.png'}" alt="Admin Profile Picture" class="profile-picture">
                 <p><strong>Name:</strong> ${userData.name || 'N/A'}</p>
                 <p><strong>Role:</strong> ${userData.role || 'N/A'}</p>
                 <button id="edit-profile-btn" onclick="enableProfileEditing()">

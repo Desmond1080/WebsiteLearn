@@ -39,7 +39,7 @@
         <div class="edit-profile-section" id="edit-profile-section" style="display: none;">
             <img class="back-button" src="../User/UserProfileImage/back-button.png" onclick="window.location.href= '../User/UserProfile.html'; return false;" alt="Back Button" style="width: 40px; height: 40px; cursor: pointer; position: absolute; top: 20px; left: 20px;">
             <h2>Edit Profile</h2>
-            <form>
+            <form onsubmit="updateProfile(event)">
                 <div class="floating-input">
                     <input type="text" id="profile-name" placeholder=" " required>
                     <label for="profile-name">Full Name</label>
@@ -49,7 +49,7 @@
                     <label for="profile-username">Username</label>
                 </div>
                 <div class="floating-input">
-                    <input type="tel" id="profile-phone" placeholder=" " required>
+                    <input type="tel" id="profile-phone" placeholder=" " inputmode="numeric" pattern="[0-9]{10,11}" required>
                     <label for="profile-phone">Phone Number</label>
                 </div>
                 <div class="floating-input">
@@ -60,7 +60,7 @@
                     <input type="email" id="profile-email" placeholder=" " disabled>
                     <label for="profile-email">Email</label>
                 </div>
-                <button type="button" onclick="updateProfile()">Save Changes</button>
+                <button type="submit">Save Changes</button>
                 <button type="button" onclick="cancelEdit()" class="cancel-btn">Cancel</button>
                 <p id="profile-error" class="error"></p>
             </form>
