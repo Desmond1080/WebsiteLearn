@@ -1,0 +1,10 @@
+function NotFound() {
+  return (
+    <section>
+      <h1>404 - Page Not Found</h1>
+      <p>The page you requested does not exist.</p>
+    </section>
+  )
+}
+
+export default NotFound

@@ -1,14 +1,24 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0)  
+  const [showToDo, setShowToDo] = useState(' ')
+  const [todoInput, setTodoInput] = useState('')
 
   return (
     <>
+      <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+        <Link to="/">Home</Link>
+        <Link to="/appointment">Appointment</Link>
+        <Link to="/todo">To-Do List</Link>
+
+      </nav>
+
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
@@ -16,7 +26,7 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+          <h1>Welcome to Desterriman's Website</h1>
           <p>
             Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
           </p>
@@ -27,9 +37,35 @@ function App() {
         >
           Count is {count}
         </button>
+        <button 
+          className="reset"
+          onClick={() => setCount(0)}
+        >
+          Reset
+        </button>
+        {count > 5 && <p>Counter is greater than 5!</p>}
       </section>
 
-      <div className="ticks"></div>
+      <section id="to-do">
+        <div className="to-do-list">
+          <h2>To-Do List</h2>
+          <input
+            id="to-do-input"
+            type="text"
+            placeholder="Add a new task..."
+            value={todoInput}
+            onChange={(e) => setTodoInput(e.target.value)}
+          />
+          <button onClick={() => {
+            setShowToDo(todoInput);
+          }}>
+            Add
+          </button>
+          <ul>
+            {showToDo && <li>{showToDo}</li>}
+          </ul>
+        </div>
+      </section>
 
       <section id="next-steps">
         <div id="docs">
