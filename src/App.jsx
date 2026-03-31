@@ -1,14 +1,27 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { supabase } from './utils/supabaseClient'
+import { useAuth } from './context/AuthContext'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
+  const { user, profile } = useAuth()
   const [count, setCount] = useState(0)  
   const [showToDo, setShowToDo] = useState(' ')
   const [todoInput, setTodoInput] = useState('')
+
+  useEffect(() => {
+    const getUser =  async () => {
+      const { data } = await supabase.auth.getSession()
+      const currentUser = data?.session?.user || null
+      console.log('Current user:', currentUser)
+    }
+
+    getUser()
+  }, [])
 
   return (
     <>
@@ -44,27 +57,6 @@ function App() {
           Reset
         </button>
         {count > 5 && <p>Counter is greater than 5!</p>}
-      </section>
-
-      <section id="to-do">
-        <div className="to-do-list">
-          <h2>To-Do List</h2>
-          <input
-            id="to-do-input"
-            type="text"
-            placeholder="Add a new task..."
-            value={todoInput}
-            onChange={(e) => setTodoInput(e.target.value)}
-          />
-          <button onClick={() => {
-            setShowToDo(todoInput);
-          }}>
-            Add
-          </button>
-          <ul>
-            {showToDo && <li>{showToDo}</li>}
-          </ul>
-        </div>
       </section>
 
       <section id="next-steps">

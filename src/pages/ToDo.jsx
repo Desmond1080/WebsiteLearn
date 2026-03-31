@@ -131,6 +131,9 @@ function ToDo() {
 
     return (
         <section id="to-do-container">
+            <div className="back-button">
+                <button onClick={() => window.location.href = '/'}>Back to Home</button>
+            </div>
             <h1>To-Do List</h1>
             <p>Manage your tasks here.</p>
 
