@@ -2,16 +2,21 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from './utils/supabaseClient'
 import { useAuth } from './context/AuthContext'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+
 
 function App() {
   const { user, profile } = useAuth()
   const [count, setCount] = useState(0)  
   const [showToDo, setShowToDo] = useState(' ')
   const [todoInput, setTodoInput] = useState('')
+  const { signOut } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getUser =  async () => {
@@ -23,16 +28,20 @@ function App() {
     getUser()
   }, [])
 
+  async function handleSignOut(){
+    await signOut()
+    navigate('/', { replace: true })
+  }
+
   return (
     <>
       <nav style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-        <Link to="/">Home</Link>
-        <Link to="/appointment">Appointment</Link>
         <Link to="/todo">To-Do List</Link>
-
+        <Link to="/profile">Profile</Link>
       </nav>
 
       <section id="center">
+        <button onClick={() => handleSignOut()}>Log Out</button>
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
           <img src={reactLogo} className="framework" alt="React logo" />

@@ -6,16 +6,22 @@ import App from './App.jsx'
 import NotFound from './pages/NotFound.jsx'
 import ToDo from './pages/ToDo.jsx'
 import Login from './pages/Login.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import UserProfile from './User/UserProfile.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/Home" element={<App />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/todo" element={<ToDo />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/Home" element={<ProtectedRoute><App /></ProtectedRoute>} />
+          <Route path="/" element={<Login />} />
+          <Route path="/todo" element={<ToDo />} />
+          <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 )
