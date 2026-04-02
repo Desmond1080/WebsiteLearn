@@ -2,6 +2,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../css/Login.css';
 
 
@@ -64,6 +65,10 @@ function Login(){
                         Login
                     </button>
                 </form>
+
+                <div className="sign-up-links">
+                    <p>Don't have an account? <Link to="/sign-up">Sign Up</Link></p>
+                </div>
             </div>
         </section>
     )

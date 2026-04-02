@@ -8,7 +8,7 @@ async function fetchProfile(userId){
         .from('profiles')
         .select('id, full_name, role')
         .eq('id', userId)
-        .single()
+        .maybeSingle()
 
     if(error){
         console.error('Error fetching profile:', error)
@@ -26,38 +26,82 @@ export function AuthProvider({ children }) {
         let mounted = true 
 
         async function initAuth(){
-            const { data } = await supabase.auth.getSession()
-            const currentUser = data?.session?.user || null
+            try {
+                const { data } = await supabase.auth.getSession()
+                const currentUser = data?.session?.user || null
+        
+                if(!mounted) return 
 
-            if(!mounted) return 
-
-            setUser(currentUser)
-            setProfile(currentUser ? await fetchProfile(currentUser.id) : null)
-            setLoading(false)
+                setUser(currentUser)
+                if(currentUser) {
+                    const profileData = await fetchProfile(currentUser.id)
+                    if(mounted) setProfile(profileData)
+                } else {
+                    if(mounted) setProfile(null)
+                }
+                if(mounted) setLoading(false)
+            } catch (error) {
+                console.error('Error initializing auth:', error)
+                if(mounted) {
+                    setUser(null)
+                    setProfile(null)
+                    setLoading(false)
+                }
+            }
         }
 
         initAuth()
 
-        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-            const currentUser = session?.user || null
-            setUser(currentUser)
-            setProfile(currentUser ? await fetchProfile(currentUser.id) : null)
-            setLoading(false)
+        const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+            try {
+                const currentUser = session?.user || null
+                setUser(currentUser)
+                setLoading(false)
+                if(currentUser) {
+                    const profileData = await fetchProfile(currentUser.id)
+                    if(mounted) setProfile(profileData)
+                } else {
+                    if(mounted) setProfile(null)
+                }
+                if(mounted) setLoading(false)
+                
+                if(event === 'SIGNED_OUT'){
+                    setUser(null)
+                    setProfile(null)
+                    setLoading(false)
+                }
+            } catch (error) {
+                console.error('Error in auth state change:', error)
+                if(mounted) setLoading(false)
+            }
         })
 
         return () => {
             mounted = false
-            authListener.subscription.unsubscribe()
+            data?.subscription?.unsubscribe()
         }
     }, [])
 
-    async function signUp(email, password){
-        const { data, error } = await supabase.auth.signUp({ email, password })
-        if(error){
-            console.error('Error signing up:', error)
+    async function signUp(email, password, userData = {}){
+        console.log('signUp called in AuthContext');
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: userData
+                }
+            })
+
+            if(error){
+                console.error('Error signing up:', error)
+                return null
+            }
+            return data?.user ?? null
+        } catch (e) {
+            console.error('signUp exception:', e)
             return null
         }
-        return data.user
     }
 
     async function signIn(email, password){
@@ -83,10 +127,15 @@ export function AuthProvider({ children }) {
     }
 
     async function signOut(){
+        setUser(null)
+        setProfile(null)
+        setLoading(false)
         const { error } = await supabase.auth.signOut()
         if(error){
             console.error('Error signing out:', error)
+            return false;
         }
+        return true;
     }
 
     function hasRole(...roles){

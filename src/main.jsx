@@ -9,6 +9,7 @@ import Login from './pages/Login.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import UserProfile from './User/UserProfile.jsx'
+import SignUp from './pages/SignUp.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<Login />} />
           <Route path="/todo" element={<ToDo />} />
           <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/sign-up" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

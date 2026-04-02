@@ -13,8 +13,6 @@ import './App.css'
 function App() {
   const { user, profile } = useAuth()
   const [count, setCount] = useState(0)  
-  const [showToDo, setShowToDo] = useState(' ')
-  const [todoInput, setTodoInput] = useState('')
   const { signOut } = useAuth()
   const navigate = useNavigate()
 
@@ -28,9 +26,15 @@ function App() {
     getUser()
   }, [])
 
-  async function handleSignOut(){
-    await signOut()
-    navigate('/', { replace: true })
+  async function handleSignOut(e){
+    e.preventDefault()
+    console.log('Signing out user:', user)
+    const ok = await signOut()
+    console.log('Sign out result:', ok)
+    if(ok){
+      console.log('Sign out successful, navigating to login page')
+      navigate('/')
+    }
   }
 
   return (
@@ -41,7 +45,7 @@ function App() {
       </nav>
 
       <section id="center">
-        <button onClick={() => handleSignOut()}>Log Out</button>
+        <button onClick={(e) => handleSignOut(e)}>Log Out</button>
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
           <img src={reactLogo} className="framework" alt="React logo" />
