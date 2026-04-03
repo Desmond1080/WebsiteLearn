@@ -8,12 +8,11 @@ import '../css/Login.css';
 
 
 function Login(){
-    const { signIn, user, loading } = useAuth();
+    const { signIn, user, loading, authLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState(null);
     const navigate = useNavigate();
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (user && !loading) {
@@ -24,30 +23,25 @@ function Login(){
     async function handleLogin(e){
         e.preventDefault();
         setLoginError(null);
-        setIsSubmitting(true);
 
         console.log('Attempting login with email:', email);
 
-        try{
-            if(!email || !password){
-                console.log('Email or password missing');
-                setLoginError('Please enter both email and password');
-                return;
-            }
-
-            console.log('Calling signIn with:', { email, password });
-            const loggedUser = await signIn(email, password);
-            console.log('Login result:', loggedUser);
-
-            if(!loggedUser){
-                setLoginError('Invalid email or password');
-                return;
-            }
-            console.log('Login successful, navigating to Home');
-            navigate('/Home', { replace: true });
-        } finally {
-            setIsSubmitting(false);
+        if(!email || !password){
+            console.log('Email or password missing');
+            setLoginError('Please enter both email and password');
+            return;
         }
+
+        console.log('Calling signIn with:', { email, password });
+        const loggedUser = await signIn(email, password);
+        console.log('Login result:', loggedUser);
+
+        if(!loggedUser){
+            setLoginError('Invalid email or password');
+            return;
+        }
+        console.log('Login successful, navigating to Home');
+        navigate('/Home', { replace: true });
     }
 
     return(
@@ -61,8 +55,8 @@ function Login(){
                     <label htmlFor="password">Password:</label>
                     <input type="password" id="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                     {loginError && <p className="error">{loginError}</p>}
-                    <button type="submit" disabled={isSubmitting}>
-                        Login
+                    <button type="submit" disabled={authLoading}>
+                        {authLoading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>
 

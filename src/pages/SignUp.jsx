@@ -80,7 +80,6 @@ function SignUp()  {
         } catch (e) {
             console.error('Sign up exception:', e)
             setError(e?.message || 'Sign up failed. Please try again.')
-
         } finally {
             setIsSubmitting(false);
         }

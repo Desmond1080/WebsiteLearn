@@ -4,17 +4,27 @@ import { supabase } from '../utils/supabaseClient';
 const AuthContext = createContext();
 
 async function fetchProfile(userId){
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, role')
-        .eq('id', userId)
-        .maybeSingle()
+    console.log('Fetching profile for user ID:', userId)
+        console.log('fetchProfile started for user ID:', userId)
 
-    if(error){
-        console.error('Error fetching profile:', error)
-        return null
-    }
-    return data
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, full_name, username, role, gender, description')
+                .eq('id', userId)
+                .maybeSingle()
+
+            console.log('fetchProfile query result:', { data, error })
+
+            if(error){
+                console.error('Error fetching profile:', error)
+                return null
+            }
+            return data
+        } catch (error) {
+            console.error('fetchProfile exception:', error)
+            return null
+        }
 }
 
 export function AuthProvider({ children }) {
@@ -34,6 +44,7 @@ export function AuthProvider({ children }) {
 
                 setUser(currentUser)
                 if(currentUser) {
+                    console.log('initAuth calling fetchProfile for:', currentUser.id)
                     const profileData = await fetchProfile(currentUser.id)
                     if(mounted) setProfile(profileData)
                 } else {
@@ -58,6 +69,7 @@ export function AuthProvider({ children }) {
                 setUser(currentUser)
                 setLoading(false)
                 if(currentUser) {
+                    console.log('auth state change calling fetchProfile for:', currentUser.id)
                     const profileData = await fetchProfile(currentUser.id)
                     if(mounted) setProfile(profileData)
                 } else {
@@ -108,18 +120,15 @@ export function AuthProvider({ children }) {
         console.log('signIn called in AuthContext');
         try {
             console.log('Calling supabase.auth.signInWithPassword...');
-            const { data, error } = await Promise.race([
-                supabase.auth.signInWithPassword({ email, password }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), 10000))
-            ]);
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password })
             console.log('Supabase response:', { data, error });
             
             if(error){
                 console.error('Supabase auth error:', error.message || error);
                 return null
             }
-            console.log('Sign in successful, user:', data.user);
-            return data.user
+            console.log('Sign in successful, user:', data?.user);
+            return data?.user ?? null
         } catch (e) {
             console.error('signIn exception:', e);
             return null
