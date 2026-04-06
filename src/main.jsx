@@ -12,6 +12,7 @@ import UserProfile from './User/UserProfile.jsx'
 import SignUp from './pages/SignUp.jsx'
 import AdminDashboard from './Admin/AdminDashboard.jsx'
 import SellerDashboard from './Seller/SellerDashboard.jsx'
+import PetDetails from './PetsOrdering/PetDetails.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<Login />} />
           <Route path="/todo" element={<ToDo />} />
           <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/pets/:petId" element={<ProtectedRoute><PetDetails /></ProtectedRoute>} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route
             path="/admin"

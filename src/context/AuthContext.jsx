@@ -5,26 +5,31 @@ const AuthContext = createContext();
 
 async function fetchProfile(userId){
     console.log('Fetching profile for user ID:', userId)
-        console.log('fetchProfile started for user ID:', userId)
 
-        try {
-            const { data, error } = await supabase
+    try {
+        const result = await Promise.race([
+            supabase
                 .from('profiles')
                 .select('id, full_name, username, role, gender, description')
                 .eq('id', userId)
-                .maybeSingle()
+                .maybeSingle(),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Profile request timeout')), 10000)
+            ),
+        ])
 
-            console.log('fetchProfile query result:', { data, error })
+        const { data, error } = result
+        console.log('fetchProfile query result:', { data, error })
 
-            if(error){
-                console.error('Error fetching profile:', error)
-                return null
-            }
-            return data
-        } catch (error) {
-            console.error('fetchProfile exception:', error)
+        if(error){
+            console.error('Error fetching profile:', error)
             return null
         }
+        return data
+    } catch (error) {
+        console.error('fetchProfile exception:', error)
+        return null
+    }
 }
 
 export function AuthProvider({ children }) {
@@ -43,6 +48,8 @@ export function AuthProvider({ children }) {
                 if(!mounted) return 
 
                 setUser(currentUser)
+                if(mounted) setLoading(false)
+
                 if(currentUser) {
                     console.log('initAuth calling fetchProfile for:', currentUser.id)
                     const profileData = await fetchProfile(currentUser.id)
@@ -50,7 +57,6 @@ export function AuthProvider({ children }) {
                 } else {
                     if(mounted) setProfile(null)
                 }
-                if(mounted) setLoading(false)
             } catch (error) {
                 console.error('Error initializing auth:', error)
                 if(mounted) {
@@ -68,6 +74,7 @@ export function AuthProvider({ children }) {
                 const currentUser = session?.user || null
                 setUser(currentUser)
                 setLoading(false)
+
                 if(currentUser) {
                     console.log('auth state change calling fetchProfile for:', currentUser.id)
                     const profileData = await fetchProfile(currentUser.id)
